@@ -1,0 +1,7 @@
+# Example file for .vagrantuser
+
+# Red Hat subscription login and pool id
+registration:
+  subscriber_username: myrhlogin
+  subscriber_password: myrhpassword
+  subscription_pool: a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0

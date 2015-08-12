@@ -1,0 +1,8 @@
+.vagrant*
+vagrant/hiera/ssh.yaml
+.ssh
+.docker
+*-images.tar
+.tmp
+.librarian
+*~

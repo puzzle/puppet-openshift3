@@ -1,0 +1,11 @@
+---
+:backends:
+  - yaml
+
+:hierarchy:
+  - "ssh"
+  - "product/%{::openshift_product}"
+  - "common"
+
+:yaml:
+  :datadir: '/vagrant/vagrant/hiera'
