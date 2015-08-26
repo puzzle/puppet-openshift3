@@ -38,7 +38,8 @@ If you then point the resolver of your host machine to the IP address of the new
 provided the applications use one of the preconfigured domains (*.cloudapps.example.com, *.openshiftapps.com).
 Please refer to this documentation for instructions on how to change the resolver on various operation systems,
 but remember to use the IP address of the created virtual machine (172.22.22.22):
-https://developers.google.com/speed/public-dns/docs/using
+https://developers.google.com/speed/public-dns/docs/using.
+The OpenShift Web Console is now available under https://origin-master.example.com:8443/.
 
 ## License
 Copyright © 2015 Puzzle ITC GmbH
