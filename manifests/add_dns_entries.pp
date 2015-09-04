@@ -1,5 +1,5 @@
-define openshift3::add_dns_entries($host = $title) {
-  dnsmasq::hostrecord { $host['hostname']:
-    ip => $host['ip'],
+define openshift3::add_dns_entries($vmconfig) {
+  dnsmasq::hostrecord { "${title}.${::domain}":
+    ip => $vmconfig[$title]['ip'],
   }
 }

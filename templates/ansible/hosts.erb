@@ -12,17 +12,30 @@ ansible_ssh_user=root
 #ansible_sudo=true
 
 # To deploy origin, change deployment_type to origin
-deployment_type=<%= scope.lookupvar('::openshift3::deployment_type') %>
+deployment_type=<%= scope['::openshift3::deployment_type'] %>
 
 # enable htpasswd authentication
 openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/openshift/openshift-passwd'}]
 
 # host group for masters
 [masters]
-<%= @master_fqdn %>
+<% scope['::openshift3::masters'].each do |vmname, vmdata| -%>
+<%= "#{vmname}.#{@domain}" %>
+<% end -%>
 
 # host group for nodes, includes region info
 [nodes]
-<%= @master_fqdn %> openshift_node_labels="{'region': 'infra', 'zone': 'default'}"
-#node1.example.com openshift_node_labels="{'region': 'primary', 'zone': 'east'}"
-#node2.example.com openshift_node_labels="{'region': 'primary', 'zone': 'west'}"
+<% scope['::openshift3::masters'].each do |vmname, vmdata| -%>
+<%= "#{vmname}.#{@domain} openshift_node_labels=\"{'region': 'infra', 'zone': 'default'}\""%>
+<% end -%>
+<%= @fqdn %> openshift_node_labels="{'region': 'infra', 'zone': 'default'}"
+
+#<% scope['::openshift3::nodes'].each do |vmname, vmdata| -%>
+#<%   if vmdata['running'] -%>
+#<%=   "#{vmname}.#{@domain} openshift_node_labels='#{vmdata['labels'].to_json}'" %>
+#<%   end -%>
+#<% end -%>
+
+#<%= @master_fqdn %> openshift_node_labels="{'region': 'infra', 'zone': 'default'}"
+##node1.example.com openshift_node_labels="{'region': 'primary', 'zone': 'east'}"
+##node2.example.com openshift_node_labels="{'region': 'primary', 'zone': 'west'}"

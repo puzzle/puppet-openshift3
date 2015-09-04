@@ -1,4 +1,26 @@
 ---
 openshift3::deployment_type: origin
-openshift3::package_version: 1.0.4-0.git.4906.85eea33.el7.centos
+openshift3::package_version: 1.0.5-4.git.5411.3eee7d2.el7.centos
+#openshift3::package_version: 1.0.4-0.git.4906.85eea33.el7.centos
 #openshift3::package_version: 1.0.3-0.git.4736.15952fc.el7.centos
+
+openshift3::domain: example.com
+
+openshift3::masters:
+  origin-master:
+    ip: 172.22.22.22
+    labels:
+      region: infra
+      zone: default
+
+openshift3::nodes:
+  origin-node1:
+    ip: 172.22.22.23
+    labels:
+      region: primary
+      zone: east
+  origin-node2:
+    ip: 172.22.22.24
+    labels:
+      region: primary
+      zone: west

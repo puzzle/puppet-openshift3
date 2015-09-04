@@ -1,0 +1,27 @@
+class openshift3::upgrade-master {
+  if $deployment_type == "enterprise" {
+    $distro = "rhel7"
+  } else {
+    $distro = "centos7"
+  }
+
+  package { 'openshift-master':
+    ensure => latest,
+  } ~>
+
+  service { 'openshift-master':
+    enable => true,
+  } ->
+
+  oc_replace { [
+    "/usr/share/openshift/examples/image-streams/image-streams-${distro}.json",
+    '/usr/share/openshift/examples/db-templates/',
+    '/usr/share/openshift/examples/quickstart-templates/' ]:
+    namespace => 'openshift',
+  } ->
+
+  exec {"Wait for master":
+    command => "/usr/bin/wget --spider --tries 60 --retry-connrefused --no-check-certificate https://localhost:8443/",
+    unless => "/usr/bin/wget --spider --no-check-certificate https://localhost:8443/",
+  }
+}

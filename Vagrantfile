@@ -14,29 +14,42 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-require 'json'
+#require 'json'
 require 'yaml'
 require 'net/ssh'
 
-domain = "example.com"
+origin_data = YAML.load_file('vagrant/hiera/product/origin.yaml')
+enterprise_data = YAML.load_file('vagrant/hiera/product/enterprise.yaml')
 
-# First host must be the master
-ose_hosts = [
-  { :name => "ose3-master", :ip => "172.22.22.122" },
-  { :name => "ose3-node1", :ip => "172.22.22.123" },
-  { :name => "ose3-node2", :ip => "172.22.22.124" },
-]
-origin_hosts = [
-  { :name => "origin-master", :ip => "172.22.22.22" },
-  { :name => "origin-node1", :ip => "172.22.22.23" },
-  { :name => "origin-node2", :ip => "172.22.22.24" },
-]
-hosts = ose_hosts + origin_hosts
+origin_domain = origin_data['openshift3::domain']
+enterprise_domain = enterprise_data['openshift3::domain']
+
+origin_masters = origin_data['openshift3::masters']
+origin_nodes = origin_data['openshift3::nodes']
+origin_vms = origin_masters.merge(origin_nodes)
+
+enterprise_masters = enterprise_data['openshift3::masters']
+enterprise_nodes = enterprise_data['openshift3::nodes']
+enterprise_vms = enterprise_masters.merge(enterprise_nodes)
+
+vms = origin_vms.merge(enterprise_vms)
 
 hostname=`hostname -s`.chomp
-hosts.each do |host|
-  host[:hostname] = "#{host[:name]}.#{domain}"
-  host[:rhsm_system_name] = "#{host[:name]}-#{hostname}.#{domain}"
+#vms.each do |vmname, vmdata|
+#  vmdata[:fqdn] = "#{vmname}.#{domain}"
+#  vmdata[:rhsm_system_name] = "#{vmname}-#{hostname}.#{domain}"
+#end
+
+# 1440956713,ose3-master,state,running
+unless ARGV[0] == 'status'
+  IO.popen("vagrant status --machine-readable") do |io|
+    io.each_line do |line|
+      (timestamp,host,key,value) = line.chomp.split(',')
+      if key == 'state'
+        vms[host][:running] = value == 'running'        
+      end
+    end
+  end
 end
 
 # Generate ssh keys for nodes, used to synchronize certificates between master and nodes
@@ -97,18 +110,18 @@ Vagrant.configure(2) do |config|
     vbox.cpus = 4
   end
 
-  ose_hosts.each do |host|
-    config.vm.define host[:name] do |vmconfig|
+  enterprise_vms.each do |vmname, vmdata|
+    config.vm.define vmname do |vmconfig|
       vmconfig.vm.box = 'rhel71'
 
       vmconfig.registration.skip = false
-      vmconfig.registration.name = host[:rhsm_system_name]
+      vmconfig.registration.name = "#{vmname}-#{hostname}.#{enterprise_domain}"
       vmconfig.registration.username = config.user.registration.subscriber_username if config.user.has_key?('registration')
       vmconfig.registration.password = config.user.registration.subscriber_password if config.user.has_key?('registration')
       vmconfig.registration.auto_attach = false
 
-      vmconfig.vm.hostname = host[:hostname]
-      vmconfig.vm.network :private_network, :ip => host[:ip]
+      vmconfig.vm.hostname = "#{vmname}.#{enterprise_domain}"
+      vmconfig.vm.network :private_network, :ip => vmdata['ip']
 
       config.vm.provision :puppet do |puppet|
         puppet.manifests_path = "vagrant/manifests"
@@ -118,21 +131,22 @@ Vagrant.configure(2) do |config|
         puppet.options = "--verbose --modulepath=/etc/puppet/librarian-modules:/etc/puppet/modules"
         puppet.facter = {
           "vagrant" => "1",
-          "ose_hosts" => ose_hosts.to_json,
           "openshift_product" => "enterprise",
         }
       end
     end
   end
 
-  origin_hosts.each do |host|
-    config.vm.define host[:name] do |vmconfig|
+  origin_vms.each do |vmname, vmdata|
+    config.vm.define vmname do |vmconfig|
       vmconfig.vm.box = 'boxcutter/centos71'
 
       vmconfig.registration.skip = true
 
-      vmconfig.vm.hostname = host[:hostname]
-      vmconfig.vm.network :private_network, :ip => host[:ip]
+      vmconfig.vm.hostname = "#{vmname}.#{origin_domain}"
+      vmconfig.vm.network :private_network, :ip => vmdata['ip']
+
+      puts "#{vmname} #{vmdata['ip']}"
 
       config.vm.provision :puppet do |puppet|
         puppet.manifests_path = "vagrant/manifests"
@@ -142,7 +156,6 @@ Vagrant.configure(2) do |config|
         puppet.options = "--verbose --modulepath=/etc/puppet/librarian-modules:/etc/puppet/modules"
         puppet.facter = {
           "vagrant" => "1",
-          "ose_hosts" => origin_hosts.to_json,
           "openshift_product" => "origin",
         }
       end

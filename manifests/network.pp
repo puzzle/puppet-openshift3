@@ -37,5 +37,15 @@ class openshift3::network {
       content => template("openshift3/etc/hosts.erb"),
       before => Service['network'],
     }
+
+#    $ose_hosts = parsejson($::ose_hosts)
+#    $master_ip = $ose_hosts[0]['ip']
+
+    $masters = values($::openshift3::masters)
+
+    class { 'resolv_conf':
+      domainname => '.',
+      nameservers => [$masters[0]['ip'], '8.8.8.8', '8.8.4.4'],  # Use Google Public DNS as forwarder
+    }
   }
 }

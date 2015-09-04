@@ -2,3 +2,24 @@
 openshift3::deployment_type: enterprise
 openshift3::package_version: 3.0.1.0-1.git.525.eddc479.el7ose
 #openshift3::package_version: 3.0.0.1-1.git.4.eab4c86.el7ose
+
+openshift3::domain: example.com
+
+openshift3::masters:
+  ose3-master:
+    ip: 172.22.22.122
+    labels:
+      region: infra
+      zone: default
+
+openshift3::nodes:
+  ose3-node1:
+    ip: 172.22.22.123
+    labels:
+      region: primary
+      zone: east
+  ose3-node2:
+    ip: 172.22.22.124
+    labels:
+      region: primary
+      zone: west
