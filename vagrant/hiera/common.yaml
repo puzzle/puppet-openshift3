@@ -1,1 +1,2 @@
 ---
+openshift3::openshift_dns_bind_addr: "%{::network_primary_ip}"

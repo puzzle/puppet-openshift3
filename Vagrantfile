@@ -101,7 +101,6 @@ Vagrant.configure(2) do |config|
     config.vm.define host[:name] do |vmconfig|
       vmconfig.vm.box = 'rhel71'
 
-      vmconfig.registration.skip = false
       vmconfig.registration.name = host[:rhsm_system_name]
       vmconfig.registration.username = config.user.registration.subscriber_username if config.user.has_key?('registration')
       vmconfig.registration.password = config.user.registration.subscriber_password if config.user.has_key?('registration')
@@ -118,8 +117,9 @@ Vagrant.configure(2) do |config|
         puppet.options = "--verbose --modulepath=/etc/puppet/librarian-modules:/etc/puppet/modules"
         puppet.facter = {
           "vagrant" => "1",
-          "ose_hosts" => ose_hosts.to_json,
-          "openshift_product" => "enterprise",
+          "vagrant_ip" => host[:ip],
+          "hostgroup" => "enterprise",
+          "openshift_hosts" => ose_hosts.to_json,
         }
       end
     end
@@ -142,8 +142,9 @@ Vagrant.configure(2) do |config|
         puppet.options = "--verbose --modulepath=/etc/puppet/librarian-modules:/etc/puppet/modules"
         puppet.facter = {
           "vagrant" => "1",
-          "ose_hosts" => origin_hosts.to_json,
-          "openshift_product" => "origin",
+          "vagrant_ip" => host[:ip],
+          "hostgroup" => "origin",
+          "openshift_hosts" => origin_hosts.to_json,
         }
       end
     end 

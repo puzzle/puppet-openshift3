@@ -1,4 +1,4 @@
-class openshift3 ($deployment_type = "origin", $package_version = undef, $ssh_key = undef) {
+class openshift3 ($deployment_type = "origin", $master = undef, $node_labels = {}, $openshift_dns_bind_addr = undef, $package_version = undef, $ssh_key = undef) {
 
   if $deployment_type == "enterprise" {
     $component_prefix = 'registry.access.redhat.com/openshift3/ose'
@@ -10,12 +10,4 @@ class openshift3 ($deployment_type = "origin", $package_version = undef, $ssh_ke
 
   $versionrel = split($package_version, '-')
   $version = $versionrel[0]
-
-  if $::vagrant {
-    ssh_authorized_key { "${ssh_key[name]}":
-      user => 'root',
-      type => $ssh_key[type],
-      key  => $ssh_key[key],
-    }
-  }
 }

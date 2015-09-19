@@ -1,5 +1,8 @@
-class openshift3::dns {
-  if $::vagrant {
+class openshift3::vagrant-master {
+
+    $openshift_hosts = parsejson($::openshift_hosts)
+    $master_ip = $openshift_hosts[0]['ip']
+
     firewall { '500 Allow UDP DNS requests':
       action => 'accept',
       state  => 'NEW',
@@ -14,11 +17,6 @@ class openshift3::dns {
       proto  => 'tcp',
     }
 
-    class { 'dnsmasq':
-      no_hosts => true,
-      listen_address => [$::vagrant_ip]
-    }
-
     file { '/etc/dnsmasq.d/dnsmasq-extra.conf':
       ensure  => present,
       owner  => 'root',
@@ -28,16 +26,30 @@ class openshift3::dns {
       notify => Service['dnsmasq'],
     }
 
+    class { 'dnsmasq':
+      no_hosts => true,
+      listen_address => [$master_ip]
+    }
+
     # Add wildcard entries for OpenShift 3 apps
     dnsmasq::address { ".cloudapps.$::domain":
-      ip => $::vagrant_ip,
+      ip => $master_ip,
     }
     dnsmasq::address { ".openshiftapps.com":
-      ip => $::vagrant_ip,
+      ip => $master_ip,
     }
 
-    openshift3::add_dns_entries { $ose_hosts: }
+    openshift3::add_dns_entries { $openshift_hosts: }
 
-    Service['dnsmasq'] -> Class['resolv_conf']
-  }
+    user { ['joe', 'alice' ]:
+      ensure => present,
+      managehome => true,
+    }
+
+    file { '/etc/openshift': ensure => directory } ->
+
+    htpasswd { ['joe', 'alice']:
+      cryptpasswd => '$apr1$LB4KhoUd$2QRUqJTtbFnDeal80WI2R/',
+      target      => '/etc/openshift/openshift-passwd',
+    }
 }

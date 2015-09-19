@@ -4,7 +4,8 @@
 
 :hierarchy:
   - "ssh"
-  - "product/%{::openshift_product}"
+  - "node/%{::fqdn}"
+  - "group/%{::hostgroup}"
   - "common"
 
 :yaml:

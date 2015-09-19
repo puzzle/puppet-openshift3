@@ -1,0 +1,4 @@
+---
+openshift3::node_labels:
+  region: primary
+  zone: east

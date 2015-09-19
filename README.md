@@ -20,10 +20,7 @@ Work in progress!
 ## Todo
 
    * Improve this README.
-   * Implement installation and management of additional nodes.
    * Implement upgrade of ImageStream images.
-   * Implement upgrade to OpenShift Origin M5 1.0.5.
-   * Replace Vagrant specific conditionals with generic conditionals so that they can be used outside of Vagrant.
 
 ## Vagrant
 If you have [Vagrant](https://www.vagrantup.com/) and [VirtualBox](https://www.virtualbox.org/) installed you can get a

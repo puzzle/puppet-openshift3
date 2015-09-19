@@ -23,15 +23,25 @@ define openshift3::oc_replace ($namespace = 'default', $resource = undef, $unles
       logoutput => $logoutput,
     }
   } else {
+    ensure_resource('file', '/var/lib/puppet-openshift3', { ensure => directory })
+    ensure_resource('file', '/var/lib/puppet-openshift3/examples', { ensure => directory })
+
+    if $title =~ /\/$/ {
+      $files = "${title}*"
+    } else {
+      $files = $title
+    }
+
     exec { "oc_replace $title":
       provider => 'shell',
       environment => 'HOME=/root',
       cwd     => "/root",
-      command => "oc update ${namespace_opt} -f '${title}'",
-      unless => $unless,
+      command => "oc create ${namespace_opt} -f '${title}'; oc update ${namespace_opt} -f '${title}' && sha1sum ${files} >/var/lib/puppet-openshift3/examples/`basename '${title}'`.sha1sum",
+      unless => "sha1sum -c /var/lib/puppet-openshift3/examples/`basename '${title}'`.sha1sum",
       timeout => 600,
       refreshonly => $refreshonly,
       logoutput => $logoutput,
+      require => File['/var/lib/puppet-openshift3/examples'],
     }
   }
 }
