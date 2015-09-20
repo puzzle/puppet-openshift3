@@ -1,5 +1,6 @@
 class openshift3::vagrant-master {
 
+  if $::vagrant {
     $openshift_hosts = parsejson($::openshift_hosts)
     $master_ip = $openshift_hosts[0]['ip']
 
@@ -52,4 +53,5 @@ class openshift3::vagrant-master {
       cryptpasswd => '$apr1$LB4KhoUd$2QRUqJTtbFnDeal80WI2R/',
       target      => '/etc/openshift/openshift-passwd',
     }
+  }
 }

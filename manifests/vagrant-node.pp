@@ -1,5 +1,6 @@
 class openshift3::vagrant-node {
 
+  if $::vagrant {
     $openshift_hosts = parsejson($::openshift_hosts)
     $master_ip = $openshift_hosts[0]['ip']
 
@@ -51,4 +52,5 @@ class openshift3::vagrant-node {
       type => $::openshift3::ssh_key[type],
       key  => $::openshift3::ssh_key[key],
     }
+  }
 }
