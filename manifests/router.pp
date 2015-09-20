@@ -1,14 +1,7 @@
 class openshift3::router {
 
-  exec { 'Create router service account':
-    provider => 'shell',
-    environment => 'HOME=/root',
-    cwd     => "/root",
-    command => 'echo \
-      \'{"kind":"ServiceAccount","apiVersion":"v1","metadata":{"name":"router"}}\' \
-      | oc create -f -',
-    unless => "oc get sa router",
-    timeout => 600,
+  oc_create { '{"kind":"ServiceAccount","apiVersion":"v1","metadata":{"name":"router"}}':
+    resource => 'sa/router',
   } ->
 
   oc_replace { [
