@@ -35,7 +35,7 @@ class openshift3::package  {
     }
   }
 
-  package { ['docker', 'deltarpm', 'wget', 'vim-enhanced', 'net-tools', 'bind-utils', 'git', 'bridge-utils', 'iptables-services' ]:
+  package { ['docker', 'docker-selinux', 'deltarpm', 'wget', 'vim-enhanced', 'net-tools', 'bind-utils', 'git', 'bridge-utils', 'iptables-services' ]:
     ensure => present,
   }
 }
