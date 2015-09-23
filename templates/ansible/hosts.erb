@@ -2,6 +2,7 @@
 [OSEv3:children]
 masters
 nodes
+etcd
 
 # Set variables common for all OSEv3 hosts
 [OSEv3:vars]
@@ -15,7 +16,14 @@ ansible_ssh_user=root
 deployment_type=<%= scope['::openshift3::deployment_type'] %>
 
 # enable htpasswd authentication
-openshift_master_identity_providers=<%= scope['::openshift3::identity_providers'].to_json %>
+#openshift_master_identity_providers=<%= scope['::openshift3::identity_providers'].to_json %>
+#openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/openshift/openshift-passwd'}]
+
+# host group for etcd
+[etcd]
+eszpl10310.echbruedom.local
+eszpl10311.echbruedom.local
+eszpl10312.echbruedom.local
 
 # host group for masters
 [masters]
@@ -23,4 +31,6 @@ openshift_master_identity_providers=<%= scope['::openshift3::identity_providers'
 
 # host group for nodes, includes region info
 [nodes]
+# openshift_schedulable=True
 <%= @fqdn %> openshift_node_labels='<%= scope['::openshift3::node_labels'].to_json %>' openshift_schedulable=True
+#openshift_hostname=<%= @fqdn %> openshift_ip=<%= scope['::openshift3::internal_ip'] %>

@@ -4,7 +4,7 @@ class openshift3::ansible {
     ensure   => latest,
     provider => git,
     source   => "https://github.com/openshift/openshift-ansible.git",
-    revision => '922b87ede66f6b7e376d1f46e13327077cd41719',
+    revision => '8f6c6824073dff0cea3cd793db2745fb6cf52931',
   } ->
 
   file { "/etc/ansible":

@@ -6,6 +6,8 @@ class openshift3 (
   $openshift_dns_bind_addr = undef,
   $package_version = undef,
   $ssh_key = undef,
+  $internal_ip = undef,
+  $internal_hostname = undef,
 ) inherits ::openshift3::params {
 
   if $deployment_type == "enterprise" {
