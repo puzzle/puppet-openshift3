@@ -1,6 +1,7 @@
 ---
 openshift3::deployment_type: enterprise
-openshift3::package_version: 3.0.1.0-1.git.525.eddc479.el7ose
+#openshift3::package_version: 3.0.1.0-1.git.525.eddc479.el7ose
+openshift3::package_version: 3.0.2.0-0.git.5.ee06ab6.el7ose
 #openshift3::package_version: 3.0.0.1-1.git.4.eab4c86.el7ose
 
 openshift3::master: ose3-master.example.com

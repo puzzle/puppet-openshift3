@@ -17,7 +17,7 @@ class openshift3::router {
     cwd     => "/root",
     command => "oadm create-server-cert --signer-cert=\$CA/ca.crt \
       --signer-key=\$CA/ca.key --signer-serial=\$CA/ca.serial.txt \
-      --hostnames='*.cloudapps.example.com' \
+      --hostnames='*.${::openshift3::app_domain}' \
       --cert=cloudapps.crt --key=cloudapps.key && cat cloudapps.crt cloudapps.key \$CA/ca.crt > cloudapps.router.pem",
     creates => '/root/cloudapps.router.pem',
     require => [Service['openshift-master'], Exec['Run ansible'], Exec['Wait for master']],
@@ -40,6 +40,7 @@ class openshift3::router {
     '.spec.template.spec.serviceAccount = "router"',
     '.spec.template.spec.serviceAccountName = "router"',
     '.spec.template.spec.hostNetwork = true',
+    '.spec.template.spec.containers[0].hostNetwork = true',
     ]:
     resource => 'dc/router',
   } ->

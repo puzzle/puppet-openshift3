@@ -12,6 +12,7 @@ class openshift3::params {
     'region' => 'primary',
     'zone' => 'default',
   }
+  $app_domain = 'cloudapps.example.com'
   $openshift_dns_bind_addr = undef
   $package_version = undef
   $ssh_key = undef

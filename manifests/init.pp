@@ -3,6 +3,7 @@ class openshift3 (
   $identity_providers = $::openshift3::params::identity_providers,
   $master = $::openshift3::params::master,
   $node_labels = $::openshift3::params::node_labels,
+  $app_domain = $::openshift3::params::app_domain,
   $openshift_dns_bind_addr = undef,
   $package_version = undef,
   $ssh_key = undef,
