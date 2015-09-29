@@ -92,6 +92,13 @@ Vagrant.configure(2) do |config|
     #{user_shell_provision}
   SHELL
 
+  # libvirt provider memory and cpu configuration
+  config.vm.provider :libvirt do |vbox|
+    vbox.memory = 4096
+    vbox.cpus = 4
+  end
+
+  # virtualbox provider memory and cpu configuration
   config.vm.provider :virtualbox do |vbox|
     vbox.memory = 4096
     vbox.cpus = 4
