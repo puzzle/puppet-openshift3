@@ -24,7 +24,8 @@ class openshift3::ansible {
   augeas { "ansible.cfg":
     lens    => "Puppet.lns",
     incl    => "/root/openshift-ansible/ansible.cfg",
-    changes => "set /files/root/openshift-ansible/ansible.cfg/defaults/host_key_checking False",
+    changes => ["set /files/root/openshift-ansible/ansible.cfg/defaults/host_key_checking False",
+                "set /files/root/openshift-ansible/ansible.cfg/ssh_connection/pipelining True",], 
   } ->
 
   exec { 'Run ansible':
