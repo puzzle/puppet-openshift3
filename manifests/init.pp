@@ -9,6 +9,7 @@ class openshift3 (
   $ssh_key = undef,
   $internal_ip = undef,
   $internal_hostname = undef,
+  $cluster_network_cidr = $::openshift3::params::cluster_network_cidr,
 ) inherits ::openshift3::params {
 
   if $deployment_type == "enterprise" {

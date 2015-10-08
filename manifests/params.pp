@@ -16,4 +16,5 @@ class openshift3::params {
   $openshift_dns_bind_addr = undef
   $package_version = undef
   $ssh_key = undef
+  $cluster_network_cidr = '10.1.0.0/16'
 }
