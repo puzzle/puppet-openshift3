@@ -12,7 +12,7 @@ define openshift3::oc_replace ($namespace = 'default', $resource = undef, $unles
       default:                                                { fail("Unsupported expression: $title") }
     }
 
-    exec { "oc_replace $title":
+    exec { "oc_replace $resource $title":
       provider => 'shell',
       environment => 'HOME=/root',
       cwd     => "/root",
