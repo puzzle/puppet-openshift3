@@ -18,11 +18,11 @@ class openshift3::vagrant-node {
     }
 
     # Prevent dhclient from overwriting puppet managed /etc/resolv.conf with DHCP provided DNS servers
-    augeas { "/etc/sysconfig/network-scripts/ifcfg-${::network_primary_interface}":
-      changes => [
-        "set /files/etc/sysconfig/network-scripts/ifcfg-${::network_primary_interface}/PEERDNS no",
-      ],
-    }
+#    augeas { "/etc/sysconfig/network-scripts/ifcfg-${::network_primary_interface}":
+#      changes => [
+#        "set /files/etc/sysconfig/network-scripts/ifcfg-${::network_primary_interface}/PEERDNS no",
+#      ],
+#    }
  
     file { '/root/.ssh':
       ensure  => directory,

@@ -9,5 +9,6 @@ class openshift3::master {
   class { 'openshift3::upgrade-node': } ->
   class { 'openshift3::docker-images': } ->
   class { 'openshift3::router': } ->
-  class { 'openshift3::registry': }
+  class { 'openshift3::registry': } ->
+  class { 'openshift3::failover': }
 }
