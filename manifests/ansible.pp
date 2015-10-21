@@ -4,7 +4,7 @@ class openshift3::ansible {
     ensure   => latest,
     provider => git,
     source   => "https://github.com/openshift/openshift-ansible.git",
-    revision => '922b87ede66f6b7e376d1f46e13327077cd41719',
+    revision => '34465b6edd45ea34b98563cd772cb28eb2265bde',
   } ->
 
   file { "/etc/ansible":
@@ -24,7 +24,8 @@ class openshift3::ansible {
   augeas { "ansible.cfg":
     lens    => "Puppet.lns",
     incl    => "/root/openshift-ansible/ansible.cfg",
-    changes => "set /files/root/openshift-ansible/ansible.cfg/defaults/host_key_checking False",
+    changes => ["set /files/root/openshift-ansible/ansible.cfg/defaults/host_key_checking False",
+                "set /files/root/openshift-ansible/ansible.cfg/ssh_connection/pipelining True",], 
   } ->
 
   exec { 'Run ansible':
