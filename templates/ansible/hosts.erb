@@ -23,4 +23,4 @@ openshift_master_identity_providers=<%= scope['::openshift3::identity_providers'
 
 # host group for nodes, includes region info
 [nodes]
-<%= @fqdn %> openshift_node_labels='<%= scope['::openshift3::node_labels'].to_json %>' openshift_schedulable=True
+<%= @fqdn %> openshift_node_labels='<%= scope['::openshift3::node_labels'].to_json %>' openshift_schedulable=True osm_cluster_network_cidr='<%= scope['::openshift3::cluster_network_cidr'] %>'
