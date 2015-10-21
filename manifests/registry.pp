@@ -10,7 +10,7 @@ class openshift3::registry {
       command => 'echo \
         \'{"kind":"ServiceAccount","apiVersion":"v1","metadata":{"name":"registry"}}\' \
         | oc create -n default -f -',
-      unless => "oc get sa registry",
+      unless => "oc get sa registry -n default",
       timeout => 600,
     } ->
 
@@ -27,11 +27,11 @@ class openshift3::registry {
     provider => 'shell',
     environment => 'HOME=/root',
     cwd     => "/root",
-    command => "mkdir -p /mnt/registry && oadm registry --config=/etc/openshift/master/admin.kubeconfig \
+    command => "mkdir -p /mnt/registry && oadm registry -n default --config=/etc/openshift/master/admin.kubeconfig \
       --credentials=/etc/openshift/master/openshift-registry.kubeconfig \
       --images='${::openshift3::component_images}' \
       ${mount_host}",
-    unless => "oadm registry",
+    unless => "oadm registry -n default",
     timeout => 600,
     require => Class['openshift3::router'],
   } ->
