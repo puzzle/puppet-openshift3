@@ -33,7 +33,11 @@ origin_hosts = [
 ]
 hosts = ose_hosts + origin_hosts
 
-hostname=`hostname -s`.chomp
+if Vagrant::Util::Platform.windows?
+  hostname=`hostname`.chomp
+else
+  hostname=`hostname -s`.chomp
+end
 hosts.each do |host|
   host[:hostname] = "#{host[:name]}.#{domain}"
   host[:rhsm_system_name] = "#{host[:name]}-#{hostname}.#{domain}"
