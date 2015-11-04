@@ -1,6 +1,6 @@
 class openshift3 (
   $deployment_type = $::openshift3::params::deployment_type,
-  $identity_providers = $::openshift3::params::identity_providers,
+  $identity_providers = '',
   $master = $::openshift3::params::master,
   $node_labels = $::openshift3::params::node_labels,
   $app_domain = $::openshift3::params::app_domain,
@@ -13,11 +13,25 @@ class openshift3 (
 
   if $deployment_type == "enterprise" {
     $component_prefix = 'registry.access.redhat.com/openshift3/ose'
+    $package_prefix = 'enterprise'
   } else {
     $component_prefix = 'openshift/origin'
+    $package_prefix = 'origin'
   }
   $component_images = "${component_prefix}-\${component}:\${version}"
 
   $versionrel = split($package_version, '-')
   $version = $versionrel[0]
+
+  if ($identity_providers == '') {
+    $identity_providers_final = [{
+      'name' => 'htpasswd_auth',
+      'login' => 'true',
+      'challenge' => 'true',
+      'kind' => 'HTPasswdPasswordIdentityProvider',
+      'filename' => "/etc/${package_prefix}/openshift-passwd",
+    }]
+  } else {
+    $identity_providers_final = $identity_providers
+  }
 }

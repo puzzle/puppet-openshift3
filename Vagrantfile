@@ -97,6 +97,17 @@ Vagrant.configure(2) do |config|
     vbox.cpus = 4
   end
 
+  config.vm.provider :libvirt do |libvirt|
+    libvirt.driver = "kvm"
+    # leave out host to connect directly with qemu:///system
+    #libvirt.host = "localhost"
+    libvirt.connect_via_ssh = false
+    libvirt.username = "root"
+    libvirt.storage_pool_name = config.user.libvirt.storage_pool_name if config.user.has_key?('libvirt') and config.user['libvirt'].has_key?('storage_pool_name')
+    libvirt.memory = 4096
+    libvirt.cpus = 4
+  end
+
   ose_hosts.each do |host|
     config.vm.define host[:name] do |vmconfig|
       vmconfig.vm.box = 'rhel71'

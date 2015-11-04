@@ -1,9 +1,9 @@
 class openshift3::upgrade-node {
-  package { 'openshift-node':
+  package { "${::openshift3::package_prefix}-node":
     ensure => latest,
   } ~>
 
-  service { 'openshift-node':
+  service { "${::openshift3::package_prefix}-node":
     enable => true,
   }
 }

@@ -47,11 +47,11 @@ class openshift3::vagrant-master {
       managehome => true,
     }
 
-    file { '/etc/openshift': ensure => directory } ->
+    file { "/etc/${::openshift3::package_prefix}": ensure => directory } ->
 
     htpasswd { ['joe', 'alice']:
       cryptpasswd => '$apr1$LB4KhoUd$2QRUqJTtbFnDeal80WI2R/',
-      target      => '/etc/openshift/openshift-passwd',
+      target      => "/etc/${::openshift3::package_prefix}/openshift-passwd",
     }
   }
 }

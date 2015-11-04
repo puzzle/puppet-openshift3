@@ -7,7 +7,7 @@ class openshift3::user {
 
     htpasswd { ['joe', 'alice']:
       cryptpasswd => '$apr1$LB4KhoUd$2QRUqJTtbFnDeal80WI2R/',
-      target      => '/etc/openshift/openshift-passwd',
+      target      => "/etc/${::openshift3::package_prefix}/openshift-passwd",
     }
   }
 }

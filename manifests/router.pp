@@ -13,14 +13,14 @@ class openshift3::router {
 
   exec { "Create wildcard certificate":
     provider => 'shell',
-    environment => ['HOME=/root', 'CA=/etc/openshift/master'],
+    environment => ['HOME=/root', "CA=/etc/${::openshift3::package_prefix}/master"],
     cwd     => "/root",
     command => "oadm create-server-cert --signer-cert=\$CA/ca.crt \
       --signer-key=\$CA/ca.key --signer-serial=\$CA/ca.serial.txt \
       --hostnames='*.${::openshift3::app_domain}' \
       --cert=cloudapps.crt --key=cloudapps.key && cat cloudapps.crt cloudapps.key \$CA/ca.crt > cloudapps.router.pem",
     creates => '/root/cloudapps.router.pem',
-    require => [Service['openshift-master'], Exec['Run ansible'], Exec['Wait for master']],
+    require => [Service["${::openshift3::package_prefix}-master"], Exec['Run ansible'], Exec['Wait for master']],
   } ->
 
   exec { 'Install router':
@@ -28,7 +28,7 @@ class openshift3::router {
     environment => 'HOME=/root',
     cwd     => "/root",
     command => "oadm router --default-cert=cloudapps.router.pem router --replicas=1 \
---credentials=/etc/openshift/master/openshift-router.kubeconfig \
+--credentials=/etc/${::openshift3::package_prefix}/master/openshift-router.kubeconfig \
 --images='${::openshift3::component_images}' \
 --service-account=router",
     unless => "oadm router",

@@ -5,11 +5,11 @@ class openshift3::upgrade-master {
     $distro = "centos7"
   }
 
-  package { 'openshift-master':
+  package { "${::openshift3::package_prefix}-master":
     ensure => latest,
   } ~>
 
-  service { 'openshift-master':
+  service { "${::openshift3::package_prefix}-master":
     enable => true,
   } ->
 

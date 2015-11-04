@@ -30,7 +30,7 @@ class openshift3::package  {
   }
 
   if $::openshift3::package_version {
-    yum::versionlock { ["0:openshift-${::openshift3::package_version}.x86_64", "0:openshift-master-${::openshift3::package_version}.x86_64", "0:openshift-node-${::openshift3::package_version}.x86_64", "0:openshift-sdn-ovs-${::openshift3::package_version}.x86_64", "0:tuned-profiles-openshift-node-${::openshift3::package_version}.x86_64"]:
+    yum::versionlock { ["0:${::openshift3::package_prefix}-${::openshift3::package_version}.x86_64", "0:${::openshift3::package_prefix}-master-${::openshift3::package_version}.x86_64", "0:${::openshift3::package_prefix}-node-${::openshift3::package_version}.x86_64", "0:${::openshift3::package_prefix}-sdn-ovs-${::openshift3::package_version}.x86_64", "0:tuned-profiles-${::openshift3::package_prefix}-node-${::openshift3::package_version}.x86_64"]:
       ensure => present,
     }
   }
