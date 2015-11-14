@@ -1,7 +1,5 @@
 ---
 openshift3::deployment_type: origin
-#openshift3::package_version: 1.0.5-4.git.5411.3eee7d2.el7.centos
-openshift3::package_version: 1.0.4-0.git.4906.85eea33.el7.centos
-#openshift3::package_version: 1.0.3-0.git.4736.15952fc.el7.centos
+openshift3::version: 1.0.5
 
 openshift3::master: origin-master.example.com

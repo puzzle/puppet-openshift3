@@ -4,8 +4,6 @@ FORGE
     adrien-boolean (1.0.1)
     adrien-filemapper (1.1.3)
     camptocamp-kmod (0.0.1)
-    ceritsc-yum (0.9.6)
-      puppetlabs-stdlib (>= 4.0.0)
     garethr-docker (4.0.1)
       puppetlabs-apt (<= 1.8.0, >= 1.1.0)
       puppetlabs-stdlib (>= 4.1.0)
@@ -50,7 +48,6 @@ GIT
       puppetlabs-stdlib (>= 2.3.0)
 
 DEPENDENCIES
-  ceritsc-yum (>= 0)
   community-network (>= 0)
   garethr-docker (= 4.0.1)
   jlaska-subscription_manager (>= 0)

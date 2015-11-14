@@ -14,6 +14,14 @@ class openshift3::package  {
     rhsm_repo { 'rhel-7-server-ose-3.0-rpms':
       ensure  => present,
     }
+  } else {
+    yumrepo { "maxamillion-origin-next":
+      descr => 'Copr repo for origin-next owned by maxamillion',
+      baseurl => 'https://copr-be.cloud.fedoraproject.org/results/maxamillion/origin-next/epel-7-$basearch/',
+      enabled => 1,
+      gpgcheck => 1,
+      gpgkey => 'https://copr-be.cloud.fedoraproject.org/results/maxamillion/origin-next/pubkey.gpg',
+    }
   }
   
   yumrepo { "epel":
@@ -29,9 +37,9 @@ class openshift3::package  {
     install_options => '--enablerepo=epel',
   }
 
-  if $::openshift3::package_version {
-    yum::versionlock { ["0:openshift-${::openshift3::package_version}.x86_64", "0:openshift-master-${::openshift3::package_version}.x86_64", "0:openshift-node-${::openshift3::package_version}.x86_64", "0:openshift-sdn-ovs-${::openshift3::package_version}.x86_64", "0:tuned-profiles-openshift-node-${::openshift3::package_version}.x86_64"]:
-      ensure => present,
+  if $::openshift3::version {
+    yum_versionlock { ["${::openshift3::package_name}", "${::openshift3::package_name}-master", "${::openshift3::package_name}-node", "${::openshift3::package_name}-sdn-ovs", "${::openshift3::package_name}-clients", "tuned-profiles-${::openshift3::package_name}-node"]:
+      ensure => $::openshift3::version,
     }
   }
 
