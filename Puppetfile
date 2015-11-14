@@ -9,9 +9,6 @@ mod 'puppetlabs/vcsrepo'
 mod 'puppetlabs/firewall'
 mod 'leinaddm/htpasswd'
 
-# For yum versionlock
-mod 'ceritsc/yum'
-
 mod 'jlaska/subscription_manager',
   :git => 'https://github.com/jlaska/puppet-subscription_manager.git'
 
