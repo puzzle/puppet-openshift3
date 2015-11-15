@@ -20,7 +20,6 @@ class openshift3::router {
       --hostnames='*.${::openshift3::app_domain}' \
       --cert=cloudapps.crt --key=cloudapps.key && cat cloudapps.crt cloudapps.key \$CA/ca.crt > cloudapps.router.pem",
     creates => '/root/cloudapps.router.pem',
-    require => [Service['openshift-master'], Exec['Run ansible'], Exec['Wait for master']],
   } ->
 
   exec { 'Install router':

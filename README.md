@@ -5,7 +5,7 @@ Work in progress!
 
 ## Features
 
-  * Install OpenShift Enterprise, currently 3.0.0 and 3.0.1 or OpenShift Origin M5, currently 1.0.3 and 1.0.4
+  * Install OpenShift Enterprise, currently 3.0.0, 3.0.1 and 3.0.2 or OpenShift Origin M5, currently 1.0.6, 1.0.7 and 1.0.8
     * Optionally install and configure Dnsmasq DNS server for resolving application domains (useful in Vagrant VMs)
     * Install OpenShift prerequisites
     * Install and configure Ansible
@@ -14,8 +14,8 @@ Work in progress!
     * Install required router
     * Install required internal Docker registry
     * Configure test users when running in Vagrant, matching the ones in used in https://github.com/openshift/training
-  * Upgrade OpenShift Enterprise, currently 3.0.0 to 3.0.1
-  * Upgrade OpenShift Origin, currently 1.0.3 to 1.0.4
+  * Upgrade OpenShift Enterprise
+  * Upgrade OpenShift Origin
 
 ## Todo
 

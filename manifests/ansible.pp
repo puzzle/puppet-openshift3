@@ -4,7 +4,7 @@ class openshift3::ansible {
     ensure   => latest,
     provider => git,
     source   => "https://github.com/openshift/openshift-ansible.git",
-    revision => '34465b6edd45ea34b98563cd772cb28eb2265bde',
+    revision => 'openshift-ansible-3.0.12-1',
   } ->
 
   file { "/etc/ansible":
@@ -32,8 +32,7 @@ class openshift3::ansible {
     cwd     => "/root/openshift-ansible",
     command => "ansible-playbook playbooks/byo/config.yml",
     timeout => 1000,
-    logoutput => true,
-#    require => $ansible_require,
+    logoutput => on_failure,
   }
 
   if $::openshift3::openshift_dns_bind_addr {

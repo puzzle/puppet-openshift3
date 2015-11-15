@@ -12,8 +12,14 @@ class openshift3 (
 
   if $deployment_type == "enterprise" {
     $component_prefix = 'registry.access.redhat.com/openshift3/ose'
+    $package_name = 'openshift'
   } else {
     $component_prefix = 'openshift/origin'
+    if versioncmp($version, '1.0.5') > 0 {
+      $package_name = 'origin'
+    } else {
+      $package_name = 'openshift'
+    }
   }
   $component_images = "${component_prefix}-\${component}:\${version}"
 }
