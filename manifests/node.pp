@@ -1,5 +1,6 @@
 class openshift3::node {
   class { 'openshift3': } ->
+  class { 'openshift3::repo': } ->
   class { 'openshift3::package': } ->
   class { 'openshift3::vagrant-node': } ->
   class { 'openshift3::network': } ->

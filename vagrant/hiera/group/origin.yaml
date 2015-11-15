@@ -1,5 +1,5 @@
 ---
 openshift3::deployment_type: origin
-openshift3::version: 1.0.5
+openshift3::version: 1.0.8
 
 openshift3::master: origin-master.example.com
