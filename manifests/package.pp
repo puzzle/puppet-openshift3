@@ -6,6 +6,12 @@ class openshift3::package  {
     }
   }
 
+  if $::openshift3::docker_version {
+    yum_versionlock { ["docker", "docker-selinux"]:
+      ensure => $::openshift3::docker_version,
+    }
+  }
+
   Yum_versionlock <| |> ->
 
   package { ['ansible', 'jq']:
@@ -13,7 +19,7 @@ class openshift3::package  {
     install_options => '--enablerepo=epel',
   } ->
 
-  package { ['docker', 'docker-selinux', 'deltarpm', 'wget', 'vim-enhanced', 'net-tools', 'bind-utils', 'git', 'bridge-utils', 'iptables-services', 'pyOpenSSL' ]:
+  package { ['deltarpm', 'wget', 'vim-enhanced', 'net-tools', 'bind-utils', 'git', 'bridge-utils', 'iptables-services', 'pyOpenSSL' ]:
     ensure => present,
   }
 }
