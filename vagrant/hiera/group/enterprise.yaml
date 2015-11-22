@@ -1,5 +1,5 @@
 ---
 openshift3::deployment_type: enterprise
-openshift3::version: 3.0.2.0
+openshift3::version: 3.1.0.4
 
 openshift3::master: ose3-master.example.com

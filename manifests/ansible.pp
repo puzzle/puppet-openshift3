@@ -4,7 +4,7 @@ class openshift3::ansible {
     ensure   => latest,
     provider => git,
     source   => "https://github.com/openshift/openshift-ansible.git",
-    revision => 'openshift-ansible-3.0.12-1',
+    revision => 'openshift-ansible-3.0.16-1',
   } ->
 
   file { "/etc/ansible":
@@ -26,6 +26,13 @@ class openshift3::ansible {
     incl    => "/root/openshift-ansible/ansible.cfg",
     changes => ["set /files/root/openshift-ansible/ansible.cfg/defaults/host_key_checking False",
                 "set /files/root/openshift-ansible/ansible.cfg/ssh_connection/pipelining True",], 
+  } ->
+
+  run_upgrade_playbooks { "Run ansible upgrade playbooks":
+    playbooks => {
+      'playbooks/byo/openshift-cluster/upgrades/v3_0_minor/upgrade.yml' => { 'deployment_type' => 'enterprise', match_versions => '(3\.0\..*)' },
+      'playbooks/byo/openshift-cluster/upgrades/v3_0_to_v3_1/upgrade.yml' => { 'deployment_type' => 'enterprise', match_versions => '(3\.1)\..*' },
+    }
   } ->
 
   exec { 'Run ansible':

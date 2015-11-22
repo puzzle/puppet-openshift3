@@ -23,7 +23,6 @@ define openshift3::oc_replace ($namespace = 'default', $resource = undef, $unles
       logoutput => $logoutput,
     }
   } else {
-    ensure_resource('file', '/var/lib/puppet-openshift3', { ensure => directory })
     ensure_resource('file', '/var/lib/puppet-openshift3/examples', { ensure => directory })
 
     if $title =~ /\/$/ {
