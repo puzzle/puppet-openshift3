@@ -12,7 +12,7 @@ ansible_ssh_user=root
 #ansible_sudo=true
 
 # To deploy origin, change deployment_type to origin
-deployment_type=<%= scope['::openshift3::deployment_type'] %>
+deployment_type=<%= scope['::openshift3::real_deployment_type'] %>
 
 # enable htpasswd authentication
 openshift_master_identity_providers=<%= scope['::openshift3::identity_providers'].to_json %>

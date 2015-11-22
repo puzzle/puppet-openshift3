@@ -11,7 +11,7 @@ class openshift3::repo  {
       ensure  => absent,
     }
 
-    rhsm_repo { 'rhel-7-server-ose-3.0-rpms':
+    rhsm_repo { "rhel-7-server-ose-${::openshift3::major}.${::openshift3::minor}-rpms":
       ensure  => present,
     }
   } else {
