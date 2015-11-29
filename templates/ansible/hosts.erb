@@ -17,6 +17,8 @@ deployment_type=<%= scope['::openshift3::real_deployment_type'] %>
 # enable htpasswd authentication
 openshift_master_identity_providers=<%= scope['::openshift3::identity_providers'].to_json %>
 
+osm_default_subdomain=<%= scope['::openshift3::app_domain'] %>
+
 # host group for masters
 [masters]
 <%= scope['::openshift3::master'] %>
