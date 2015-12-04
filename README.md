@@ -36,17 +36,31 @@ Work in progress!
 
 ## Setup
 
-### What [modulename] affects **OPTIONAL**
+### What openshift3 affects
 
-If it's obvious what your module touches, you can skip this section. For example, folks can probably figure out that your mysql_instance module affects their MySQL instances.
+This module make the following changes to the systems it runs on, mostly as per OpenShift requirements:
+  * Disables NetworkManager service
+  * Disables firewalld service
+  * Reconfigures the iptables firewall
+  * Reconfigures SELinux
+  * Adds EPEL repository
+  * Changes active yum/Subscription Manager repositories
+  * Installs and reconfigures Ansible
+  * Installs and starts OpenShift
+  * Installs, reconfigures and starts Docker
+  * Pulls OpenShift Docker images
 
-If there's more that they should know about, though, this is the place to mention:
-
-* Files, packages, services, or operations that the module will alter, impact, or execute.
-* Dependencies that your module automatically installs.
-* Warnings or other important notices.
+It is highly recommended to use dedicated hosts for OpenShift masters and nodes.
 
 ### Setup Requirements
+
+#### SSH Keys
+SSH keys need to be exchanged and SSH needs to be configured in such a way that:
+  1. The master can login to all nodes as root without password
+  2. All nodes can login to the master as root without password
+
+The reason for requirement 2 is that currently the openshift3 module calls Ansible on each host and the OpenShift Ansible playbook always needs to access the master.
+It's planed that a future version of the module brings the necessary improvements to drop requirement 2.
 
 #### OpenShift Enterprise
 To install OpenShift Enterprise your system needs to be correctly registered and have a suitable OpenShift Enterprise subscription attached.
@@ -64,7 +78,7 @@ The very basic steps needed for a user to get the module up and running. This ca
 
     class { 'openshift3':
       deployment_type => 'enterprise',               # or 'origin', which is also the default
-      master          => 'ose3-master.example.com',  # FQDN of your OpenShift 3 master
+      master          => 'ose3-master.example.com',  # public FQDN of your OpenShift 3 master
       version         => '3.1.0.4',                  # OpenShift version to install
     }
 
