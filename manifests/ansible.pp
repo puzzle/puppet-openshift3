@@ -38,8 +38,7 @@ class openshift3::ansible {
 
   exec { 'Run ansible':
     cwd     => "/root/openshift-ansible",
-#    command => "ansible-playbook playbooks/byo/config.yml",
-    command => "/bin/true",
+    command => "ansible-playbook playbooks/byo/config.yml",
     timeout => 1000,
     logoutput => on_failure,
   }
@@ -52,5 +51,23 @@ class openshift3::ansible {
       require => Vcsrepo["/root/openshift-ansible"],
       before => Exec['Run ansible'],
     }
+  }
+
+  file_line { 'Add logging URL to master config':
+    path => '/root/openshift-ansible/roles/openshift_master/templates/master.yaml.v1.j2',
+    after => 'assetConfig:',
+    line => "  loggingPublicURL: \"https://logging.${::openshift3::app_domain}\"",
+    match => "^  loggingPublicURL: .*",
+    require => Vcsrepo["/root/openshift-ansible"],
+    before => Exec['Run ansible'],
+  }
+
+  file_line { 'Add metrics URL to master config':
+    path => '/root/openshift-ansible/roles/openshift_master/templates/master.yaml.v1.j2',
+    after => 'assetConfig:',
+    line => "  metricsPublicURL: \"https://metrics.${::openshift3::app_domain}/hawkular/metrics\"",
+    match => "^  metricsPublicURL: .*",
+    require => Vcsrepo["/root/openshift-ansible"],
+    before => Exec['Run ansible'],
   }
 }
