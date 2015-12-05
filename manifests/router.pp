@@ -26,11 +26,11 @@ class openshift3::router {
     provider => 'shell',
     environment => 'HOME=/root',
     cwd     => "/root",
-    command => "oadm router --default-cert=cloudapps.router.pem router --replicas=1 \
+    command => "oadm router --namespace=default --default-cert=cloudapps.router.pem router --replicas=1 \
 --credentials=${::openshift3::conf_dir}/master/openshift-router.kubeconfig \
 --images='${::openshift3::component_images}' \
 --service-account=router",
-    unless => "oadm router",
+    unless => "oadm --namespace=default router",
     timeout => 600,
   } ->
 
