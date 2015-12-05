@@ -4,7 +4,7 @@ class openshift3::ansible {
     ensure   => latest,
     provider => git,
     source   => "https://github.com/openshift/openshift-ansible.git",
-    revision => 'openshift-ansible-3.0.16-1',
+    revision => 'master',
   } ->
 
   file { "/etc/ansible":
@@ -38,6 +38,7 @@ class openshift3::ansible {
   exec { 'Run ansible':
     cwd     => "/root/openshift-ansible",
     command => "ansible-playbook playbooks/byo/config.yml",
+#    command => "/bin/true",
     timeout => 1000,
     logoutput => on_failure,
   }

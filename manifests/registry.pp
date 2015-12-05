@@ -33,7 +33,6 @@ class openshift3::registry {
       ${mount_host}",
     unless => "oadm registry -n default",
     timeout => 600,
-    require => Class['openshift3::router'],
   } ->
 
   oc_replace { [
