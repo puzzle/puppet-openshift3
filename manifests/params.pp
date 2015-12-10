@@ -17,4 +17,5 @@ class openshift3::params {
   $package_version = undef
   $ssh_key = undef
   $cluster_network_cidr = '10.1.0.0/16'
+  $schedulable = true
 }

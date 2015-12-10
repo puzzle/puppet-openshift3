@@ -25,11 +25,11 @@ class openshift3::repo  {
     }
   }
   
-  yumrepo { "epel":
-    descr => 'Extra Packages for Enterprise Linux 7',
-    baseurl => "http://download.fedoraproject.org/pub/epel/7/x86_64",
-    enabled => 0,
-    gpgcheck => 1,
-    gpgkey => "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7",
-  }
+#  yumrepo { "epel":
+#    descr => 'Extra Packages for Enterprise Linux 7',
+#    baseurl => "http://download.fedoraproject.org/pub/epel/7/x86_64",
+#    enabled => 0,
+#    gpgcheck => 1,
+#    gpgkey => "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7",
+#  }
 }

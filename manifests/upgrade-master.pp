@@ -5,14 +5,6 @@ class openshift3::upgrade-master {
     $distro = "centos7"
   }
 
-  package { ["docker", "docker-selinux"]:
-    ensure => latest,
-  } ~>
-
-  service { "docker":
-    enable => true,
-  } ->
-
   package { "${::openshift3::package_name}-master":
     ensure => latest,
   } ~>

@@ -15,10 +15,11 @@ class openshift3::ansible {
   } ->
 
   file { "/etc/ansible/hosts":
-    content => template("openshift3/ansible/hosts.erb"),
-    owner  => "root",
-    group  => "root",
-    mode   => 644,
+    content   => template("openshift3/ansible/hosts.erb"),
+    owner     => "root",
+    group     => "root",
+    mode      => 644,
+    show_diff => no,
   } ->
 
   augeas { "ansible.cfg":
@@ -28,16 +29,17 @@ class openshift3::ansible {
                 "set /files/root/openshift-ansible/ansible.cfg/ssh_connection/pipelining True",], 
   } ->
 
-  run_upgrade_playbooks { "Run ansible upgrade playbooks":
-    playbooks => {
-      'playbooks/byo/openshift-cluster/upgrades/v3_0_minor/upgrade.yml' => { 'deployment_type' => 'enterprise', match_versions => '(3\.0\..*)' },
-      'playbooks/byo/openshift-cluster/upgrades/v3_0_to_v3_1/upgrade.yml' => { 'deployment_type' => 'enterprise', match_versions => '(3\.1)\..*' },
-    }
-  } ->
+#  run_upgrade_playbooks { "Run ansible upgrade playbooks":
+#    playbooks => {
+#      'playbooks/byo/openshift-cluster/upgrades/v3_0_minor/upgrade.yml' => { 'deployment_type' => 'enterprise', match_versions => '(3\.0\..*)' },
+#      'playbooks/byo/openshift-cluster/upgrades/v3_0_to_v3_1/upgrade.yml' => { 'deployment_type' => 'enterprise', match_versions => '(3\.1)\..*' },
+#    }
+#  } ->
 
   exec { 'Run ansible':
     cwd     => "/root/openshift-ansible",
-    command => "ansible-playbook playbooks/byo/config.yml",
+#    command => "ansible-playbook playbooks/byo/config.yml",
+    command => "/bin/true",
     timeout => 1000,
     logoutput => on_failure,
   }

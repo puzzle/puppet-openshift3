@@ -1,5 +1,6 @@
 define openshift3::run_upgrade_playbook($deployment_type, $match_versions) {
   $playbook = regsubst($title, "/", "_", "G")
+#  $matched_version = inline_template('<%= matchData = scope["::openshift3::version"].match(/^#{@match_versions}$/); matchData ? matchData[1] : nil %>')
   $matched_version = inline_template('<%= matchData = scope["::openshift3::version"].match("^#{@match_versions}$"); matchData ? matchData[1] : nil %>')
 
   if $matched_version {
