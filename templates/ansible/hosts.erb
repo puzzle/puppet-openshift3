@@ -18,13 +18,18 @@ deployment_type=<%= scope['::openshift3::real_deployment_type'] %>
 openshift_master_identity_providers=<%= scope['::openshift3::identity_providers'].to_json %>
 
 osm_default_subdomain=<%= scope['::openshift3::app_domain'] %>
+osm_cluster_network_cidr='<%= scope['::openshift3::cluster_network_cidr'] %>'
 
 # host group for masters
 [masters]
-<%= scope['::openshift3::master'] %> openshift_ip=<%= scope['::openshift3::internal_ip'] %> openshift_hostname=<%= scope['::openshift3::internal_hostname'] %> openshift_public_ip='<%= scope['::openshift3::public_ip'] %>' openshift_public_hostname='<%= scope['::openshift3::public_hostname'] %>'
-
-osm_cluster_network_cidr='<%= scope['::openshift3::cluster_network_cidr'] %>'
+<%= scope['::openshift3::master'] %> <% if scope['::openshift3::internal_ip'] != :undef %>openshift_ip='<%= scope['::openshift3::internal_ip'] %>' <% end; \
+  if scope['::openshift3::internal_hostname'] != :undef %>openshift_hostname='<%= scope['::openshift3::internal_hostname'] %>' <% end; \
+  if scope['::openshift3::public_ip'] != :undef %>openshift_public_ip='<%= scope['::openshift3::public_ip'] %>' <% end; \
+  if scope['::openshift3::public_hostname'] != :undef %>openshift_public_hostname='<%= scope['::openshift3::public_hostname'] %>' <% end %>
 
 # host group for nodes, includes region info
 [nodes]
-<%= scope['::openshift3::hostname'] %> openshift_node_labels='<%= scope['::openshift3::node_labels'].to_json %>' openshift_schedulable=<%= scope['::openshift3::schedulable'] %> openshift_ip='<%= scope['::openshift3::internal_ip'] %>' openshift_hostname='<%= scope['::openshift3::internal_hostname'] %>' openshift_public_ip='<%= scope['::openshift3::public_ip'] %>' openshift_public_hostname='<%= scope['::openshift3::public_hostname'] %>'
+<%= scope['::openshift3::hostname'] %> openshift_node_labels='<%= scope['::openshift3::node_labels'].to_json %>' openshift_schedulable=<%= scope['::openshift3::schedulable'] %> <% if scope['::openshift3::internal_ip'] != :undef %>openshift_ip='<%= scope['::openshift3::internal_ip'] %>' <% end; \
+  if scope['::openshift3::internal_hostname'] != :undef %>openshift_hostname='<%= scope['::openshift3::internal_hostname'] %>' <% end; \
+  if scope['::openshift3::public_ip'] != :undef %>openshift_public_ip='<%= scope['::openshift3::public_ip'] %>' <% end; \
+  if scope['::openshift3::public_hostname'] != :undef %>openshift_public_hostname='<%= scope['::openshift3::public_hostname'] %>' <% end %>
