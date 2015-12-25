@@ -1,3 +1,6 @@
 ---
 openshift3::openshift_dns_bind_addr: "%{::network_primary_ip}"
 openshift3::cluster_network_cidr: 10.255.0.0/16
+
+openshift3::internal_ip: "%{::vagrant_ip}"
+openshift3::public_ip: "%{::vagrant_ip}"
