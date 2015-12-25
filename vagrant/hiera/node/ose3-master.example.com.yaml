@@ -1,4 +1,7 @@
 ---
+openshift3::internal_ip: 172.22.22.122
+openshift3::public_ip: 172.22.22.122
+
 openshift3::node_labels:
   region: infra
   zone: default
