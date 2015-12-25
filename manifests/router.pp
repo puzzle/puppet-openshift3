@@ -13,7 +13,7 @@ class openshift3::router {
 
   exec { "Create wildcard certificate":
     provider => 'shell',
-    environment => ['HOME=/root', 'CA=/etc/openshift/master'],
+    environment => ["CA=/${::openshift3::conf_dir}/master"],
     cwd     => "/root",
     command => "oadm create-server-cert --signer-cert=\$CA/ca.crt \
       --signer-key=\$CA/ca.key --signer-serial=\$CA/ca.serial.txt \
@@ -27,7 +27,7 @@ class openshift3::router {
     environment => 'HOME=/root',
     cwd     => "/root",
     command => "oadm router --namespace=default --default-cert=cloudapps.router.pem router --replicas=1 \
---credentials=/etc/openshift/master/openshift-router.kubeconfig \
+--credentials=${::openshift3::conf_dir}/master/openshift-router.kubeconfig \
 --images='${::openshift3::component_images}' \
 --service-account=router",
     unless => "oadm --namespace=default router",

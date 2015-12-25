@@ -27,8 +27,8 @@ class openshift3::registry {
     provider => 'shell',
     environment => 'HOME=/root',
     cwd     => "/root",
-    command => "mkdir -p /mnt/registry && oadm registry -n default --config=/etc/openshift/master/admin.kubeconfig \
-      --credentials=/etc/openshift/master/openshift-registry.kubeconfig \
+    command => "mkdir -p /mnt/registry && oadm registry -n default --config=${::openshift3::conf_dir}/master/admin.kubeconfig \
+      --credentials=${::openshift3::conf_dir}/master/openshift-registry.kubeconfig \
       --images='${::openshift3::component_images}' \
       ${mount_host}",
     unless => "oadm registry -n default",
