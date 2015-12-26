@@ -18,4 +18,5 @@ class openshift3::params {
   $ssh_key = undef
   $cluster_network_cidr = '10.1.0.0/16'
   $schedulable = true
+  $configure_epel = true
 }
