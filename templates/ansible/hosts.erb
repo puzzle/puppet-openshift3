@@ -29,7 +29,7 @@ osm_cluster_network_cidr='<%= scope['::openshift3::cluster_network_cidr'] %>'
 
 # host group for nodes, includes region info
 [nodes]
-<%= scope['::openshift3::hostname'] %> openshift_node_labels='<%= scope['::openshift3::node_labels'].to_json %>' openshift_schedulable=True <% if scope['::openshift3::internal_ip'] != :undef %>openshift_ip='<%= scope['::openshift3::internal_ip'] %>' <% end; \
+<%= scope['::openshift3::hostname'] %> openshift_node_labels='<%= scope['::openshift3::node_labels'].to_json %>' openshift_schedulable=<%= scope['::openshift3::schedulable'] %> <% if scope['::openshift3::internal_ip'] != :undef %>openshift_ip='<%= scope['::openshift3::internal_ip'] %>' <% end; \
   if scope['::openshift3::internal_hostname'] != :undef %>openshift_hostname='<%= scope['::openshift3::internal_hostname'] %>' <% end; \
   if scope['::openshift3::public_ip'] != :undef %>openshift_public_ip='<%= scope['::openshift3::public_ip'] %>' <% end; \
   if scope['::openshift3::public_hostname'] != :undef %>openshift_public_hostname='<%= scope['::openshift3::public_hostname'] %>' <% end %>

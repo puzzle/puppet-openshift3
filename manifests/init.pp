@@ -12,6 +12,7 @@ class openshift3 (
   $internal_ip = undef,
   $internal_hostname = undef,
   $cluster_network_cidr = $::openshift3::params::cluster_network_cidr,
+  $schedulable = $::openshift3::params::schedulable, 
 ) inherits ::openshift3::params {
  
   $version_array = split($version, '\.')
