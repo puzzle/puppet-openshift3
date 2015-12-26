@@ -26,10 +26,6 @@ class openshift3::metrics {
       user => "system:serviceaccount:openshift-infra:metrics-deployer",
     } ->
     
-#    add_user_to_scc { "system:serviceaccount:logging:aggregated-logging-fluentd":
-#      scc => "privileged",
-#    } ->
-  
     add_role_to_user { "cluster-reader":
       role_type => "cluster",
       user => "system:serviceaccount:openshift-infra:heapster",
@@ -41,13 +37,5 @@ class openshift3::metrics {
       resource_namespace => "openshift-infra",
       creates => "svc/hawkular-metrics",
     }
-
-#    instantiate_template { "logging-support-template":
-#      template_namespace => "logging",
-#      resource_namespace => "logging",
-#      creates => "route/kibana",
-#    }
-
-#,IMAGE_PREFIX=${image_prefix}
   }
 }
