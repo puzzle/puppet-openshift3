@@ -37,13 +37,5 @@ class openshift3::metrics {
       resource_namespace => "openshift-infra",
       creates => "svc/hawkular-metrics",
     }
-
-#    instantiate_template { "logging-support-template":
-#      template_namespace => "logging",
-#      resource_namespace => "logging",
-#      creates => "route/kibana",
-#    }
-
-#,IMAGE_PREFIX=${image_prefix}
   }
 }
