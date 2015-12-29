@@ -4,6 +4,10 @@ class openshift3::vagrant-node {
     $openshift_hosts = parsejson($::openshift_hosts)
     $master_ip = $openshift_hosts[0]['ip']
 
+    class { '::ntp':
+      servers => [ '0.rhel.pool.ntp.org', '1.rhel.pool.ntp.org', '2.rhel.pool.ntp.org' ],
+    }
+
     file { '/etc/hosts':
       ensure  => present,
        owner  => 'root',

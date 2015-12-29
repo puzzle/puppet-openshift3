@@ -7,6 +7,7 @@ mod 'saz/resolv_conf'
 mod 'puppetlabs/rsync'
 mod 'puppetlabs/vcsrepo'
 mod 'puppetlabs/firewall'
+mod 'puppetlabs/ntp'
 mod 'leinaddm/htpasswd'
 
 mod 'jlaska/subscription_manager',
