@@ -14,6 +14,9 @@ class openshift3 (
   $cluster_network_cidr = $::openshift3::params::cluster_network_cidr,
   $schedulable = $::openshift3::params::schedulable,
   $configure_epel = $::openshift3::params::configure_epel,
+  $http_proxy = undef,
+  $https_proxy = undef,
+  $no_proxy = "localhost,127.0.0.1",
 ) inherits ::openshift3::params {
  
   $version_array = split($version, '\.')
