@@ -1,6 +1,7 @@
 required_plugins = %w(
   vagrant-registration
   nugrant
+  vagrant-timezone
 )
 
 needs_restart = false

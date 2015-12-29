@@ -65,7 +65,11 @@ if not File.exist?('.ssh/id_rsa')
   end
 end
 
-Vagrant.configure(2) do |config|  
+Vagrant.configure(2) do |config|
+  if Vagrant.has_plugin?("vagrant-timezone")
+    config.timezone.value = :host
+  end
+
   if config.user.has_key?('registration') and config.user['registration'].has_key?('subscription_pool')
     subscription_pool = config.user.registration.subscription_pool
   end
