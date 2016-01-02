@@ -17,6 +17,9 @@ class openshift3 (
   $http_proxy = undef,
   $https_proxy = undef,
   $no_proxy = "localhost,127.0.0.1",
+  $metrics_ssl_cert = undef,
+  $metrics_ssl_key = undef,
+  $metrics_ca_cert = undef,
 ) inherits ::openshift3::params {
  
   $version_array = split($version, '\.')
@@ -58,4 +61,5 @@ class openshift3 (
   }
 
   ensure_resource('file', '/var/lib/puppet-openshift3', { ensure => directory })
+  ensure_resource('file', '/var/lib/puppet-openshift3/certs', { ensure => directory })
 }
