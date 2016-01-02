@@ -39,7 +39,6 @@ class openshift3::router {
     '.spec.template.spec.serviceAccount = "router"',
     '.spec.template.spec.serviceAccountName = "router"',
     '.spec.template.spec.hostNetwork = true',
-    '.spec.template.spec.containers[0].hostNetwork = true',
     ]:
     resource => 'dc/router',
   } ->
