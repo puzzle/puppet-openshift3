@@ -44,15 +44,15 @@ class openshift3::logging {
       creates => "svc/logging-es",
     } ->
 
+    scale_pod { "logging-fluentd":
+      namespace => "logging",
+      replicas => ready_nodes,
+    } ->
+
     instantiate_template { "logging-support-template":
       template_namespace => "logging",
       resource_namespace => "logging",
       creates => "route/kibana",
-    } ->
-
-    scale_pod { "logging-fluentd":
-      namespace => "logging",
-      replicas => ready_nodes,
     }
   }
 }
