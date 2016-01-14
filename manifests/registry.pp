@@ -12,6 +12,7 @@ class openshift3::registry {
         | oc create -n default -f -',
       unless => "oc get sa registry -n default",
       timeout => 600,
+      path => $::path,
     } ->
 
     oc_replace { [
@@ -33,6 +34,7 @@ class openshift3::registry {
       ${mount_host}",
     unless => "oadm registry -n default",
     timeout => 600,
+    path => $::path,
   } ->
 
   oc_replace { [

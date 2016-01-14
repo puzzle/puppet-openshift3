@@ -21,5 +21,6 @@ define openshift3::add_role_to_user ($namespace = 'default', $role_type = 'local
     unless      => "oc get ${namespace_opt} ${resource} -o json | jq '.items[] | select(.roleRef.name == \"${role}\").userNames' | grep -q '\"${user}\"'",
     timeout     => 60,
     logoutput   => on_failure,
+    path        => $::path,
   }
 }

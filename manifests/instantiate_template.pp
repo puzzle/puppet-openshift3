@@ -15,6 +15,7 @@ define openshift3::instantiate_template ($template_namespace = 'openshift', $tem
     unless      => "oc get -n ${resource_namespace} ${creates}",
     timeout     => 300,
     logoutput   => on_failure,
+    path => $::path,
   } ->
 
   exec { "wait for template instantiation ${title}":
@@ -26,5 +27,6 @@ define openshift3::instantiate_template ($template_namespace = 'openshift', $tem
     try_sleep   => 1,
     tries       => 120,
     timeout     => 5,
+    path        => $::path,
   }
 }

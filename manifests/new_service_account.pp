@@ -6,5 +6,6 @@ define openshift3::new_service_account ($namespace = 'default') {
     command     => "echo '{\"kind\":\"ServiceAccount\",\"apiVersion\":\"v1\",\"metadata\":{\"name\":\"${title}\"}}' | oc create --namespace=${namespace} -f -",
     unless      => "oc get sa --namespace=${namespace} ${title}",
     timeout     => 60,
+    path        => $::path,
   }
 }

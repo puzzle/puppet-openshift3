@@ -20,6 +20,7 @@ class openshift3::router {
       --hostnames='*.${::openshift3::app_domain}' \
       --cert=cloudapps.crt --key=cloudapps.key && cat cloudapps.crt cloudapps.key \$CA/ca.crt > cloudapps.router.pem",
     creates => '/root/cloudapps.router.pem',
+    path => $::path,
   } ->
 
   exec { 'Install router':
@@ -32,6 +33,7 @@ class openshift3::router {
 --service-account=router",
     unless => "oc get svc/router -n default",
     timeout => 600,
+    path => $::path,
   } ->
 
   oc_replace { [

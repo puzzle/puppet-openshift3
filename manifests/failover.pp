@@ -26,6 +26,7 @@ class openshift3::failover {
 --service-account=ipfailover",
     unless => "oc get svc/ha-router-eh -n default",
     timeout => 600,
+    path => $::path,
   } ->
 
 
@@ -40,6 +41,7 @@ class openshift3::failover {
 --service-account=ipfailover --create",
     unless => "oc get dc/ipf-ha-router-eh -n default",
     timeout => 600,
+    path => $::path,
   }
 
 #  oc_replace { [

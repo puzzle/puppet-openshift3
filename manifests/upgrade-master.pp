@@ -23,5 +23,6 @@ class openshift3::upgrade-master {
   exec {"Wait for master":
     command => "/usr/bin/wget --spider --tries 60 --retry-connrefused --no-check-certificate https://localhost:8443/",
     unless => "/usr/bin/wget --spider --no-check-certificate https://localhost:8443/",
+    path => $::path,
   }
 }

@@ -12,6 +12,7 @@ define openshift3::run_upgrade_playbook($deployment_type, $match_versions) {
       unless => "[ '${::openshift3::deployment_type}' != '${deployment_type}' ] || [ -e '/var/lib/puppet-openshift3/playbooks/${playbook}-${matched_version}' ] ",
       timeout => 1000,
       logoutput => on_failure,
+      path => $::path,
       require => File['/var/lib/puppet-openshift3/playbooks'],
     }
   }

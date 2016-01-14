@@ -15,5 +15,6 @@ define openshift3::oc_create ($namespace = 'default', $resource = undef, $refres
     refreshonly => $refreshonly,
     returns => $returns,
     logoutput => $logoutput,
+    path => $::path,
   }
 }

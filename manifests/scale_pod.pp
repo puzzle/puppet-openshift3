@@ -15,5 +15,6 @@ define openshift3::scale_pod ($namespace = 'default', $pod = $title, $replicas) 
                    [ `oc get -n ${namespace} dc ${pod} -o json | jq .spec.replicas` = \"${real_replicas}\" ]",
     timeout     => 60,
     logoutput   => on_failure,
+    path        => $::path,
   }
 }

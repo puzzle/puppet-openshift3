@@ -41,6 +41,7 @@ class openshift3::ansible {
     command => "ansible-playbook playbooks/byo/config.yml",
     timeout => 1000,
     logoutput => on_failure,
+    path      => $::path,
   }
 
   if $::openshift3::openshift_dns_bind_addr {

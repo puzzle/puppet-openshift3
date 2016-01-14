@@ -21,6 +21,7 @@ define openshift3::oc_replace ($namespace = 'default', $resource = undef, $unles
       timeout => 600,
       refreshonly => $refreshonly,
       logoutput => $logoutput,
+      path => $::path,
     }
   } else {
     ensure_resource('file', '/var/lib/puppet-openshift3/examples', { ensure => directory })
@@ -40,6 +41,7 @@ define openshift3::oc_replace ($namespace = 'default', $resource = undef, $unles
       timeout => 600,
       refreshonly => $refreshonly,
       logoutput => $logoutput,
+      path => $::path,
       require => File['/var/lib/puppet-openshift3/examples'],
     }
   }

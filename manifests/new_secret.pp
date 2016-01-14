@@ -6,5 +6,6 @@ define openshift3::new_secret ($namespace = 'default', $source) {
     command     => "oc secrets new --namespace=${namespace} '${title}' '${source}'",
     unless      => "oc get secret --namespace=${namespace} '${title}'",
     timeout     => 60,
+    path        => $::path,
   }
 }

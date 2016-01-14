@@ -6,5 +6,6 @@ define openshift3::new_project () {
     command     => "oadm new-project ${title}",
     unless      => "oc get project ${title}",
     timeout     => 60,
+    path        => $::path,
   }
 }
