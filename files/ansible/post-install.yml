@@ -1,0 +1,15 @@
+- name: Prepare hosts for OpenShift installation
+#  accelerate: True
+  sudo: False
+  hosts: nodes
+
+  tasks:
+    - name: Set docker log level
+      lineinfile: dest=/etc/sysconfig/docker regexp="^OPTIONS='[^']+'" line="OPTIONS='--insecure-registry=172.30.0.0/16 --selinux-enabled --log-level=warn'"
+
+#- name: application container
+#  docker:
+#    name: myapplication
+#    image: someuser/appimage
+#    state: reloaded
+#    pull: always

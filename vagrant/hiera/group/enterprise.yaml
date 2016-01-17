@@ -2,4 +2,22 @@
 openshift3::deployment_type: enterprise
 openshift3::version: 3.1.0.4
 
-openshift3::master: ose3-master.example.com
+openshift3::masters:
+  - name: ose3-master.example.com
+    ip: 172.22.22.122
+    node_labels:
+      region: infra
+      zone: default
+    schedulable: True
+
+openshift3::nodes:
+  - name: ose3-node1.example.com
+    ip: 172.22.22.123
+    node_labels:
+      region: primary
+      zone: east
+#  ose3-node2.example.com:
+#    ip: 172.22.22.124
+#    node_labels:
+#      region: primary
+#      zone: west

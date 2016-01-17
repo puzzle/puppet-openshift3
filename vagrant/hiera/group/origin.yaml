@@ -3,3 +3,24 @@ openshift3::deployment_type: origin
 openshift3::version: 1.0.8
 
 openshift3::master: origin-master.example.com
+
+openshift3::domain: example.com
+
+openshift3::masters:
+  - name: origin-master.example.com:
+    ip: 172.22.22.22
+    labels:
+      region: infra
+      zone: default
+
+openshift3::nodes:
+  - name: origin-node1.example.com:
+    ip: 172.22.22.23
+    labels:
+      region: primary
+      zone: east
+  - name: origin-node2.example.com:
+    ip: 172.22.22.24
+    labels:
+      region: primary
+      zone: west

@@ -9,7 +9,7 @@ node 'ose3-master.example.com' {
 }
 
 node /ose3-node\d+.example.com/ {
-  include openshift3::node
+#  include openshift3::node
 }
 
 node 'origin-master.example.com' {
@@ -17,5 +17,5 @@ node 'origin-master.example.com' {
 }
 
 node /origin-node\d+.example.com/ {
-  include openshift3::node
+#  include openshift3::node
 }

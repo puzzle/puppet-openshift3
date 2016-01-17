@@ -1,0 +1,86 @@
+- name: Prepare hosts for OpenShift installation
+  hosts: nodes
+  sudo: False
+
+  roles:
+    - { role: vagrant, when: "vagrant is defined and vagrant != ''" }
+
+  tasks:
+    - name: bootstrap epel-release install
+      copy: src=ansible-bootstrap-epel.repo
+        dest=/etc/yum.repos.d/
+        owner=root group=root mode=0644
+
+    - name: epel-release install
+      yum: name=epel-release
+       enablerepo=ansible-bootstrap-epel
+       state=present
+
+    - name: Install Ansible module dependencies
+      yum: name={{item}} state=present enablerepo=epel
+      with_items:
+        - python-keyczar
+        - jq
+        - yum-plugin-versionlock
+
+    - name: epel repository disable
+      ini_file: dest=/etc/yum.repos.d/epel.repo
+            section=epel
+            option=enable
+            value=0
+
+    - name: Enable RHEL repos
+      rhsm_repo: name={{item}} enable=1
+      with_items:
+        - rhel-7-server-rpms
+        - rhel-7-server-extras-rpms
+        - rhel-7-server-optional-rpms
+      when: ansible_distribution == "RedHat"
+
+    - name: Enable OpenShift Enterprise repos
+      rhsm_repo: name={{item}} enable=1
+      with_items:
+        - rhel-7-server-ose-{{openshift_major}}.{{openshift_minor}}-rpms
+      when: deployment_type == "enterprise" or deployment_type == "openshift-enterprise"
+
+    - name: Enable OpenShift Origin repos
+      copy: src=maxamillion-origin-next-epel-7
+        dest=/etc/yum.repos.d/
+        owner=root group=root mode=0644
+      when: ansible_distribution != "RedHat"
+
+    - name: Install OpenShift prerequisites
+      yum: name={{item}} state=present
+      with_items:
+        - deltarpm
+        - wget
+        - vim-enhanced
+        - net-tools
+        - bind-utils
+        - git
+        - bridge-utils
+        - iptables-services
+        - pyOpenSSL
+        - bash-completion
+
+    - name: Versionlock OpenShift Packages 
+      yum_versionlock: name={{item}} version={{openshift_version}}
+      with_items:
+        - "{{openshift_package_name}}"
+        - "{{openshift_package_name}}-master"
+        - "{{openshift_package_name}}-node"
+        - "{{openshift_package_name}}-sdn-ovs"
+        - "{{openshift_package_name}}-clients"
+        - "tuned-profiles-{{openshift_package_name}}-node"
+
+    - name: Versionlock Docker Packages 
+      yum_versionlock: name={{item}} version={{docker_version}}
+      with_items:
+        - "docker"
+        - "docker-selinux"
+
+    - name: Disable NetworkManager service
+      service: name=NetworkManager state=stopped enabled=false
+
+    - name: Enable network service
+      service: name=network state=started enabled=true

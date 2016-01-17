@@ -1,0 +1,6 @@
+[ansible-bootstrap-epel]
+name = Ansible bootstrap for epel
+mirrorlist = https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=$basearch
+failovermethod = priority
+enabled = 0
+gpgcheck = 0

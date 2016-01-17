@@ -97,13 +97,18 @@ Vagrant.configure(2) do |config|
     gem list --local | grep -q ^librarian-puppet || gem install librarian-puppet
     cd /vagrant && /usr/local/bin/librarian-puppet install --path /etc/puppet/librarian-modules
 
+    cp -r /vagrant/.ssh /root
+    cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
+    chmod -R og-rwx /root/.ssh
+
     #{user_shell_provision}
   SHELL
 
   # libvirt provider memory and cpu configuration
-  config.vm.provider :libvirt do |vbox|
-    vbox.memory = 4096
-    vbox.cpus = 4
+  config.vm.provider :libvirt do |libvirt|
+    libvirt.memory = 4096
+    libvirt.cpus = 4
+    libvirt.storage_pool_name = config.user.libvirt.storage_pool_name if config.user.has_key?('libvirt') and config.user['libvirt'].has_key?('storage_pool_name')
   end
 
   # virtualbox provider memory and cpu configuration
@@ -114,7 +119,7 @@ Vagrant.configure(2) do |config|
 
   ose_hosts.each do |host|
     config.vm.define host[:name] do |vmconfig|
-      vmconfig.vm.box = 'rhel71'
+      vmconfig.vm.box = 'rhel72'
 
       vmconfig.registration.name = host[:rhsm_system_name]
       vmconfig.registration.username = config.user.registration.subscriber_username if config.user.has_key?('registration')

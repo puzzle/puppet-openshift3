@@ -1,0 +1,13 @@
+- name: Install Vagrant specific dependencies
+  yum: name={{item}} state=present
+  with_items:
+    - ntp
+
+- name: Enable ntp service
+  service: name=ntpd state=started enabled=true
+
+- name: Configure /etc/hosts
+  template: src=hosts.j2 dest=/etc/hosts mode=0644
+
+- name: Configure resolvers
+  template: src=resolv.conf.j2 dest=/etc/resolv.conf mode=0644

@@ -1,7 +1,8 @@
 class openshift3 (
   $deployment_type = $::openshift3::params::deployment_type,
   $identity_providers = $::openshift3::params::identity_providers,
-  $master = $::openshift3::params::master,
+  $masters,
+  $nodes = [],
   $node_labels = $::openshift3::params::node_labels,
   $app_domain = $::openshift3::params::app_domain,
   $openshift_dns_bind_addr = undef,
@@ -25,6 +26,9 @@ class openshift3 (
   $enable_ops_logging = $::openshift3::params::enable_ops_logging,
 ) inherits ::openshift3::params {
  
+  $master = $masters[0]['name']
+  $master_ip = $masters[0]['ip']
+
   $version_array = split($version, '\.')
   $major = $version_array[0]
   $minor = $version_array[1]

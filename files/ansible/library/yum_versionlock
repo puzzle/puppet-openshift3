@@ -1,0 +1,18 @@
+#!/bin/bash
+# WANT_JSON
+
+NAME=`jq -r .name < $1`
+VERSION=`jq -r .version < $1`
+
+if ! yum versionlock list | grep -q ":${NAME}-${VERSION}" >/dev/null 2>&1; then
+  yum versionlock delete "${NAME}" >/dev/null 2>&1
+  OUTPUT=`yum versionlock "${NAME}-${VERSION}" 2>&1`
+
+  if yum versionlock list | grep -q ":${NAME}-${VERSION}" >/dev/null 2>&1; then
+    echo '{"changed": true}'
+  else
+    echo "{\"failed\": true, \"msg\": \"Could not versionlock '${NAME}-${VERSION}'\", \"stdout\": \"${OUTPUT}\"}"
+  fi
+else
+  echo '{"changed": false}'
+fi
