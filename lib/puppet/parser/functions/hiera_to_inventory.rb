@@ -15,8 +15,10 @@ module Puppet::Parser::Functions
           result += " openshift_#{key}='#{value.to_json}'"
         end
       end
+
+      result += "\n"
     end
-    
-    return result + "\n"
+
+    return result
   end
 end

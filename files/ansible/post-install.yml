@@ -1,15 +1,25 @@
 - name: Prepare hosts for OpenShift installation
-#  accelerate: True
   sudo: False
   hosts: nodes
+
+  vars:
+    https_proxy: "{{ https_proxy if https_proxy else http_proxy }}"
 
   tasks:
     - name: Set docker log level
       lineinfile: dest=/etc/sysconfig/docker regexp="^OPTIONS='[^']+'" line="OPTIONS='--insecure-registry=172.30.0.0/16 --selinux-enabled --log-level=warn'"
 
-#- name: application container
-#  docker:
-#    name: myapplication
-#    image: someuser/appimage
-#    state: reloaded
-#    pull: always
+    - include: tasks/proxy.yml file=/etc/sysconfig/docker
+      notify:
+        - restart Docker
+
+    - include: tasks/proxy.yml file=/etc/sysconfig/{{ openshift_package_name }}-node
+      notify:
+        - restart OpenShift node
+
+  handlers:
+    - name: restart Docker
+      service: name=docker state=restarted
+
+    - name: restart OpenShift node
+      service: name={{ openshift_package_name }}-node state=restarted

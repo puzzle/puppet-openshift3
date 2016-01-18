@@ -1,5 +1,7 @@
 class openshift3::ansible {
 
+  ensure_resource('file', '/var/lib/puppet-openshift3/log', { ensure => directory })
+
   vcsrepo { "/root/openshift-ansible":
     ensure   => latest,
     provider => git,
@@ -33,7 +35,8 @@ class openshift3::ansible {
     source   => "puppet:///modules/openshift3/ansible",
     owner     => "root",
     group     => "root",
-    recurse    => true,
+    recurse   => true,
+    ignore    => "\$HOME",
   } ->
 
 #  run_upgrade_playbooks { "Run ansible upgrade playbooks":
@@ -46,8 +49,9 @@ class openshift3::ansible {
   notify { 'Run OpenShift prepare playbook': } ->
 
   exec { 'Run OpenShift prepare playbook':
+    provider => "shell",
     cwd     => "/var/lib/puppet-openshift3/ansible",
-    command => "ansible-playbook prepare.yml -e 'openshift_package_name=${openshift3::package_name} openshift_version=${openshift3::version} openshift_major=${openshift3::major} openshift_minor=${openshift3::minor} docker_version=${openshift3::docker_version} vagrant=\"${::vagrant}\" openshift_master_ip=${openshift3::master_ip}'",
+    command => "set -o pipefail; ansible-playbook prepare.yml -e 'openshift_package_name=${openshift3::package_name} openshift_version=${openshift3::version} openshift_major=${openshift3::major} openshift_minor=${openshift3::minor} docker_version=${openshift3::docker_version} vagrant=\"${::vagrant}\" openshift_master_ip=${openshift3::master_ip} configure_epel=${openshift3::configure_epel}' | tee /var/lib/puppet-openshift3/log/ansible-pre-install.log",
     timeout => 1000,
     logoutput => on_failure,
     path => $::path,
@@ -56,8 +60,9 @@ class openshift3::ansible {
   notify { 'Run OpenShift install/config playbook': } ->
 
   exec { 'Run OpenShift install/config playbook':
+    provider => "shell",
     cwd     => "/root/openshift-ansible",
-    command => "ansible-playbook playbooks/byo/config.yml",
+    command => "set -o pipefail; ansible-playbook playbooks/byo/config.yml | tee /var/lib/puppet-openshift3/log/ansible-install.log",
     timeout => 1000,
     logoutput => on_failure,
     path      => $::path,
@@ -66,8 +71,9 @@ class openshift3::ansible {
   notify { 'Run OpenShift post-install playbook': } ->
 
   exec { 'Run OpenShift post-install playbook':
+    provider => "shell",
     cwd     => "/var/lib/puppet-openshift3/ansible",
-    command => "ansible-playbook post-install.yml -e 'openshift_package_name=${openshift3::package_name} openshift_version=${openshift3::version} openshift_major=${openshift3::major} openshift_minor=${openshift3::minor} docker_version=${openshift3::docker_version} vagrant=\"${::vagrant}\" openshift_master_ip=${openshift3::master_ip}'",
+    command => "set -o pipefail; ansible-playbook post-install.yml -e 'openshift_package_name=${openshift3::package_name} openshift_version=${openshift3::version} openshift_major=${openshift3::major} openshift_minor=${openshift3::minor} docker_version=${openshift3::docker_version} vagrant=\"${::vagrant}\" openshift_master_ip=${openshift3::master_ip} http_proxy=${openshift3::http_proxy} https_proxy=${openshift3::https_proxy} no_proxy=${openshift3::no_proxy}' | tee /var/lib/puppet-openshift3/log/ansible-post-install.log",
     timeout => 1000,
     logoutput => on_failure,
     path => $::path,
@@ -81,23 +87,5 @@ class openshift3::ansible {
       require => Vcsrepo["/root/openshift-ansible"],
       before => Exec['Run OpenShift install/config playbook'],
     }
-  }
-
-  file_line { 'Add logging URL to master config':
-    path => '/root/openshift-ansible/roles/openshift_master/templates/master.yaml.v1.j2',
-    after => 'assetConfig:',
-    line => "  loggingPublicURL: \"https://logging.${::openshift3::app_domain}\"",
-    match => "^  loggingPublicURL: .*",
-    require => Vcsrepo["/root/openshift-ansible"],
-    before => Exec['Run OpenShift install/config playbook'],
-  }
-
-  file_line { 'Add metrics URL to master config':
-    path => '/root/openshift-ansible/roles/openshift_master/templates/master.yaml.v1.j2',
-    after => 'assetConfig:',
-    line => "  metricsPublicURL: \"https://metrics.${::openshift3::app_domain}/hawkular/metrics\"",
-    match => "^  metricsPublicURL: .*",
-    require => Vcsrepo["/root/openshift-ansible"],
-    before => Exec['Run OpenShift install/config playbook'],
   }
 }

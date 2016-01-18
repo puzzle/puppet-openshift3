@@ -19,6 +19,8 @@ openshift_master_identity_providers=<%= scope['::openshift3::identity_providers'
 
 osm_default_subdomain=<%= scope['::openshift3::app_domain'] %>
 osm_cluster_network_cidr='<%= scope['::openshift3::cluster_network_cidr'] %>'
+openshift_master_metrics_public_url='<%= "https://metrics.${::openshift3::app_domain}/hawkular/metrics" %>'
+openshift_master_logging_public_url='<%= "https://logging.${::openshift3::app_domain}" %>'
 
 # host group for masters
 [masters]

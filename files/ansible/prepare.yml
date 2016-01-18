@@ -10,24 +10,25 @@
       copy: src=ansible-bootstrap-epel.repo
         dest=/etc/yum.repos.d/
         owner=root group=root mode=0644
+      when: configure_epel
 
     - name: epel-release install
       yum: name=epel-release
        enablerepo=ansible-bootstrap-epel
        state=present
-
-    - name: Install Ansible module dependencies
-      yum: name={{item}} state=present enablerepo=epel
-      with_items:
-        - python-keyczar
-        - jq
-        - yum-plugin-versionlock
+      when: configure_epel
 
     - name: epel repository disable
       ini_file: dest=/etc/yum.repos.d/epel.repo
             section=epel
             option=enable
             value=0
+
+    - name: Install Ansible module dependencies
+      yum: name={{item}} state=present enablerepo=epel
+      with_items:
+        - jq
+        - yum-plugin-versionlock
 
     - name: Enable RHEL repos
       rhsm_repo: name={{item}} enable=1
@@ -84,3 +85,6 @@
 
     - name: Enable network service
       service: name=network state=started enabled=true
+
+    - name: Disable old centralized logging service
+      service: name=td-agent state=stopped enabled=false
