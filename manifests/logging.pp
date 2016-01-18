@@ -39,7 +39,7 @@ class openshift3::logging {
 
     instantiate_template { "logging-deployer-template":
       template_namespace => "openshift",
-      template_parameters => "KIBANA_HOSTNAME=logging.${::openshift3::app_domain},KIBANA_OPS_HOSTNAME=logging-ops.${::openshift3::app_domain},ES_CLUSTER_SIZE=1,ES_OPS_CLUSTER_SIZE=1,PUBLIC_MASTER_URL=https://${::openshift3::master}:8443,ES_INSTANCE_RAM=1G,ES_OPS_INSTANCE_RAM=1G,ENABLE_OPS_CLUSTER=false,IMAGE_PREFIX=${image_prefix}",
+      template_parameters => "KIBANA_HOSTNAME=logging.${::openshift3::app_domain},KIBANA_OPS_HOSTNAME=logging-ops.${::openshift3::app_domain},ES_CLUSTER_SIZE=1,ES_OPS_CLUSTER_SIZE=1,PUBLIC_MASTER_URL=https://${::openshift3::master}:8443,ES_INSTANCE_RAM=1G,ES_OPS_INSTANCE_RAM=1G,ENABLE_OPS_CLUSTER=${::openshift3::enable_ops_logging},IMAGE_PREFIX=${image_prefix}",
       resource_namespace => "logging",
       creates => "svc/logging-es",
     } ->

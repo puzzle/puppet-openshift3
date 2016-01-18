@@ -16,10 +16,13 @@ class openshift3 (
   $configure_epel = $::openshift3::params::configure_epel,
   $http_proxy = undef,
   $https_proxy = undef,
-  $no_proxy = "localhost,127.0.0.1",
+  $no_proxy = $::openshift3::params::no_proxy,
+  $install_router = $::openshift3::params::install_router,
+  $install_registry = $::openshift3::params::install_registry,
   $metrics_ssl_cert = undef,
   $metrics_ssl_key = undef,
   $metrics_ca_cert = undef,
+  $enable_ops_logging = $::openshift3::params::enable_ops_logging,
 ) inherits ::openshift3::params {
  
   $version_array = split($version, '\.')
