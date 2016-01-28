@@ -51,7 +51,7 @@ class openshift3::ansible {
   exec { 'Run OpenShift prepare playbook':
     provider => "shell",
     cwd     => "/var/lib/puppet-openshift3/ansible",
-    command => "set -o pipefail; ansible-playbook prepare.yml -e 'openshift_package_name=${openshift3::package_name} openshift_version=${openshift3::version} openshift_major=${openshift3::major} openshift_minor=${openshift3::minor} docker_version=${openshift3::docker_version} vagrant=\"${::vagrant}\" openshift_master_ip=${openshift3::master_ip} configure_epel=${openshift3::configure_epel}' | tee /var/lib/puppet-openshift3/log/ansible-pre-install.log",
+    command => "set -o pipefail; ansible-playbook prepare.yml -e 'openshift_package_name=${openshift3::package_name} openshift_component_prefix=${openshift3::component_prefix} openshift_version=${openshift3::version} openshift_major=${openshift3::major} openshift_minor=${openshift3::minor} docker_version=${openshift3::docker_version} vagrant=\"${::vagrant}\" openshift_master_ip=${openshift3::master_ip} configure_epel=${openshift3::configure_epel}' | tee /var/lib/puppet-openshift3/log/ansible-pre-install.log",
     timeout => 1000,
     logoutput => on_failure,
     path => $::path,
@@ -73,7 +73,7 @@ class openshift3::ansible {
   exec { 'Run OpenShift post-install playbook':
     provider => "shell",
     cwd     => "/var/lib/puppet-openshift3/ansible",
-    command => "set -o pipefail; ansible-playbook post-install.yml -e 'openshift_package_name=${openshift3::package_name} openshift_version=${openshift3::version} openshift_major=${openshift3::major} openshift_minor=${openshift3::minor} docker_version=${openshift3::docker_version} vagrant=\"${::vagrant}\" openshift_master_ip=${openshift3::master_ip} http_proxy=${openshift3::http_proxy} https_proxy=${openshift3::https_proxy} no_proxy=${openshift3::no_proxy}' | tee /var/lib/puppet-openshift3/log/ansible-post-install.log",
+    command => "set -o pipefail; ansible-playbook post-install.yml -e 'openshift_package_name=${openshift3::package_name} openshift_component_prefix=${openshift3::component_prefix} openshift_version=${openshift3::version} openshift_major=${openshift3::major} openshift_minor=${openshift3::minor} docker_version=${openshift3::docker_version} vagrant=\"${::vagrant}\" openshift_master_ip=${openshift3::master_ip} http_proxy=${openshift3::http_proxy} https_proxy=${openshift3::https_proxy} no_proxy=${openshift3::no_proxy}' | tee /var/lib/puppet-openshift3/log/ansible-post-install.log",
     timeout => 1000,
     logoutput => on_failure,
     path => $::path,

@@ -6,6 +6,17 @@
     https_proxy: "{{ https_proxy if https_proxy else http_proxy }}"
 
   tasks:
+    - yum: name={{item}} state=latest
+      with_items:
+        - docker
+        - docker-selinux
+      notify:
+        - restart OpenShift node
+
+    - yum: name="{{openshift_package_name}}-node" state=latest
+      notify:
+        - restart Docker
+
     - name: Set docker log level
       lineinfile: dest=/etc/sysconfig/docker regexp="^OPTIONS='[^']+'" line="OPTIONS='--insecure-registry=172.30.0.0/16 --selinux-enabled --log-level=warn'"
 
@@ -16,6 +27,16 @@
     - include: tasks/proxy.yml file=/etc/sysconfig/{{ openshift_package_name }}-node
       notify:
         - restart OpenShift node
+
+    - docker: pull=always image="{{openshift_component_prefix}}-{{item}}:v{{openshift_version}}"
+      ignore_errors: yes
+      with_items:
+        - deployer
+        - pod
+        - haproxy-router
+        - docker-registry
+        - docker-builder
+        - sti-builder
 
   handlers:
     - name: restart Docker
