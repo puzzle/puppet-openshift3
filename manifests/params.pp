@@ -24,4 +24,6 @@ class openshift3::params {
   $install_registry = true
   $enable_ops_logging = false
   $master_cluster_method = 'native'
+  $ansible_ssh_user = 'root'
+  $ansible_sudo = false
 }

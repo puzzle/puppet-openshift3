@@ -27,6 +27,8 @@ class openshift3 (
   $metrics_ca_cert = undef,
   $enable_ops_logging = $::openshift3::params::enable_ops_logging,
   $master_cluster_method = $::openshift3::params::master_cluster_method,
+  $ansible_ssh_user = $::openshift3::params::ansible_ssh_user,
+  $ansible_sudo = $::openshift3::params::ansible_sudo,
 ) inherits ::openshift3::params {
  
   $master = $masters[0]['name']
