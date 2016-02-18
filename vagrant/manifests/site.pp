@@ -19,3 +19,6 @@ node 'origin-master.example.com' {
 node /origin-node\d+.example.com/ {
 #  include openshift3::node
 }
+
+node default {
+}

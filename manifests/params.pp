@@ -23,4 +23,5 @@ class openshift3::params {
   $install_router = true
   $install_registry = true
   $enable_ops_logging = false
+  $master_cluster_method = 'native'
 }

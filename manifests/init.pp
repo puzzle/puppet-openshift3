@@ -3,6 +3,8 @@ class openshift3 (
   $identity_providers = $::openshift3::params::identity_providers,
   $masters,
   $nodes = [],
+  $etcd = [],
+  $lb = [],
   $node_labels = $::openshift3::params::node_labels,
   $app_domain = $::openshift3::params::app_domain,
   $openshift_dns_bind_addr = undef,
@@ -24,6 +26,7 @@ class openshift3 (
   $metrics_ssl_key = undef,
   $metrics_ca_cert = undef,
   $enable_ops_logging = $::openshift3::params::enable_ops_logging,
+  $master_cluster_method = $::openshift3::params::master_cluster_method,
 ) inherits ::openshift3::params {
  
   $master = $masters[0]['name']
