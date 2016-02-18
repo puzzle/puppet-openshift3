@@ -14,33 +14,35 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 
-require 'json'
 require 'yaml'
 require 'net/ssh'
 
-domain = "example.com"
+origin_data = YAML.load_file('vagrant/hiera/group/origin.yaml')
+enterprise_data = YAML.load_file('vagrant/hiera/group/enterprise.yaml')
 
-# First host must be the master
-ose_hosts = [
-  { :name => "ose3-master", :ip => "172.22.22.122" },
-  { :name => "ose3-node1", :ip => "172.22.22.123" },
-  { :name => "ose3-node2", :ip => "172.22.22.124" },
-]
-origin_hosts = [
-  { :name => "origin-master", :ip => "172.22.22.22" },
-  { :name => "origin-node1", :ip => "172.22.22.23" },
-  { :name => "origin-node2", :ip => "172.22.22.24" },
-]
-hosts = ose_hosts + origin_hosts
+origin_masters = origin_data['openshift3::masters']
+origin_nodes = origin_data['openshift3::nodes']
+origin_nodes = [] if origin_nodes.nil?
+origin_vms = origin_masters + origin_nodes
+
+enterprise_masters = enterprise_data['openshift3::masters']
+enterprise_nodes = enterprise_data['openshift3::nodes']
+enterprise_nodes = [] if enterprise_nodes.nil?
+enterprise_vms = enterprise_masters + enterprise_nodes
+
+vms = origin_vms + enterprise_vms
 
 if Vagrant::Util::Platform.windows?
   hostname=`hostname`.chomp
 else
   hostname=`hostname -s`.chomp
 end
-hosts.each do |host|
-  host[:hostname] = "#{host[:name]}.#{domain}"
-  host[:rhsm_system_name] = "#{host[:name]}-#{hostname}.#{domain}"
+
+vms.each do |vm|
+  vmname = vm['name'].split('.', 2)
+  
+  vm['short_name' ] = vmname[0]
+  vm['rhsm_system_name'] = "#{vmname[0]}-#{hostname}.#{vmname[1]}"
 end
 
 # Generate ssh keys for nodes, used to synchronize certificates between master and nodes
@@ -75,6 +77,9 @@ Vagrant.configure(2) do |config|
   end
   if config.user.has_key?('provision') and config.user['provision'].has_key?('shell')
     user_shell_provision = config.user.provision.shell
+  end
+  if config.user.has_key?('config') and config.user['config'].has_key?('synced_folder_type')
+    @synced_folder_type = config.user.config.synced_folder_type
   end
 
   config.vm.provision "shell", inline: <<-SHELL
@@ -117,19 +122,21 @@ Vagrant.configure(2) do |config|
     vbox.cpus = 4
   end
 
-  ose_hosts.each do |host|
-    config.vm.define host[:name] do |vmconfig|
+  enterprise_vms.each do |vm|
+    config.vm.define vm['short_name'] do |vmconfig|
       vmconfig.vm.box = 'rhel72'
 
-      vmconfig.registration.name = host[:rhsm_system_name]
+      vmconfig.registration.skip = false
+      vmconfig.registration.name = vm['rhsm_system_name']
       vmconfig.registration.username = config.user.registration.subscriber_username if config.user.has_key?('registration')
       vmconfig.registration.password = config.user.registration.subscriber_password if config.user.has_key?('registration')
       vmconfig.registration.auto_attach = false
 
-      vmconfig.vm.hostname = host[:hostname]
-      vmconfig.vm.network :private_network, :ip => host[:ip]
+      vmconfig.vm.hostname = vm['name']
+      vmconfig.vm.network :private_network, :ip => vm['ip']
 
       config.vm.provision :puppet do |puppet|
+        puppet.synced_folder_type = @synced_folder_type unless @synced_folder_type.nil?
         puppet.manifests_path = "vagrant/manifests"
         puppet.manifest_file = "site.pp"
         puppet.hiera_config_path = "vagrant/hiera.yaml"
@@ -137,24 +144,23 @@ Vagrant.configure(2) do |config|
         puppet.options = "--verbose --modulepath=/etc/puppet/librarian-modules:/etc/puppet/modules"
         puppet.facter = {
           "vagrant" => "1",
-          "vagrant_ip" => host[:ip],
           "hostgroup" => "enterprise",
-          "openshift_hosts" => ose_hosts.to_json,
         }
       end
     end
   end
 
-  origin_hosts.each do |host|
-    config.vm.define host[:name] do |vmconfig|
-      vmconfig.vm.box = 'boxcutter/centos71'
+  origin_vms.each do |vm|
+    config.vm.define vm['short_name'] do |vmconfig|
+      vmconfig.vm.box = 'centos/7'
 
       vmconfig.registration.skip = true
 
-      vmconfig.vm.hostname = host[:hostname]
-      vmconfig.vm.network :private_network, :ip => host[:ip]
+      vmconfig.vm.hostname = vm['name']
+      vmconfig.vm.network :private_network, :ip => vm['ip']
 
       config.vm.provision :puppet do |puppet|
+        puppet.synced_folder_type = @synced_folder_type unless @synced_folder_type.nil?
         puppet.manifests_path = "vagrant/manifests"
         puppet.manifest_file = "site.pp"
         puppet.hiera_config_path = "vagrant/hiera.yaml"
@@ -162,15 +168,18 @@ Vagrant.configure(2) do |config|
         puppet.options = "--verbose --modulepath=/etc/puppet/librarian-modules:/etc/puppet/modules"
         puppet.facter = {
           "vagrant" => "1",
-          "vagrant_ip" => host[:ip],
           "hostgroup" => "origin",
-          "openshift_hosts" => origin_hosts.to_json,
         }
       end
     end 
   end
 
-  config.vm.synced_folder ".", "/vagrant"
-  config.vm.synced_folder ".", "/etc/puppet/modules/openshift3"
+  if @synced_folder_type.nil?
+    config.vm.synced_folder ".", "/vagrant"
+    config.vm.synced_folder ".", "/etc/puppet/modules/openshift3"
+  else
+    config.vm.synced_folder ".", "/vagrant", type: @synced_folder_type
+    config.vm.synced_folder ".", "/etc/puppet/modules/openshift3", type: @synced_folder_type
+  end
 
 end
