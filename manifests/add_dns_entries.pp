@@ -1,5 +1,5 @@
 define openshift3::add_dns_entries($host = $title) {
-  dnsmasq::hostrecord { $host['hostname']:
+  dnsmasq::hostrecord { $host['name']:
     ip => $host['ip'],
   }
 }

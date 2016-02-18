@@ -61,10 +61,6 @@ if not File.exist?('.ssh/id_rsa')
   File.open('.ssh/id_rsa.pub', 'w', 0600) do |file|
     file.write "#{type} #{data}"
   end
-
-  File.open('vagrant/hiera/ssh.yaml', 'w', 0600) do |file|
-    file.write ssh_key.to_yaml
-  end
 end
 
 Vagrant.configure(2) do |config|
@@ -145,6 +141,7 @@ Vagrant.configure(2) do |config|
         puppet.facter = {
           "vagrant" => "1",
           "hostgroup" => "enterprise",
+          "openshift_hosts" => enterprise_vms.to_json
         }
       end
     end
@@ -169,6 +166,7 @@ Vagrant.configure(2) do |config|
         puppet.facter = {
           "vagrant" => "1",
           "hostgroup" => "origin",
+          "openshift_hosts" => origin_vms.to_json
         }
       end
     end 

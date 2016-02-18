@@ -3,7 +3,6 @@
   - yaml
 
 :hierarchy:
-  - "ssh"
   - "node/%{::fqdn}"
   - "group/%{::hostgroup}"
   - "common"
