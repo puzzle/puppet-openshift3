@@ -8,8 +8,8 @@ ENABLE=`jq -r .enable < $1`
 
 REPO_ENABLED=`cat /var/lib/rhsm/cache/content_overrides.json | jq -r ".[] | select (.contentLabel == \"${NAME}\").value"`
 
-if [ $REPO_ENABLED -ne $ENABLE ]; then
-  if [ $ENABLE -eq 1 ]; then
+if [ 0$REPO_ENABLED -ne 0$ENABLE ]; then
+  if [ 0$ENABLE -eq 1 ]; then
     ACTION="enable"
   else
     ACTION="disable"
