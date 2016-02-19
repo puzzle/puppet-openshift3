@@ -29,7 +29,6 @@
       with_items:
         - jq
         - yum-plugin-versionlock
-        - docker-python
 
     - name: Enable RHEL repos
       rhsm_repo: name={{item}} enable=1
@@ -64,6 +63,7 @@
         - iptables-services
         - pyOpenSSL
         - bash-completion
+        - docker-python
 
     - name: Versionlock OpenShift Packages 
       yum_versionlock: name={{item}} version={{openshift_version}}
