@@ -11,11 +11,11 @@
         - docker
         - docker-selinux
       notify:
-        - restart OpenShift node
+        - restart Docker
 
     - yum: name="{{openshift_package_name}}-node" state=latest
       notify:
-        - restart Docker
+        - restart OpenShift node
 
     - name: Set docker log level
       lineinfile: dest=/etc/sysconfig/docker regexp="^OPTIONS='[^']+'" line="OPTIONS='--insecure-registry=172.30.0.0/16 --selinux-enabled --log-level=warn'"

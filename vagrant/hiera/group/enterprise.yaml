@@ -1,23 +1,41 @@
 ---
 openshift3::deployment_type: enterprise
-openshift3::version: 3.1.1.5
+openshift3::version: 3.1.1.6
+openshift3::set_node_ip: true
+openshift3::registry_ip: 172.30.1.1
+#openshift3::sdn_network_plugin_name: redhat/openshift-ovs-multitenant
 
 openshift3::masters:
   - name: ose3-master.example.com
-    ip: 172.22.22.122
+    public_ip: 172.22.22.122
+    ip: 172.23.22.122
     node_labels:
       region: infra
       zone: default
     schedulable: True
+#  - name: ose3-master2.example.com
+#    ip: 172.22.22.123
+#    node_labels:
+#      region: infra
+#      zone: default
+#    schedulable: True
+#
+#openshift3::etcd:
+#  - name: ose3-master.example.com
+#  - name: ose3-master2.example.com 
 
-openshift3::nodes:
-  - name: ose3-node1.example.com
-    ip: 172.22.22.123
-    node_labels:
-      region: primary
-      zone: east
-  - name: ose3-node2.example.com
-    ip: 172.22.22.124
-    node_labels:
-      region: primary
-      zone: west
+#openshift3::nodes:
+#  - name: ose3-node1.example.com
+#    public_ip: 172.22.22.131
+#    ip: 172.23.22.131
+#    node_labels:
+#      region: primary
+#      zone: east
+#  - name: ose3-node2.example.com
+#    ip: 172.22.22.134
+#    node_labels:
+#      region: primary
+#      zone: west
+#
+#openshift3::lb:
+#  - name: ose3-master.example.com

@@ -1,0 +1,30 @@
+{
+  "kind": "Service",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "docker-registry",
+    "creationTimestamp": null,
+    "labels": {
+      "docker-registry": "default"
+    }
+  },
+  "spec": {
+    "ports": [
+      {
+        "name": "5000-tcp",
+        "protocol": "TCP",
+        "port": 5000,
+        "targetPort": 5000
+      }
+    ],
+    "selector": {
+      "docker-registry": "default"
+    },
+    "type": "ClusterIP",
+    "sessionAffinity": "ClientIP",
+    "clusterIP": "<%= scope['::openshift3::registry_ip'] %>"
+  },
+  "status": {
+    "loadBalancer": {}
+  }
+}

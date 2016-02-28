@@ -41,4 +41,33 @@ class openshift3::registry {
     ".spec.template.spec.containers[0].image = \"${::openshift3::component_prefix}-docker-registry:v${::openshift3::version}\"", ]:
     resource => 'dc/docker-registry',
   }
+
+  if $::openshift3::registry_ip and $::openshift_registry_ip != '' and $::openshift_registry_ip != $::openshift3::registry_ip {
+    file { "/tmp/docker-registry.json":
+      content   => template("openshift3/openshift/docker-registry.erb"),
+      owner     => "root",
+      group     => "root",
+      mode      => 644,
+    } ->
+
+    exec { 'Delete registry service with wrong IP':
+      provider => 'shell',
+      environment => 'HOME=/root',
+      cwd     => "/root",
+      command => 'oc delete svc docker-registry -n default',
+      timeout => 600,
+      path => $::path,
+      require => Exec['Install registry'],
+    } ->
+
+    exec { 'Create registry service with new IP':
+      provider => 'shell',
+      environment => 'HOME=/root',
+      cwd     => "/root",
+      command => 'oc create -n default -f /tmp/docker-registry.json',
+      timeout => 600,
+      path => $::path,
+      notify => Service["${::openshift3::package_name}-master"],
+    } 
+  }
 }

@@ -7,10 +7,7 @@ class openshift3::upgrade-master {
 
   package { "${::openshift3::package_name}-master":
     ensure => latest,
-  } ~>
-
-  service { "${::openshift3::package_name}-master":
-    enable => true,
+    notify => Service["${::openshift3::package_name}-master"],
   } ->
 
   oc_replace { [
@@ -18,11 +15,5 @@ class openshift3::upgrade-master {
     '/usr/share/openshift/examples/db-templates/',
     '/usr/share/openshift/examples/quickstart-templates/' ]:
     namespace => 'openshift',
-  } ->
-
-  exec {"Wait for master":
-    command => "/usr/bin/wget --spider --tries 60 --retry-connrefused --no-check-certificate https://localhost:8443/",
-    unless => "/usr/bin/wget --spider --no-check-certificate https://localhost:8443/",
-    path => $::path,
   }
 }

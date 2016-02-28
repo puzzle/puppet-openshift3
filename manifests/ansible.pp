@@ -77,6 +77,12 @@ class openshift3::ansible {
     timeout => 1000,
     logoutput => on_failure,
     path => $::path,
+  } ->
+
+  exec {"Wait for master":
+    command => "/usr/bin/wget --spider --tries 60 --retry-connrefused --no-check-certificate https://localhost:8443/",
+    unless => "/usr/bin/wget --spider --no-check-certificate https://localhost:8443/",
+    path => $::path,
   }
 
   if $::openshift3::openshift_dns_bind_addr {

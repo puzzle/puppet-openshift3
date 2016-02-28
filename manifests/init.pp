@@ -23,6 +23,8 @@ class openshift3 (
   $ansible_ssh_user = $::openshift3::params::ansible_ssh_user,
   $ansible_sudo = $::openshift3::params::ansible_sudo,
   $set_node_ip = $::openshift3::params::set_node_ip,
+  $registry_ip = $::openshift3::params::registry_ip,
+  $sdn_network_plugin_name = undef,
 ) inherits ::openshift3::params {
  
   $master = $masters[0]['name']

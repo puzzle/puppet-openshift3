@@ -26,6 +26,7 @@ openshift_master_logging_public_url='<%= "https://logging.${::openshift3::app_do
 openshift_master_cluster_method='<%= scope['::openshift3::master_cluster_method'] %>'
 #etcd_interface=eth1
 openshift_set_node_ip=<%= scope['::openshift3::set_node_ip'] %>
+<%= "os_sdn_network_plugin_name=#{scope['::openshift3::sdn_network_plugin_name']}" unless scope['::openshift3::sdn_network_plugin_name'] %>
 
 # host group for masters
 [masters]
