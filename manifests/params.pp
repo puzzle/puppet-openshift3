@@ -26,4 +26,5 @@ class openshift3::params {
   $master_cluster_method = 'native'
   $ansible_ssh_user = 'root'
   $ansible_sudo = false
+  $set_node_ip = false
 }

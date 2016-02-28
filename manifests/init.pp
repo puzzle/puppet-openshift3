@@ -29,6 +29,7 @@ class openshift3 (
   $master_cluster_method = $::openshift3::params::master_cluster_method,
   $ansible_ssh_user = $::openshift3::params::ansible_ssh_user,
   $ansible_sudo = $::openshift3::params::ansible_sudo,
+  $set_node_ip = $::openshift3::params::set_node_ip,
 ) inherits ::openshift3::params {
  
   $master = $masters[0]['name']

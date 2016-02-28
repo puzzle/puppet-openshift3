@@ -25,6 +25,7 @@ openshift_master_metrics_public_url='<%= "https://metrics.${::openshift3::app_do
 openshift_master_logging_public_url='<%= "https://logging.${::openshift3::app_domain}" %>'
 openshift_master_cluster_method='<%= scope['::openshift3::master_cluster_method'] %>'
 #etcd_interface=eth1
+openshift_set_node_ip=<%= scope['::openshift3::set_node_ip'] %>
 
 # host group for masters
 [masters]
