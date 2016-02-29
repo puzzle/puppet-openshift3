@@ -42,7 +42,7 @@ class openshift3::registry {
     resource => 'dc/docker-registry',
   }
 
-  if $::openshift3::registry_ip and $::openshift_registry_ip != '' and $::openshift_registry_ip != $::openshift3::registry_ip {
+  if $::openshift3::registry_ip and $::openshift_registry_ip != $::openshift3::registry_ip {
     file { "/tmp/docker-registry.json":
       content   => template("openshift3/openshift/docker-registry.erb"),
       owner     => "root",

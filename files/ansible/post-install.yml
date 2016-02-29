@@ -28,6 +28,8 @@
       notify:
         - restart OpenShift node
 
+    - meta: flush_handlers
+
     - docker: pull=always image="{{openshift_component_prefix}}-{{item}}:v{{openshift_version}}"
       ignore_errors: yes
       with_items:

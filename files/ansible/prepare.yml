@@ -23,9 +23,10 @@
             section=epel
             option=enable
             value=0
+      when: configure_epel
 
     - name: Install Ansible module dependencies
-      yum: name={{item}} state=present enablerepo=epel
+      yum: name={{item}} state=present enablerepo={{epel_repo_id}}
       with_items:
         - jq
         - yum-plugin-versionlock

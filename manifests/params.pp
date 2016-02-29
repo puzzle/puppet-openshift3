@@ -12,11 +12,11 @@ class openshift3::params {
   $package_version = undef
   $cluster_network_cidr = '10.1.0.0/16'
   $configure_epel = true
+  $epel_repo_id = 'epel'
   $no_proxy = "localhost,127.0.0.1"
   $install_router = true
   $install_registry = true
   $enable_ops_logging = false
-  $master_cluster_method = 'native'
   $ansible_ssh_user = 'root'
   $ansible_sudo = false
   $set_node_ip = false
