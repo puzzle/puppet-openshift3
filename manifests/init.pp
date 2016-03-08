@@ -23,6 +23,8 @@ class openshift3 (
   $metrics_ssl_cert = undef,
   $metrics_ssl_key = undef,
   $metrics_ca_cert = undef,
+  $es_instance_ram = $::openshift3::params::es_instance_ram,
+  $es_ops_instance_ram = $::openshift3::params::es_ops_instance_ram,
   $enable_ops_logging = $::openshift3::params::enable_ops_logging,
   $master_cluster_method = undef,
   $ansible_ssh_user = $::openshift3::params::ansible_ssh_user,

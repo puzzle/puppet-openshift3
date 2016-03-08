@@ -16,6 +16,8 @@ class openshift3::params {
   $no_proxy = "localhost,127.0.0.1"
   $install_router = true
   $install_registry = true
+  $es_instance_ram = 2G
+  $es_ops_instance_ram = 2G
   $enable_ops_logging = false
   $ansible_ssh_user = 'root'
   $ansible_sudo = false
