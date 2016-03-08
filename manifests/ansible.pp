@@ -1,6 +1,6 @@
 class openshift3::ansible {
 
-  ensure_resource('file', '/var/lib/puppet-openshift3/log', { ensure => directory })
+  ensure_resource('file', ['/var/lib/puppet-openshift3/log',"${::openshift3::conf_dir}", "${::openshift3::conf_dir}/master"], { ensure => directory })
 
   if $::openshift3::ldap_ca_crt {
     file { "${::openshift3::conf_dir}/master/ldap-ca.crt":

@@ -1,5 +1,6 @@
 class openshift3::failover {
 
+  if $::openshift3::failover_router_replicas {
   firewall { '500 Allow multicast ':
       action => 'accept',
       state  => 'NEW',
@@ -11,7 +12,7 @@ class openshift3::failover {
   } ->
 
   oc_replace { [
-    '.users += ["system:serviceaccount:default:ipfailover"]', ]:
+    '.users += ["system:serviceaccount:default:ipfailover"]' ]:
     resource => 'scc/privileged',
   } ->
 
@@ -19,27 +20,26 @@ class openshift3::failover {
     provider => 'shell',
     environment => 'HOME=/root',
     cwd     => "/root",
-    command => "oadm router --default-cert=cloudapps.router.pem ha-router-eh --replicas=2 \
---selector=\"ha-router=eh\" --labels=\"ha-router=eh\" \
---credentials=/etc/openshift/master/openshift-router.kubeconfig \
+    command => "oadm router -n default --default-cert=cloudapps.router.pem ha-router --replicas=${::openshift3::failover_router_replicas} \
+--selector=\"ha-router=${::openshift3::failover_router_label}\" --labels=\"ha-router=${::openshift3::failover_router_label}\" \
+--credentials=${::openshift3::conf_dir}/master/openshift-router.kubeconfig \
 --images='${::openshift3::component_images}' \
 --service-account=ipfailover",
-    unless => "oc get svc/ha-router-eh -n default",
+    unless => "oc get svc/ha-router -n default",
     timeout => 600,
     path => $::path,
   } ->
-
 
   exec { 'Install failover service':
     provider => 'shell',
     environment => 'HOME=/root',
     cwd     => "/root",
-    command => "oadm ipfailover ipf-ha-router-eh --replicas=2 --watch-port=80 \
---selector=\"ha-router=eh\" --virtual-ips=\"172.28.39.10-11\" \
---credentials=/etc/openshift/master/openshift-router.kubeconfig \
+    command => "oadm ipfailover -n default ipf-ha-router --replicas=${::openshift3::failover_router_replicas} --watch-port=80 \
+--selector=\"ha-router=${::openshift3::failover_router_label}\" --virtual-ips=\"${::openshift3::failover_router_ips}\" \
+--credentials=${::openshift3::conf_dir}/master/openshift-router.kubeconfig \
 --images='${::openshift3::component_images}' \
 --service-account=ipfailover --create",
-    unless => "oc get dc/ipf-ha-router-eh -n default",
+    unless => "oc get dc/ipf-ha-router -n default",
     timeout => 600,
     path => $::path,
   }
@@ -59,4 +59,5 @@ class openshift3::failover {
 #    namevar => "Update HA router image",
 #    resource => 'dc/ha-router-eh',
 #  }
+  }
 }
