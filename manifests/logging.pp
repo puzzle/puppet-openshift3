@@ -44,6 +44,13 @@ class openshift3::logging {
       creates => "svc/logging-es",
     } ->
 
+    set_volume { ['component=es', 'component=es-ops']:
+      namespace => 'logging',
+      volume_name => 'elasticsearch-storage',
+      claim_name => 'elasticsearch-storage',
+      claim_size => $::openshift3::,
+    } ->
+
     scale_pod { "logging-fluentd":
       namespace => "logging",
       replicas => ready_nodes,

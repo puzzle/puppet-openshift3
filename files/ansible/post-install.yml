@@ -17,8 +17,8 @@
       notify:
         - restart OpenShift node
 
-    - name: Set docker log level
-      lineinfile: dest=/etc/sysconfig/docker regexp="^OPTIONS='[^']+'" line="OPTIONS='--insecure-registry=172.30.0.0/16 --selinux-enabled --log-level=warn'"
+#    - name: Set docker log level
+#      lineinfile: dest=/etc/sysconfig/docker regexp="^OPTIONS='[^']+'" line="OPTIONS='--insecure-registry=172.30.0.0/16 --selinux-enabled --log-level=warn'"
 
     - include: tasks/proxy.yml file=/etc/sysconfig/docker
       notify:

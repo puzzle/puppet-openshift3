@@ -20,6 +20,7 @@ class openshift3 (
   $failover_router_ips = undef,
   $failover_router_label = undef,
   $install_registry = $::openshift3::params::install_registry,
+  $metrics_use_persistent_storage = $::openshift3::params::metrics_use_persistent_storage,
   $metrics_ssl_cert = undef,
   $metrics_ssl_key = undef,
   $metrics_ca_cert = undef,
@@ -32,6 +33,7 @@ class openshift3 (
   $set_node_ip = $::openshift3::params::set_node_ip,
   $registry_ip = $::openshift3::params::registry_ip,
   $sdn_network_plugin_name = undef,
+  $docker_options = $::openshift3::params::docker_options,
 ) inherits ::openshift3::params {
  
   $master = $masters[0]['name']
