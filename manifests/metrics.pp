@@ -9,6 +9,12 @@ class openshift3::metrics {
       $image_prefix = 'openshift/origin-'
     }
 
+    if $::openshift3::metrics_image_version {
+      $image_version = ",IMAGE_VERSION=${::openshift3::metrics_image_version}"
+    } else {
+      $image_version = ""
+    }
+
     file { "/var/lib/puppet-openshift3/certs/metrics/null":
       content => "",
       owner => root,
@@ -43,7 +49,7 @@ class openshift3::metrics {
 
     instantiate_template { "metrics-deployer-template":
       template_namespace => "openshift",
-      template_parameters => "HAWKULAR_METRICS_HOSTNAME=metrics.${::openshift3::app_domain},USE_PERSISTENT_STORAGE=${::openshift3::metrics_use_persistent_storage},IMAGE_VERSION=latest",
+      template_parameters => "HAWKULAR_METRICS_HOSTNAME=metrics.${::openshift3::app_domain},USE_PERSISTENT_STORAGE=${::openshift3::metrics_use_persistent_storage}${image_version}",
       resource_namespace => "openshift-infra",
       creates => "svc/hawkular-metrics",
     }

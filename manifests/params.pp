@@ -19,6 +19,8 @@ class openshift3::params {
   $es_instance_ram = 2G
   $es_ops_instance_ram = 2G
   $enable_ops_logging = false
+  $logging_image_version = undef
+  $metrics_image_version = undef
   $ansible_ssh_user = 'root'
   $ansible_sudo = false
   $set_node_ip = false
