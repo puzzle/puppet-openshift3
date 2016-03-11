@@ -29,7 +29,7 @@ openshift_set_node_ip=<%= scope['::openshift3::set_node_ip'] %>
 openshift_set_hostname=True
 <%= "os_sdn_network_plugin_name=#{scope['::openshift3::sdn_network_plugin_name']}" if scope['::openshift3::sdn_network_plugin_name']!=:undef %>
 osm_use_cockpit=true
-openshift_docker_options=<%= scope['::openshift3::docker_options'] %>
+openshift_docker_options='<%= scope['::openshift3::docker_options'] %>'
 
 # Set cockpit plugins
 osm_cockpit_plugins=['cockpit-kubernetes']
