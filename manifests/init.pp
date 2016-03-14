@@ -30,6 +30,8 @@ class openshift3 (
   $enable_ops_logging = $::openshift3::params::enable_ops_logging,
   $logging_image_version = $::openshift3::params::logging_image_version,
   $master_cluster_method = undef,
+  $master_cluster_hostname = undef,
+  $master_cluster_public_hostname = undef,
   $ansible_ssh_user = $::openshift3::params::ansible_ssh_user,
   $ansible_sudo = $::openshift3::params::ansible_sudo,
   $set_node_ip = $::openshift3::params::set_node_ip,
