@@ -26,6 +26,9 @@ openshift_master_logging_public_url='<%= "https://logging.#{scope['openshift3::a
 <%= "openshift_master_cluster_method=#{scope['::openshift3::master_cluster_method']}" if scope['::openshift3::master_cluster_method']!=:undef  %>
 <%= "openshift_master_cluster_hostname=#{scope['::openshift3::master_cluster_hostname']}" if scope['::openshift3::master_cluster_hostname']!=:undef  %>
 <%= "openshift_master_cluster_public_hostname=#{scope['::openshift3::master_cluster_public_hostname']}" if scope['::openshift3::master_cluster_public_hostname']!=:undef  %>
+<%= "openshift_master_public_api_url=#{scope['::openshift3::master_public_api_url']}" if scope['::openshift3::master_public_api_url']!=:undef  %>
+<%= "openshift_master_public_console_url=#{scope['::openshift3::master_public_console_url']}" if scope['::openshift3::master_public_console_url']!=:undef  %>
+
 #etcd_interface=eth1
 openshift_set_node_ip=<%= scope['::openshift3::set_node_ip'] %>
 openshift_set_hostname=True

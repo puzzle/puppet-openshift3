@@ -32,6 +32,8 @@ class openshift3 (
   $master_cluster_method = undef,
   $master_cluster_hostname = undef,
   $master_cluster_public_hostname = undef,
+  $master_public_api_url = undef,
+  $master_public_console_url = undef,
   $ansible_ssh_user = $::openshift3::params::ansible_ssh_user,
   $ansible_sudo = $::openshift3::params::ansible_sudo,
   $set_node_ip = $::openshift3::params::set_node_ip,
