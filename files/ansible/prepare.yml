@@ -95,5 +95,5 @@
 
   tasks:
     - name: Checkout web console style repo
-      git: accept_hostkey=true dest=/var/lib/puppet-openshift3/style repo={{master_style_repo_url}} version={{master_style_repo_ref|default(omit)}} ssh_key={{master_style_repo_key|default(omit)}}
+      git: accept_hostkey=true dest=/var/lib/puppet-openshift3/style repo={{master_style_repo_url}} version={{master_style_repo_ref|default(omit)}} ssh_key={{master_style_repo_ssh_key|default(omit)}}
       when: master_style_repo_url
