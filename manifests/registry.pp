@@ -67,7 +67,10 @@ class openshift3::registry {
       command => 'oc create -n default -f /tmp/docker-registry.json',
       timeout => 600,
       path => $::path,
-      notify => Service["${::openshift3::package_name}-master"],
     } 
+
+    if ! $::openshift3::master_cluster_method {
+      Exec['Create registry service with new IP'] ~> Service["${::openshift3::package_name}-master"]
+    }
   }
 }

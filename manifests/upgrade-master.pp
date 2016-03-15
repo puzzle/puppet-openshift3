@@ -7,7 +7,6 @@ class openshift3::upgrade-master {
 
   package { "${::openshift3::package_name}-master":
     ensure => latest,
-    notify => Service["${::openshift3::package_name}-master"],
   } ->
 
   oc_replace { [
@@ -15,5 +14,9 @@ class openshift3::upgrade-master {
     '/usr/share/openshift/examples/db-templates/',
     '/usr/share/openshift/examples/quickstart-templates/' ]:
     namespace => 'openshift',
+  }
+
+  if ! $::openshift3::master_cluster_method {
+    Package["${::openshift3::package_name}-master"] ~> Service["${::openshift3::package_name}-master"]
   }
 }

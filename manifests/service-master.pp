@@ -1,6 +1,8 @@
 class openshift3::service-master {
 
-  service { "${::openshift3::package_name}-master":
-    enable => true,
+  if ! $::openshift3::master_cluster_method {
+    service { "${::openshift3::package_name}-master":
+      enable => true,
+    }
   }
 }
