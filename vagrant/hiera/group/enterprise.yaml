@@ -3,10 +3,10 @@ openshift3::deployment_type: enterprise
 openshift3::version: 3.1.1.6
 openshift3::set_node_ip: true
 openshift3::registry_ip: 172.30.1.1
-openshift3::master_style_repo:
-  source: https://github.com/puzzle/ose-appuio-style
+openshift3::master_style_repo_url: https://github.com/puzzle/ose-appuio-style
 openshift3::master_extension_stylesheets:
-  - stylesheets/hello.css
+  - stylesheets/appuio_extensions.css
+openshift3::master_oauth_template: login/login-template.html
 
 #openshift3::sdn_network_plugin_name: redhat/openshift-ovs-multitenant
 

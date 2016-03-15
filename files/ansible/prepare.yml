@@ -1,6 +1,5 @@
 - name: Prepare hosts for OpenShift installation
   hosts: nodes
-  sudo: False
 
   roles:
     - { role: vagrant, when: "vagrant is defined and vagrant != ''" }
@@ -90,3 +89,11 @@
 
     - name: Disable old centralized logging service
       service: name=td-agent state=stopped enabled=false
+
+- name: Prepare masters for OpenShift installation
+  hosts: masters
+
+  tasks:
+    - name: Checkout web console style repo
+      git: accept_hostkey=true dest=/var/lib/puppet-openshift3/style repo={{master_style_repo_url}} version={{master_style_repo_ref|default(omit)}} ssh_key={{master_style_repo_key|default(omit)}}
+      when: master_style_repo_url

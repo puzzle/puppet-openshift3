@@ -34,7 +34,9 @@ class openshift3 (
   $master_cluster_public_hostname = undef,
   $master_public_api_url = undef,
   $master_public_console_url = undef,
-  $master_style_repo = undef,
+  $master_style_repo_url = undef,
+  $master_style_repo_ref = $::openshift3::params::master_style_repo_ref,
+  $master_style_repo_ssh_key = undef,
   $master_extension_scripts = undef,
   $master_extension_stylesheets = undef,
   $master_extensions = undef,
@@ -88,7 +90,7 @@ class openshift3 (
     $hostname = $::fqdn
   }
 
-  if $master_style_repo {
+  if $master_style_repo_url {
     if $master_extension_stylesheets {
       $real_master_extension_stylesheets = prefix($master_extension_stylesheets, '/var/lib/puppet-openshift3/style/')
     }
