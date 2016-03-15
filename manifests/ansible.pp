@@ -13,6 +13,15 @@ class openshift3::ansible {
     }
   }
 
+  if $::openshift3::master_style_repo {
+    create_resources('vcsrepo', { '/var/lib/puppet-openshift3/style' => $::openshift3::master_style_repo} , {
+      ensure => latest,
+      provider => git,
+      revision => 'master',
+      before => Notify['Run OpenShift prepare playbook'],
+    })
+  }
+
   vcsrepo { "/root/openshift-ansible":
     ensure   => latest,
     provider => git,
