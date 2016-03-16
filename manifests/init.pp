@@ -20,6 +20,7 @@ class openshift3 (
   $failover_router_ips = undef,
   $failover_router_label = undef,
   $install_registry = $::openshift3::params::install_registry,
+  $registry_volume_size = undef,
   $metrics_use_persistent_storage = $::openshift3::params::metrics_use_persistent_storage,
   $metrics_ssl_cert = undef,
   $metrics_ssl_key = undef,
