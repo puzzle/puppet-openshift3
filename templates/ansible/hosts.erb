@@ -32,6 +32,7 @@ openshift_master_logging_public_url='<%= "https://logging.#{scope['openshift3::a
 <%= "openshift_master_extension_stylesheets=#{scope['::openshift3::real_master_extension_stylesheets'].to_json}" if scope['::openshift3::master_extension_stylesheets'] != :undef %>
 <%= "openshift_master_extensions=#{scope['::openshift3::real_master_extensions'].to_json}" if scope['::openshift3::master_extensions'] != :undef %>
 <%= "openshift_master_oauth_template=#{scope['::openshift3::real_master_oauth_template']}" if scope['::openshift3::master_oauth_template'] != :undef %>
+openshift_infra_nodes=''
 
 #etcd_interface=eth1
 openshift_set_node_ip=<%= scope['::openshift3::set_node_ip'] %>
