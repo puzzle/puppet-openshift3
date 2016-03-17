@@ -25,15 +25,11 @@ class openshift3::registry {
   }  
 
   if $::openshift3::registry_volume_size {
-    exec { 'Set registry persistent volume':
-      provider => 'shell',
-      environment => 'HOME=/root',
-      cwd     => "/root",
-      command => "oc volume -n default dc/docker-registry --add --name=registry-storage -t pvc --claim-size=${::openshift3::registry_volume_size} --claim-name=registry-storage --overwrite",
-      unless => "oc get -n default pvc registry-storage && [ `oc get -n default -o json dc/docker-registry | jq -r '.spec.template.spec.volumes[0].persistentVolumeClaim.claimName'` == 'registry-storage' ]",
-      timeout => 600,
-      path => $::path,
-      require => Exec['Install registry'],
+    set_volume { 'docker-registry':
+      volume_name => 'registry-storage',
+      claim_name => 'registry-storage',
+      claim_size => $::openshift3::registry_volume_size,
+      require => Exec['Install registry']
     }
   }
 
