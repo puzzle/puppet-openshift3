@@ -1,5 +1,4 @@
 class openshift3::logging {
-
   if versioncmp($::openshift3::version, "3.1") > 0 {
     if $::openshift3::deployment_type == "enterprise" {
       $image_prefix = 'registry.access.redhat.com/openshift3/'
@@ -62,18 +61,10 @@ class openshift3::logging {
     }
 
     if $::openshift3::logging_volume_size {
-      set_volume { '-l component=es':
+      set_volume { ['-l component=es', '-l component=es-ops']:
         namespace => 'logging',
         volume_name => 'elasticsearch-storage',
         claim_name => 'elasticsearch-storage',
-        claim_size => $::openshift3::logging_volume_size,
-        require => Instantiate_Template["logging-support-template"],
-      }
-
-      set_volume { '-l component=es-ops':
-        namespace => 'logging',
-        volume_name => 'elasticsearch-storage',
-        claim_name => 'elasticsearch-storage-ops',
         claim_size => $::openshift3::logging_volume_size,
         require => Instantiate_Template["logging-support-template"],
       }
