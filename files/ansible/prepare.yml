@@ -73,6 +73,7 @@
         - "{{openshift_package_name}}-node"
         - "{{openshift_package_name}}-sdn-ovs"
         - "{{openshift_package_name}}-clients"
+        - "{{openshift_package_name}}-clients-redistributable"
         - "tuned-profiles-{{openshift_package_name}}-node"
 
     - name: Versionlock Docker Packages 
@@ -94,6 +95,9 @@
   hosts: masters
 
   tasks:
+    - name: Install redistributable OpenShift Clients
+      yum: name={{openshift_package_name}}-clients-redistributable state=present
+
     - name: Checkout web console style repo
       git: accept_hostkey=true dest=/var/lib/puppet-openshift3/style repo={{master_style_repo_url}} version={{master_style_repo_ref|default(omit)}} key_file={{master_style_repo_ssh_key|default(omit)}}
       when: master_style_repo_url|default("") != ""
