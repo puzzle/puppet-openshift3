@@ -47,6 +47,7 @@ class openshift3 (
   $master_oauth_template = undef,
   $ansible_ssh_user = $::openshift3::params::ansible_ssh_user,
   $ansible_sudo = $::openshift3::params::ansible_sudo,
+  $ansible_vars = [],
   $set_node_ip = $::openshift3::params::set_node_ip,
   $registry_ip = $::openshift3::params::registry_ip,
   $sdn_network_plugin_name = undef,
@@ -102,7 +103,7 @@ class openshift3 (
       $real_master_extension_scripts = prefix($master_extension_scripts, '/var/lib/puppet-openshift3/style/')
     }
     if $master_extensions {
-      $real_master_extension = prefix($master_extensions, '/var/lib/puppet-openshift3/style/')
+      $real_master_extensions = prefix($master_extensions, '/var/lib/puppet-openshift3/style/')
     }
     if $master_oauth_template {
       $real_master_oauth_template = "/var/lib/puppet-openshift3/style/${master_oauth_template}"
