@@ -3,7 +3,7 @@ define openshift3::set_volume ($namespace = 'default', $volume_name = undef, $cl
     provider    => 'shell',
     environment => 'HOME=/root',
     cwd         => "/root",
-    command     => "echo '{\"kind\":\"PersistentVolumeClaim\",\"apiVersion\":\"v1\",\"metadata\":{\"name\":\"elasticsearch-storage\",\"creationTimestamp\":null},\"spec\":{\"accessModes\":[\"ReadWriteOnce\"],\"resources\":{\"requests\":{\"storage\":\"${claim_size}\"}}},\"status\":{}}' | oc create --namespace=${namespace} -f -",
+    command     => "echo '{\"kind\":\"PersistentVolumeClaim\",\"apiVersion\":\"v1\",\"metadata\":{\"name\":\"${claim_name}\",\"creationTimestamp\":null},\"spec\":{\"accessModes\":[\"ReadWriteOnce\"],\"resources\":{\"requests\":{\"storage\":\"${claim_size}\"}}},\"status\":{}}' | oc create --namespace=${namespace} -f -",
     unless      => "oc get -n ${namespace} pvc ${claim_name}",
     timeout     => 30,
     logoutput   => on_failure,
