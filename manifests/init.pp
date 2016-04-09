@@ -33,6 +33,7 @@ class openshift3 (
   $logging_image_version = $::openshift3::params::logging_image_version,
   $logging_volume_size = undef,
   $logging_domain = undef,
+  $logging_ops_domain = undef,
   $master_cluster_method = undef,
   $master_cluster_hostname = undef,
   $master_cluster_public_hostname = undef,
