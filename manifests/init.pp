@@ -53,6 +53,7 @@ class openshift3 (
   $registry_ip = $::openshift3::params::registry_ip,
   $sdn_network_plugin_name = undef,
   $docker_options = $::openshift3::params::docker_options,
+  $project_request_template = $::openshift3::params::project_request_template,
 ) inherits ::openshift3::params {
  
   $master = $masters[0]['name']
