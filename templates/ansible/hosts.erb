@@ -34,6 +34,7 @@ osm_cluster_network_cidr='<%= scope['::openshift3::cluster_network_cidr'] %>'
 <%= "openshift_master_oauth_template=#{scope['::openshift3::real_master_oauth_template']}" if scope['::openshift3::master_oauth_template'] != :undef %>
 openshift_infra_nodes=''
 
+openshift_set_node_ip=<%= scope['::openshift3::set_node_ip'] %>
 openshift_set_hostname=True
 <%= "os_sdn_network_plugin_name=#{scope['::openshift3::sdn_network_plugin_name']}" if scope['::openshift3::sdn_network_plugin_name']!=:undef %>
 
