@@ -6,6 +6,12 @@ class openshift3::package  {
 #    }
 #  }
 
+  if $::openshift3::ansible_version {
+    yum_versionlock { ["ansible"]:
+      ensure => $::openshift3::ansible_version,
+    }
+  }
+
 #  if $::openshift3::docker_version {
 #    yum_versionlock { ["docker", "docker-selinux"]:
 #      ensure => $::openshift3::docker_version,
@@ -22,9 +28,8 @@ class openshift3::package  {
 #    gpgkey => "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7",
 #  } ->
 
-  package { ['git', "ansible${::openshift3::ansible_version}"]:
+  package { ['git', "ansible"]:
     ensure => present,
-    install_options => "--enablerepo=${::openshift3::epel_repo_id}",
   }
 
 #  package { ['deltarpm', 'wget', 'vim-enhanced', 'net-tools', 'bind-utils', 'git', 'bridge-utils', 'iptables-services', 'pyOpenSSL', 'bash-completion' ]:

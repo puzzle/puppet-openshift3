@@ -13,7 +13,7 @@ class openshift3::params {
   $cluster_network_cidr = '10.1.0.0/16'
   $configure_epel = true
   $epel_repo_id = 'epel'
-  $ansible_version = "1.9"
+  $ansible_version = "1.9.4"
   $no_proxy = "localhost,127.0.0.1"
   $install_router = true
   $install_registry = true
