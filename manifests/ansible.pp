@@ -62,7 +62,7 @@ class openshift3::ansible {
   exec { 'Run OpenShift prepare playbook':
     provider => "shell",
     cwd     => "/var/lib/puppet-openshift3/ansible",
-    command => "set -o pipefail; ansible-playbook prepare.yml -e 'openshift_package_name=${openshift3::package_name} openshift_component_prefix=${openshift3::component_prefix} openshift_version=${openshift3::version} openshift_major=${openshift3::major} openshift_minor=${openshift3::minor} docker_version=${openshift3::docker_version} vagrant=\"${::vagrant}\" openshift_master_ip=${openshift3::master_ip} configure_epel=${openshift3::configure_epel} epel_repo_id=${openshift3::epel_repo_id} master_style_repo_url=${openshift3::master_style_repo_url} master_style_repo_ref=${openshift3::master_style_repo_ref} master_style_repo_ssh_key=${openshift3::master_style_repo_ssh_key}' | tee /var/lib/puppet-openshift3/log/ansible-pre-install.log",
+    command => "set -o pipefail; ansible-playbook prepare.yml -e 'openshift_package_name=${openshift3::package_name} openshift_component_prefix=${openshift3::component_prefix} openshift_version=${openshift3::version} openshift_major=${openshift3::major} openshift_minor=${openshift3::minor} docker_version=${openshift3::docker_version} vagrant=\"${::vagrant}\" openshift_master_ip=${openshift3::master_ip} configure_epel=${openshift3::configure_epel} epel_repo_id=${openshift3::epel_repo_id} master_style_repo_url=${openshift3::master_style_repo_url} master_style_repo_ref=${openshift3::master_style_repo_ref} master_style_repo_ssh_key=${openshift3::master_style_repo_ssh_key} ansible_version=${openshift3::ansible_version}' | tee /var/lib/puppet-openshift3/log/ansible-pre-install.log",
     timeout => 1000,
     logoutput => on_failure,
     path => $::path,

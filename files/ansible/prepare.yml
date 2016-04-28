@@ -82,6 +82,11 @@
         - "docker"
         - "docker-selinux"
 
+    - name: Versionlock Ansible Package
+      yum_versionlock: name={{item}} version={{ansible_version}}*
+      with_items:
+        - "ansible"
+
     - name: Disable NetworkManager service
       service: name=NetworkManager state=stopped enabled=false
 

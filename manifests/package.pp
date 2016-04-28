@@ -22,7 +22,7 @@ class openshift3::package  {
 #    gpgkey => "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7",
 #  } ->
 
-  package { ['git', 'ansible']:
+  package { ['git', "ansible${::openshift3::ansible_version}"]:
     ensure => present,
     install_options => "--enablerepo=${::openshift3::epel_repo_id}",
   }

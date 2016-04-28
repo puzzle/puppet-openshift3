@@ -46,6 +46,7 @@ class openshift3 (
   $master_extension_stylesheets = undef,
   $master_extensions = undef,
   $master_oauth_template = undef,
+  $ansible_version = $::openshift3::params::ansible_version,
   $ansible_ssh_user = $::openshift3::params::ansible_ssh_user,
   $ansible_sudo = $::openshift3::params::ansible_sudo,
   $ansible_vars = [],
