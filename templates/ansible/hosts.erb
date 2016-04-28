@@ -50,6 +50,9 @@ osm_use_cockpit=true
 # Set cockpit plugins
 osm_cockpit_plugins=['cockpit-kubernetes']
 
+# Configure controller arguments
+osm_controller_args={'resource-quota-sync-period': ['<%= scope['::openshift3::quota_sync_period'] %>']}
+
 # host group for masters
 [masters]
 <%= scope.function_hiera_to_inventory([scope['::openshift3::masters']]) %>
