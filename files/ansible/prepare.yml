@@ -90,6 +90,7 @@
 
     - name: Disable old centralized logging service
       service: name=td-agent state=stopped enabled=false
+      ignore_errors: yes
 
 - name: Prepare masters for OpenShift installation
   hosts: masters
