@@ -6,3 +6,6 @@ vagrant/hiera/ssh.yaml
 .tmp
 .librarian
 *~
+Puppetfile.lock
+Gemfile.lock
+spec/fixtures/modules/
