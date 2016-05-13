@@ -22,10 +22,12 @@ class openshift3::params {
   $enable_ops_logging = false
   $logging_image_version = undef
   $metrics_image_version = undef
+  $metrics_use_persistent_storage = false
+  $metrics_pv_size = 20Gi
+  $metrics_duration = 3
   $ansible_ssh_user = 'root'
   $ansible_sudo = false
   $set_node_ip = false
-  $metrics_use_persistent_storage = false
   $docker_options = '-l warn --log-opt max-size=1M --log-opt max-file=3'
   $master_style_repo_ref = 'master'
   $project_request_template = undef

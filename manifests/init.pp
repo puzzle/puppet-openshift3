@@ -26,6 +26,8 @@ class openshift3 (
   $metrics_ssl_key = undef,
   $metrics_ca_cert = undef,
   $metrics_image_version = $::openshift3::params::metrics_image_version,
+  $metrics_pv_size = $::openshift3::params::metrics_pv_size,
+  $metrics_duration = $::openshift3::params::metrics_duration,
   $metrics_domain = undef,
   $es_instance_ram = $::openshift3::params::es_instance_ram,
   $es_ops_instance_ram = $::openshift3::params::es_ops_instance_ram,
