@@ -28,6 +28,7 @@ class openshift3::params {
   $ansible_ssh_user = 'root'
   $ansible_sudo = false
   $set_node_ip = false
+  $set_hostname = true
   $docker_options = '-l warn --log-opt max-size=1M --log-opt max-file=3'
   $master_style_repo_ref = 'master'
   $project_request_template = undef
