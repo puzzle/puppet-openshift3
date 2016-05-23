@@ -14,6 +14,12 @@ class openshift3::repo  {
     rhsm_repo { "rhel-7-server-ose-${::openshift3::major}.${::openshift3::minor}-rpms":
       ensure  => present,
     }
+
+    $old_ose_repos = split(inline_template('<%= (scope[\'::openshift3::minor\'].to_i - 1).downto(0) {|minor| puts "\n"} %>'), '\n')
+
+    rhsm_repo { $old_ose_repos:
+      ensure  => absent,
+    }
   } else {
     yumrepo { "origin":
       descr => 'Copr repo for OpenShift origin',
