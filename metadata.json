@@ -19,7 +19,7 @@
     }
   ],
   "dependencies": [
-    { "name": "puppetlabs/concat", "version_requirement": ">=1.2.0" },
+    { "name": "puppetlabs/concat", "version_requirement": "< 2.1.0" },
     { "name": "puppetlabs/vcsrepo" },
     { "name": "puppetlabs/rsync" },
     { "name": "puppetlabs/firewall" },
