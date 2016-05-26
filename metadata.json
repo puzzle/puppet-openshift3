@@ -21,14 +21,11 @@
   "dependencies": [
     { "name": "puppetlabs/concat", "version_requirement": "< 2.1.0" },
     { "name": "puppetlabs/vcsrepo" },
-    { "name": "puppetlabs/rsync" },
     { "name": "puppetlabs/firewall" },
     { "name": "puppetlabs/ntp" },
-    { "name": "garethr/docker", "version_requirement": ">= 4.0.1" },
     { "name": "lex/dnsmasq" },
     { "name": "saz/resolv_conf" },
     { "name": "leinaddm/htpasswd" },
-    { "name": "ceritsc/yum" },
     { "name": "waveclaw/subscription_manager" },
     { "name": "puppet/network" }
   ]
