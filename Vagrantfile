@@ -109,6 +109,7 @@ Vagrant.configure(2) do |config|
     libvirt.memory = 4096
     libvirt.cpus = 4
     libvirt.storage_pool_name = config.user.libvirt.storage_pool_name if config.user.has_key?('libvirt') and config.user['libvirt'].has_key?('storage_pool_name')
+    libvirt.suspend_mode = 'managedsave'
   end
 
   # virtualbox provider memory and cpu configuration
