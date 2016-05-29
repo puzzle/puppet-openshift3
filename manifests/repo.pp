@@ -15,7 +15,7 @@ class openshift3::repo  {
       ensure  => present,
     }
 
-    $old_ose_repos = split(inline_template('<%= (scope[\'::openshift3::minor\'].to_i - 1).downto(0) {|minor| puts "\n"} %>'), '\n')
+    $old_ose_repos = split(inline_template('<%= (scope[\'::openshift3::minor\'].to_i - 1).downto(0) {|minor| "rhel-7-server-ose-#{scope[\'::openshift3::major\']}.#{minor}-rpms\n"} %>'), '\n')
 
     rhsm_repo { $old_ose_repos:
       ensure  => absent,

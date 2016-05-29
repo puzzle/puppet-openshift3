@@ -1,19 +1,24 @@
 ---
 openshift3::deployment_type: enterprise
-openshift3::version: 3.1.1.6
+openshift3::version: 3.2.0.44
+#openshift3::version: 3.1.1.6
 openshift3::set_node_ip: true
 openshift3::registry_ip: 172.30.1.1
-openshift3::master_style_repo_url: https://github.com/puzzle/ose-appuio-style
-openshift3::master_extension_stylesheets:
-  - stylesheets/appuio_extensions.css
-openshift3::master_oauth_template: login/login-template.html
+openshift3::ansible_vars:
+  openshift_master_htpasswd_users: {'joe': '$apr1$LB4KhoUd$2QRUqJTtbFnDeal80WI2R/', 'alice': '$apr1$LB4KhoUd$2QRUqJTtbFnDeal80WI2R/'}
+  openshift_master_dns_port: 8053
+
+#openshift3::master_style_repo_url: https://github.com/puzzle/ose-appuio-style
+#openshift3::master_extension_stylesheets:
+#  - stylesheets/appuio_extensions.css
+#openshift3::master_oauth_template: login/login-template.html
 
 #openshift3::sdn_network_plugin_name: redhat/openshift-ovs-multitenant
 
 openshift3::masters:
   - name: ose3-master.example.com
     public_ip: 172.22.22.122
-    ip: 172.23.22.122
+    ip: 172.22.22.122
     node_labels:
       region: infra
       zone: default

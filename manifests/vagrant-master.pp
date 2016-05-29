@@ -28,8 +28,7 @@ class openshift3::vagrant-master {
     }
 
     class { 'dnsmasq':
-      no_hosts => true,
-      listen_address => [$master_ip]
+        no_hosts => true,
     }
 
     # Add wildcard entries for OpenShift 3 apps
@@ -45,13 +44,6 @@ class openshift3::vagrant-master {
     user { ['joe', 'alice' ]:
       ensure => present,
       managehome => true,
-    }
-
-    file { '/etc/openshift': ensure => directory } ->
-
-    htpasswd { ['joe', 'alice']:
-      cryptpasswd => '$apr1$LB4KhoUd$2QRUqJTtbFnDeal80WI2R/',
-      target      => '/etc/openshift/openshift-passwd',
     }
   }
 }

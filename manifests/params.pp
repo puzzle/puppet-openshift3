@@ -5,7 +5,7 @@ class openshift3::params {
     'login' => 'true',
     'challenge' => 'true',
     'kind' => 'HTPasswdPasswordIdentityProvider',
-    'filename' => '/etc/openshift/openshift-passwd',
+    'filename' => '/etc/origin/master/htpasswd',
   }]
   $app_domain = 'cloudapps.example.com'
   $openshift_dns_bind_addr = undef

@@ -1,10 +1,11 @@
+
 ---
-openshift3::openshift_dns_bind_addr: "%{::network_primary_ip}"
 openshift3::cluster_network_cidr: 10.255.0.0/16
 
-openshift3::internal_ip: "%{::vagrant_ip}"
-openshift3::public_ip: "%{::vagrant_ip}"
+#openshift3::internal_ip: "%{::vagrant_ip}"
+#openshift3::public_ip: "%{::vagrant_ip}"
+#openshift3::set_node_ip: true
 
-openshift3::master_public_api_url: "https://master.example.com:8443"
-openshift3::logging_domain: "logging.example.com"
-openshift3::metrics_domain: "metrics.example.com"
+openshift3::master_public_api_url: "https://ose3-master.example.com:8443"
+openshift3::logging_domain: "logging.cloudapps.example.com"
+openshift3::metrics_domain: "metrics.cloudapps.example.com"

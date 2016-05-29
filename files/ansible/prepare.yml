@@ -88,10 +88,17 @@
         - "ansible"
 
     - name: Disable NetworkManager service
+      register: result
       service: name=NetworkManager state=stopped enabled=false
+      when: openshift_version | version_compare('3.2', '<')
+
+    - name: Enable NetworkManager service
+      service: name=NetworkManager state=started enabled=true
+      when: result | skipped
 
     - name: Enable network service
       service: name=network state=started enabled=true
+      when: openshift_version | version_compare('3.2', '<')
 
     - name: Disable old centralized logging service
       service: name=td-agent state=stopped enabled=false

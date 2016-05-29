@@ -17,7 +17,7 @@ class openshift3::ansible {
     ensure   => latest,
     provider => git,
     source   => "https://github.com/openshift/openshift-ansible.git",
-    revision => 'openshift-ansible-3.0.55-1',
+    revision => 'openshift-ansible-3.0.94-1',
   } ->
 
   file { "/etc/ansible":
@@ -50,22 +50,24 @@ class openshift3::ansible {
     ignore    => "\$HOME",
   } ->
 
-#  run_upgrade_playbooks { "Run ansible upgrade playbooks":
-#    playbooks => {
-#      'playbooks/byo/openshift-cluster/upgrades/v3_0_minor/upgrade.yml' => { 'deployment_type' => 'enterprise', match_versions => '(3\.0\..*)' },
-#      'playbooks/byo/openshift-cluster/upgrades/v3_0_to_v3_1/upgrade.yml' => { 'deployment_type' => 'enterprise', match_versions => '(3\.1)\..*' },
-#    }
-#  } ->
-
   notify { 'Run OpenShift prepare playbook': } ->
 
   exec { 'Run OpenShift prepare playbook':
     provider => "shell",
     cwd     => "/var/lib/puppet-openshift3/ansible",
-    command => "set -o pipefail; ansible-playbook prepare.yml -e 'openshift_package_name=${openshift3::package_name} openshift_component_prefix=${openshift3::component_prefix} openshift_version=${openshift3::version} openshift_major=${openshift3::major} openshift_minor=${openshift3::minor} docker_version=${openshift3::docker_version} vagrant=\"${::vagrant}\" openshift_master_ip=${openshift3::master_ip} configure_epel=${openshift3::configure_epel} epel_repo_id=${openshift3::epel_repo_id} master_style_repo_url=${openshift3::master_style_repo_url} master_style_repo_ref=${openshift3::master_style_repo_ref} master_style_repo_ssh_key=${openshift3::master_style_repo_ssh_key} ansible_version=${openshift3::ansible_version}' | tee /var/lib/puppet-openshift3/log/ansible-pre-install.log",
+    command => "set -o pipefail; stdbuf -o L ansible-playbook prepare.yml -e 'openshift_package_name=${openshift3::package_name} openshift_component_prefix=${openshift3::component_prefix} openshift_version=${openshift3::version} openshift_major=${openshift3::major} openshift_minor=${openshift3::minor} docker_version=${openshift3::docker_version} vagrant=\"${::vagrant}\" openshift_master_ip=${openshift3::master_ip} configure_epel=${openshift3::configure_epel} epel_repo_id=${openshift3::epel_repo_id} master_style_repo_url=${openshift3::master_style_repo_url} master_style_repo_ref=${openshift3::master_style_repo_ref} master_style_repo_ssh_key=${openshift3::master_style_repo_ssh_key} ansible_version=${openshift3::ansible_version}' | tee /var/lib/puppet-openshift3/log/ansible-pre-install.log",
     timeout => 1000,
     logoutput => on_failure,
     path => $::path,
+  } ->
+
+  run_upgrade_playbooks { "Run ansible upgrade playbooks":
+    playbooks => {
+      'playbooks/byo/openshift-cluster/upgrades/v3_0_minor/upgrade.yml' => { 'if_deployment_type' => 'enterprise', if_cur_ver => '3.0', if_new_ver => '3.0' },
+      'playbooks/byo/openshift-cluster/upgrades/v3_1_minor/upgrade.yml' => { 'if_deployment_type' => 'enterprise', if_cur_ver => '3.1', if_new_ver => '3.1' },
+      'playbooks/byo/openshift-cluster/upgrades/v3_0_to_v3_1/upgrade.yml' => { 'if_deployment_type' => 'enterprise', if_cur_ver => '3.0', if_new_ver => '3.1' },
+      'playbooks/byo/openshift-cluster/upgrades/v3_1_to_v3_2/upgrade.yml' => { 'if_deployment_type' => 'enterprise', if_cur_ver => '3.1', if_new_ver => '3.2' },
+    }
   } ->
 
   notify { 'Run OpenShift install/config playbook': } ->
@@ -73,7 +75,7 @@ class openshift3::ansible {
   exec { 'Run OpenShift install/config playbook':
     provider => "shell",
     cwd     => "/root/openshift-ansible",
-    command => "set -o pipefail; ansible-playbook playbooks/byo/config.yml | tee /var/lib/puppet-openshift3/log/ansible-install.log",
+    command => "set -o pipefail; stdbuf -o L ansible-playbook -e \"repoquery_cmd='repoquery --plugins'\" playbooks/byo/config.yml | tee /var/lib/puppet-openshift3/log/ansible-install.log",
     timeout => 1000,
     logoutput => on_failure,
     path      => $::path,
@@ -94,15 +96,5 @@ class openshift3::ansible {
     command => "/usr/bin/wget --spider --tries 60 --retry-connrefused --no-check-certificate https://localhost:8443/",
     unless => "/usr/bin/wget --spider --no-check-certificate https://localhost:8443/",
     path => $::path,
-  }
-
-  if $::openshift3::openshift_dns_bind_addr {
-    file_line { 'Set DNS bind address':
-      path => '/root/openshift-ansible/roles/openshift_master/templates/master.yaml.v1.j2',
-      line => "  bindAddress: ${::openshift3::openshift_dns_bind_addr}:{{ openshift.master.dns_port }}",
-      match => "^  bindAddress: {{ openshift.master.bind_addr }}:{{ openshift.master.dns_port }}$",
-      require => Vcsrepo["/root/openshift-ansible"],
-      before => Exec['Run OpenShift install/config playbook'],
-    }
   }
 }

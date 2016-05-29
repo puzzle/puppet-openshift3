@@ -8,9 +8,9 @@ openshift_router_version=`oc get dc/router -n default -o json 2>/dev/null |sed -
 EOF
 else
 cat <<EOF
-openshift_registry_ip=0
-openshift_registry_version=0
-openshift_router_version=0
+openshift_registry_ip=''
+openshift_registry_version=''
+openshift_router_version=''
 EOF
 fi
 
@@ -20,6 +20,6 @@ openshift_version=`openshift version 2>/dev/null | sed -ne 's/openshift \+v\?\([
 EOF
 else
 cat <<EOF
-openshift_version=0
+openshift_version=''
 EOF
 fi

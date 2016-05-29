@@ -67,11 +67,17 @@ class openshift3 (
   $version_array = split($version, '\.')
   $major = $version_array[0]
   $minor = $version_array[1]
+  $patch = $version_array[2]
 
   if $deployment_type == "enterprise" {
     $component_prefix = 'registry.access.redhat.com/openshift3/ose'
 
-    if versioncmp($version, '3.1.0') >= 0 {
+    if versioncmp($version, '3.2.0') >= 0 {
+      $real_deployment_type = 'openshift-enterprise'
+      $package_name = 'atomic-openshift'
+      $conf_dir = '/etc/origin'
+      $docker_version = '1.9.1'
+    } elsif versioncmp($version, '3.1.0') >= 0 {
       $real_deployment_type = 'openshift-enterprise'
       $package_name = 'atomic-openshift'
       $conf_dir = '/etc/origin'

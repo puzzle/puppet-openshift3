@@ -7,13 +7,6 @@ class openshift3::upgrade-master {
 
   package { "${::openshift3::package_name}-master":
     ensure => latest,
-  } ->
-
-  oc_replace { [
-    "/usr/share/openshift/examples/image-streams/image-streams-${distro}.json",
-    '/usr/share/openshift/examples/db-templates/',
-    '/usr/share/openshift/examples/quickstart-templates/' ]:
-    namespace => 'openshift',
   }
 
   if ! $::openshift3::master_cluster_method {
