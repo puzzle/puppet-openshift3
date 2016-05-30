@@ -11,7 +11,6 @@ nodes
 ansible_ssh_user=<%= scope['::openshift3::ansible_ssh_user'] %>
 
 # If ansible_ssh_user is not root, ansible_sudo must be set to true
-ansible_sudo=<%= scope['::openshift3::ansible_sudo'] %>
 ansible_become=<%= scope['::openshift3::ansible_sudo'] %>
 
 # To deploy origin, change deployment_type to origin
