@@ -1,32 +1,57 @@
 {
   "name": "puzzleitc-openshift3",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Daniel Tschan",
   "license": "Apache-2.0",
   "summary": "Module to install and manage OpenShift Enterprise 3 and OpenShift Origin M5",
   "source": "https://github.com/puzzle/puppet-openshift3",
   "project_page": "https://github.com/puzzle/puppet-openshift3",
   "issues_url": "https://github.com/puzzle/puppet-openshift3/issues",
-  "tags": ["openshift"],
+  "tags": [
+    "openshift"
+  ],
   "operatingsystem_support": [
     {
-      "operatingsystem":"RedHat",
-      "operatingsystemrelease":[ "7" ]
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "7"
+      ]
     },
     {
       "operatingsystem": "CentOS",
-      "operatingsystemrelease": [ "7" ]
+      "operatingsystemrelease": [
+        "7"
+      ]
     }
   ],
   "dependencies": [
-    { "name": "puppetlabs/concat", "version_requirement": "< 2.1.0" },
-    { "name": "puppetlabs/vcsrepo" },
-    { "name": "puppetlabs/firewall" },
-    { "name": "puppetlabs/ntp" },
-    { "name": "lex/dnsmasq" },
-    { "name": "saz/resolv_conf" },
-    { "name": "leinaddm/htpasswd" },
-    { "name": "waveclaw/subscription_manager" },
-    { "name": "puppet/network" }
+    {
+      "name": "puppetlabs/concat",
+      "version_requirement": "< 2.1.0"
+    },
+    {
+      "name": "puppetlabs/vcsrepo"
+    },
+    {
+      "name": "puppetlabs/firewall"
+    },
+    {
+      "name": "puppetlabs/ntp"
+    },
+    {
+      "name": "lex/dnsmasq"
+    },
+    {
+      "name": "saz/resolv_conf"
+    },
+    {
+      "name": "leinaddm/htpasswd"
+    },
+    {
+      "name": "waveclaw/subscription_manager"
+    },
+    {
+      "name": "puppet/network"
+    }
   ]
 }
