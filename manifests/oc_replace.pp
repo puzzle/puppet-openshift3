@@ -7,7 +7,7 @@ define openshift3::oc_replace ($namespace = 'default', $resource = undef, $unles
 
   if $resource {
     case $title {
-      /^([0-9a-zA-Z_.\[\]]+)\s*=\s*(-?[0-9]+|".+"|{.+}|true|false)$/:            { $condition = "$1 == $2" }
+      /^([0-9a-zA-Z_.\[\]]+)\s*=\s*(-?[0-9]+|".+"|\{.+\}|true|false)$/:            { $condition = "$1 == $2" }
       /^([0-9a-zA-Z_.\[\]]+)\s*\+=\s*(\[-?[0-9]+\]|\["[^"]+"\])$/:  { $condition = "$1 | contains($2)" }
       default:                                                { fail("Unsupported expression: $title") }
     }
