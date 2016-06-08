@@ -43,9 +43,6 @@
     },
     {
       "name": "leinaddm/htpasswd"
-    },
-    {
-      "name": "waveclaw/subscription_manager"
     }
   ]
 }
