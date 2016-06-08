@@ -39,9 +39,6 @@
       "name": "puppetlabs/ntp"
     },
     {
-      "name": "lex/dnsmasq"
-    },
-    {
       "name": "saz/resolv_conf"
     },
     {
@@ -49,9 +46,6 @@
     },
     {
       "name": "waveclaw/subscription_manager"
-    },
-    {
-      "name": "puppet/network"
     }
   ]
 }
