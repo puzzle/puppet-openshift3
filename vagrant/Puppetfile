@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+forge 'https://forgeapi.puppetlabs.com'
+
+metadata
+
+# Additional Puppet modules only needed for Vagrant environment
+
+mod 'lex/dnsmasq'
+mod 'puppet/network'

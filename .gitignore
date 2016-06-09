@@ -1,5 +1,8 @@
 .vagrant*
 vagrant/hiera/ssh.yaml
+vagrant/metadata.json
+vagrant/Puppetfile.lock
+vagrant/.librarian
 .ssh
 .docker
 *-images.tar

@@ -101,7 +101,8 @@ Vagrant.configure(2) do |config|
     test -e /usr/bin/puppet || yum install -y puppet
 
     gem list --local | grep -q ^librarian-puppet || gem install librarian-puppet
-    cd /vagrant && /usr/local/bin/librarian-puppet install --path /etc/puppet/librarian-modules
+    [ -e /vagrant/vagrant/metadata.json ] || cp /vagrant/metadata.json /vagrant/vagrant
+    cd /vagrant/vagrant && /usr/local/bin/librarian-puppet install --path /etc/puppet/librarian-modules
 
     cp -r /vagrant/.ssh /root
     cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
