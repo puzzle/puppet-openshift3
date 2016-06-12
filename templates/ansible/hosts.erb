@@ -16,6 +16,8 @@ ansible_sudo=<%= scope['::openshift3::ansible_sudo'] %>
 # To deploy origin, change deployment_type to origin
 deployment_type=<%= scope['::openshift3::real_deployment_type'] %>
 
+openshift_pkg_version=-<%= scope['::openshift3::version'] %>
+
 # enable htpasswd authentication
 openshift_master_identity_providers=<%= scope['::openshift3::identity_providers'].to_json %>
 
