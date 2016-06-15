@@ -1,6 +1,12 @@
 class openshift3::router {
 
   if $::openshift3::install_router {
+    if $::openshift3::router_image {
+      $real_router_image = $::openshift3::router_image
+    } else {
+      $real_router_image = "${::openshift3::component_prefix}-haproxy-router:v${::openshift3::version}"
+    }
+
     oc_create { '{"kind":"ServiceAccount","apiVersion":"v1","metadata":{"name":"router"}}':
       resource => 'sa/router',
     } ->
@@ -47,7 +53,7 @@ class openshift3::router {
     } ->
 
     oc_replace { [
-      ".spec.template.spec.containers[0].image = \"${::openshift3::component_prefix}-haproxy-router:v${::openshift3::version}\"", ]:
+      ".spec.template.spec.containers[0].image = \"${real_router_image}\"", ]:
       resource => 'dc/router',
     }
   }

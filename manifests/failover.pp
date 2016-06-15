@@ -1,11 +1,18 @@
 class openshift3::failover {
 
   if $::openshift3::failover_router_replicas {
-  firewall { '500 Allow multicast ':
-      action => 'accept',
-      state  => 'NEW',
-      destination => '224.0.0.18/32',
-  } ->
+
+    if $::openshift3::failover_router_image {
+      $real_router_image = $::openshift3::failover_router_image
+    } else {
+      $real_router_image = "${::openshift3::component_prefix}-haproxy-router:v${::openshift3::version}"
+    }
+
+    if $::openshift3::failover_keepalived_image {
+      $real_keepalived_image = $::openshift3::failover_keepalived_image
+    } else {
+      $real_keepalived_image = "${::openshift3::component_prefix}-keepalived-ipfailover:v${::openshift3::version}"
+    }
 
   oc_create { '{"kind":"ServiceAccount","apiVersion":"v1","metadata":{"name":"ipfailover"}}':
     resource => 'sa/ipfailover',
@@ -53,14 +60,14 @@ class openshift3::failover {
 #    ]:
 #    resource => 'dc/router',
 #  } ->
-
+   
     oc_replace { [
-      ".spec.template.spec.containers[0].image = \"${::openshift3::component_prefix}-haproxy-router:v${::openshift3::version}\"", ]:
+      ".spec.template.spec.containers[0].image = \"${real_router_image}\"", ]:
       resource => 'dc/ha-router',
     } ->
 
     oc_replace { [
-      ".spec.template.spec.containers[0].image = \"${::openshift3::component_prefix}-keepalived-ipfailover:v${::openshift3::version}\"", ]:
+      ".spec.template.spec.containers[0].image = \"${real_keepalived_image}\"", ]:
       resource => 'dc/ipf-ha-router',
     }
   }
