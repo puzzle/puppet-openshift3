@@ -32,6 +32,8 @@ enterprise_vms = enterprise_masters + enterprise_nodes
 
 vms = origin_vms + enterprise_vms
 
+vagrant_fact = '1'
+
 if Vagrant::Util::Platform.windows?
   hostname=`hostname`.chomp
 else
@@ -101,8 +103,14 @@ Vagrant.configure(2) do |config|
     test -e /usr/bin/puppet || yum install -y puppet
 
     gem list --local | grep -q ^librarian-puppet || gem install librarian-puppet
-    [ -e /vagrant/vagrant/metadata.json ] || cp /vagrant/metadata.json /vagrant/vagrant
-    cd /vagrant/vagrant && /usr/local/bin/librarian-puppet install --path /etc/puppet/librarian-modules
+    [ /vagrant/metadata.json -nt /vagrant/vagrant/metadata.json ] && cp /vagrant/metadata.json /vagrant/vagrant
+
+    if [ -n "#{vagrant_fact}" ]; then
+      puppetfile_dir=/vagrant/vagrant
+    else
+      puppetfile_dir=/vagrant
+    fi
+    cd $puppetfile_dir && rm -f Puppetfile.lock && /usr/local/bin/librarian-puppet install --path /etc/puppet/librarian-modules
 
     cp -r /vagrant/.ssh /root
     cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
@@ -146,7 +154,7 @@ Vagrant.configure(2) do |config|
         puppet.working_directory = "/tmp/vagrant-puppet"
         puppet.options = "--verbose --modulepath=/etc/puppet/librarian-modules:/etc/puppet/modules"
         puppet.facter = {
-          "vagrant" => "1",
+          "vagrant" => "#{vagrant_fact}",
           "hostgroup" => "enterprise",
           "openshift_hosts" => enterprise_vms.to_json
         }
@@ -171,7 +179,7 @@ Vagrant.configure(2) do |config|
         puppet.working_directory = "/tmp/vagrant-puppet"
         puppet.options = "--verbose --modulepath=/etc/puppet/librarian-modules:/etc/puppet/modules"
         puppet.facter = {
-          "vagrant" => "1",
+          "vagrant" => "#{vagrant_fact}",
           "hostgroup" => "origin",
           "openshift_hosts" => origin_vms.to_json
         }
