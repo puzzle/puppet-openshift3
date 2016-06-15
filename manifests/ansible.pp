@@ -75,7 +75,7 @@ class openshift3::ansible {
   exec { 'Run OpenShift install/config playbook':
     provider => "shell",
     cwd     => "/root/openshift-ansible",
-    command => "set -o pipefail; stdbuf -o L ansible-playbook -e \"repoquery_cmd='repoquery --plugins'\" playbooks/byo/config.yml | tee /var/lib/puppet-openshift3/log/ansible-install.log",
+    command => "set -o pipefail; stdbuf -o L ansible-playbook -e \"repoquery_cmd='repoquery --plugins --pkgnarrow=all'\" playbooks/byo/config.yml | tee /var/lib/puppet-openshift3/log/ansible-install.log",
     timeout => 1000,
     logoutput => on_failure,
     path      => $::path,
