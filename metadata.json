@@ -26,23 +26,10 @@
   ],
   "dependencies": [
     {
-      "name": "puppetlabs/concat",
-      "version_requirement": "< 2.1.0"
+      "name": "puppetlabs/stdlib"
     },
     {
       "name": "puppetlabs/vcsrepo"
-    },
-    {
-      "name": "puppetlabs/firewall"
-    },
-    {
-      "name": "puppetlabs/ntp"
-    },
-    {
-      "name": "saz/resolv_conf"
-    },
-    {
-      "name": "leinaddm/htpasswd"
     }
   ]
 }

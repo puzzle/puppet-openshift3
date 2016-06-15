@@ -5,5 +5,6 @@ metadata
 
 # Additional Puppet modules only needed for Vagrant environment
 
+mod 'puppetlabs/firewall'
 mod 'lex/dnsmasq'
-mod 'puppet/network'
+mod 'puppetlabs/concat', '<2.1.0'  # Version < 2.1.0 required for dnsmasq module to work
