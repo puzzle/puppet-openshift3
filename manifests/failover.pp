@@ -42,7 +42,7 @@ class openshift3::failover {
     unless => "oc get dc/ipf-ha-router -n default",
     timeout => 600,
     path => $::path,
-  }
+  } ->
 
 #  oc_replace { [
 #    '.spec.strategy.rollingParams.updatePercent = -10',
@@ -54,10 +54,14 @@ class openshift3::failover {
 #    resource => 'dc/router',
 #  } ->
 
-#  oc_replace { [
-#    ".spec.template.spec.containers[0].image = \"${::openshift3::component_prefix}-haproxy-router:v${::openshift3::version}\"", ]:
-#    namevar => "Update HA router image",
-#    resource => 'dc/ha-router-eh',
-#  }
+    oc_replace { [
+      ".spec.template.spec.containers[0].image = \"${::openshift3::component_prefix}-haproxy-router:v${::openshift3::version}\"", ]:
+      resource => 'dc/ha-router',
+    } ->
+
+    oc_replace { [
+      ".spec.template.spec.containers[0].image = \"${::openshift3::component_prefix}-keepalived-ipfailover:v${::openshift3::version}\"", ]:
+      resource => 'dc/ipf-ha-router',
+    }
   }
 }
