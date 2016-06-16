@@ -1,6 +1,6 @@
 {
   "name": "puzzleitc-openshift3",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "author": "Daniel Tschan",
   "license": "Apache-2.0",
   "summary": "Module to install and manage OpenShift Enterprise 3 and OpenShift Origin M5",
