@@ -39,7 +39,8 @@ class openshift3::ansible {
     lens    => "Puppet.lns",
     incl    => "/etc/ansible/ansible.cfg",
     changes => ["set /files/etc/ansible/ansible.cfg/defaults/host_key_checking False",
-                "set /files/etc/ansible/ansible.cfg/ssh_connection/pipelining True",], 
+                "set /files/etc/ansible/ansible.cfg/ssh_connection/pipelining True",
+                "set /files/etc/ansible/ansible.cfg/ssh_connection/control_path /tmp/ansible-ssh-%%h-%%p-%%r"], 
   } ->
 
   file { "/var/lib/puppet-openshift3/ansible":
