@@ -80,16 +80,25 @@ class openshift3 (
       $package_name = 'atomic-openshift'
       $conf_dir = '/etc/origin'
       $docker_version = '1.9.1'
+      $ansible_vars_default = {
+        use_networkmanager => true,
+      }
     } elsif versioncmp($version, '3.1.0') >= 0 {
       $real_deployment_type = 'openshift-enterprise'
       $package_name = 'atomic-openshift'
       $conf_dir = '/etc/origin'
       $docker_version = '1.8.2'
+      $ansible_vars_default = {
+        use_networkmanager => false,
+      }
     } else {
       $real_deployment_type = 'enterprise'
       $package_name = 'openshift'
       $conf_dir = '/etc/openshift'
       $docker_version = '1.6.2'
+      $ansible_vars_default = {
+        use_networkmanager => false,
+      }
     }
   } else {
     $real_deployment_type = 'origin'
@@ -98,9 +107,15 @@ class openshift3 (
     if versioncmp($version, '1.0.5') > 0 {
       $package_name = 'origin'
       $docker_version = '1.8.2'
+      $ansible_vars_default = {
+        use_networkmanager => false,
+      }
     } else {
       $package_name = 'openshift'
       $docker_version = '1.6.2'
+      $ansible_vars_default = {
+        use_networkmanager => false,
+      }
     }
   }
   $component_images = "${component_prefix}-\${component}:\${version}"
@@ -125,6 +140,8 @@ class openshift3 (
       $real_master_oauth_template = "/var/lib/puppet-openshift3/style/${master_oauth_template}"
     }
   }
+
+  $real_ansible_vars = merge($ansible_vars_default, $ansible_vars)
 
   ensure_resource('file', '/var/lib/puppet-openshift3', { ensure => directory })
   ensure_resource('file', '/var/lib/puppet-openshift3/certs', { ensure => directory })
