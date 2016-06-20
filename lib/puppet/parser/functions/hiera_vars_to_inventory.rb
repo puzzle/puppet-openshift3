@@ -5,7 +5,7 @@ module Puppet::Parser::Functions
       if value.is_a?(TrueClass) || value.is_a?(FalseClass)
         result += "#{key}=#{value}\n"
       elsif value.is_a?(String)
-       result += "#{key}='#{value.chomp}'\n"
+       result += "#{key}='#{value.gsub(/\n/, %q{\\n})}'\n"
       else
         result += "#{key}=#{value.to_json}\n"
       end
