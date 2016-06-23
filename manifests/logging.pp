@@ -7,9 +7,9 @@ class openshift3::logging {
     }
 
     if $::openshift3::logging_image_version {
-      $image_version = ",IMAGE_VERSION=${::openshift3::logging_image_version}"
+      $image_opt = ",IMAGE_VERSION=${::openshift3::logging_image_version}"
     } else {
-      $image_version = ""
+      $image_opt = ""
     }
 
     new_project { "logging":
@@ -22,7 +22,6 @@ class openshift3::logging {
         resource_namespace => "logging",
         creates => "sa/aggregated-logging-kibana",
         require => New_project["logging"],
-        before => New_Secret["logging-deployer"],
         returns => [0, 1],        
       } ->
 
@@ -30,17 +29,18 @@ class openshift3::logging {
         role => "oauth-editor",
         role_type => "cluster",
         namespace => "logging",
+        before => New_Secret["logging-deployer"],
       } 
     } else {
       new_service_account { "logging-deployer":
         namespace => "logging",
         require => New_project["logging"],
-        before => New_Secret["logging-deployer"],
       } ->
 
       add_role_to_user { "system:serviceaccount:logging:logging-deployer":
         role => "edit",
         namespace => "logging",
+        before => New_Secret["logging-deployer"],
       }   
     }
 
@@ -75,11 +75,12 @@ class openshift3::logging {
         "ES_INSTANCE_RAM=${::openshift3::es_instance_ram}",
         "ES_OPS_INSTANCE_RAM=${::openshift3::es_ops_instance_ram}",
         "ENABLE_OPS_CLUSTER=${::openshift3::enable_ops_logging}",
-        "IMAGE_PREFIX=${image_prefix}${image_version}",
+        "IMAGE_PREFIX=${image_prefix}${image_opt}",
       ],
       resource_namespace => "logging",
       creates => "svc/logging-es",
     } ->
+
     scale_pod { "logging-fluentd":
       namespace => "logging",
       replicas => ready_nodes,

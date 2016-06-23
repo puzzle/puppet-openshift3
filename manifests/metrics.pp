@@ -53,12 +53,14 @@ class openshift3::metrics {
       template_namespace => "openshift",
       template_parameters => [
         "HAWKULAR_METRICS_HOSTNAME=${::openshift3::metrics_domain}",
-        "USE_PERSISTENT_STORAGE=${::openshift3::metrics_use_persistent_storage}${image_opt}",
+        "USE_PERSISTENT_STORAGE=${::openshift3::metrics_use_persistent_storage}",
         "CASSANDRA_PV_SIZE=${::openshift3::metrics_pv_size}",
         "METRIC_DURATION=${::openshift3::metrics_duration}",
+        "IMAGE_PREFIX=${image_prefix}${image_opt}",
       ],
       resource_namespace => "openshift-infra",
       creates => "svc/hawkular-metrics",
+#      creates => "svc/dummy",
     }
 
 #    oc_replace { [
