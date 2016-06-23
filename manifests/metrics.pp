@@ -50,10 +50,11 @@ class openshift3::metrics {
     } ->
 
     instantiate_template { "metrics-deployer-template":
-      template_namespace => "openshift",
-      template_parameters => "HAWKULAR_METRICS_HOSTNAME=${::openshift3::metrics_domain},USE_PERSISTENT_STORAGE=${::openshift3::metrics_use_persistent_storage}${image_opt},CASSANDRA_PV_SIZE=${::openshift3::metrics_pv_size},METRIC_DURATION=${::openshift3::metrics_duration}",
+      template_namespace => "openshift-infra",
+      template_parameters => "IMAGE_PREFIX=registry.access.redhat.com/openshift3/,IMAGE_VERSION=3.2.0,HAWKULAR_METRICS_HOSTNAME=${::openshift3::metrics_domain},USE_PERSISTENT_STORAGE=${::openshift3::metrics_use_persistent_storage}${image_opt},CASSANDRA_PV_SIZE=${::openshift3::metrics_pv_size},METRIC_DURATION=${::openshift3::metrics_duration},MODE=refresh",
       resource_namespace => "openshift-infra",
       creates => "svc/hawkular-metrics",
+#      creates => "svc/dummy",
     }
 
 #    oc_replace { [

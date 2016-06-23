@@ -12,7 +12,9 @@ class openshift3::logging {
       $image_version = ""
     }
 
-    new_project { "logging": } ->
+    new_project { "logging":
+      options => '--node-selector=""',
+    } ->
 
     new_secret { "logging-deployer":
       namespace => "logging",
