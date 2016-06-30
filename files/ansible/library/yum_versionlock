@@ -1,18 +1,33 @@
 #!/bin/bash
 # WANT_JSON
 
-NAME=`jq -r .name < $1`
-VERSION=`jq -r .version < $1`
+name=`jq -r .name < $1`
+version=`jq -r .version < $1`
 
-if ! yum versionlock list | grep -q ":${NAME}-${VERSION}" >/dev/null 2>&1; then
-  yum versionlock delete "${NAME}" >/dev/null 2>&1
-  OUTPUT=`yum versionlock "${NAME}-${VERSION}" 2>&1`
+changed='false'
 
-  if yum versionlock list | grep -q ":${NAME}-${VERSION}" >/dev/null 2>&1; then
-    echo '{"changed": true}'
-  else
-    echo "{\"failed\": true, \"msg\": \"Could not versionlock '${NAME}-${VERSION}'\", \"stdout\": \"${OUTPUT}\"}"
+versionlock()
+{
+  if ! echo "${versionlock_list}" | grep -q ":${1}-${2}" >/dev/null 2>&1; then
+    yum versionlock delete "${1}" >/dev/null 2>&1
+    OUTPUT=`yum versionlock "${1}-${2}" 2>&1`
+
+    if yum versionlock list | grep -q ":${1}-${2}" >/dev/null 2>&1; then
+      changed='true'
+    else
+      echo "{\"failed\": true, \"msg\": \"Could not versionlock '${1}-${2}'\", \"stdout\": \"${OUTPUT}\"}"
+      exit 1
+    fi
   fi
-else
-  echo '{"changed": false}'
-fi
+}
+
+versionlock_list="`yum versionlock list`"
+
+versionlock "${name}" "${version}"
+
+# Also versionlock all dependencies which have ${name} in their name
+for package in `yum deplist "${name}-${version}" | sed -ne 's/ *provider: \([^ ]\+\)\(\.x86_64\|\.i.86\) \(.*\)/\1/p' | grep "\(^\|-\)${name}\($\|-\)"`; do
+  versionlock "${package}" "${version}"
+done
+
+echo "{\"changed\": ${changed}}"

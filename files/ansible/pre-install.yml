@@ -1,5 +1,5 @@
 - name: Prepare hosts for OpenShift installation
-  hosts: nodes
+  hosts: all
 
   roles:
     - { role: vagrant, when: "vagrant is defined and vagrant != ''" }
@@ -72,15 +72,12 @@
         - "{{openshift_package_name}}-master"
         - "{{openshift_package_name}}-node"
         - "{{openshift_package_name}}-sdn-ovs"
-        - "{{openshift_package_name}}-clients"
         - "{{openshift_package_name}}-clients-redistributable"
-        - "tuned-profiles-{{openshift_package_name}}-node"
 
     - name: Versionlock Docker Packages 
       yum_versionlock: name={{item}} version={{docker_version}}
       with_items:
         - "docker"
-        - "docker-selinux"
 
     - name: Versionlock Ansible Package
       yum_versionlock: name={{item}} version={{ansible_version}}*
