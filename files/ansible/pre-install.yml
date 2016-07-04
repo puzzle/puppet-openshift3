@@ -86,15 +86,15 @@
 
     - name: Disable NetworkManager service
       service: name=NetworkManager state=stopped enabled=false
-      when: not (use_networkmanager | bool)
+      when: not (openshift_use_dnsmasq | bool)
 
     - name: Enable NetworkManager service
       service: name=NetworkManager state=started enabled=true
-      when: use_networkmanager | bool
+      when: openshift_use_dnsmasq | bool
 
     - name: Enable network service
       service: name=network state=started enabled=true
-      when: not (use_networkmanager | bool)
+      when: not (openshift_use_dnsmasq | bool)
 
     - name: Disable old centralized logging service
       service: name=td-agent state=stopped enabled=false

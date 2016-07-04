@@ -81,7 +81,7 @@ class openshift3 (
       $conf_dir = '/etc/origin'
       $docker_version = '1.9.1'
       $ansible_vars_default = {
-        use_networkmanager => true,
+        openshift_use_dnsmasq => true,
       }
     } elsif versioncmp($version, '3.1.0') >= 0 {
       $real_deployment_type = 'openshift-enterprise'
@@ -89,7 +89,7 @@ class openshift3 (
       $conf_dir = '/etc/origin'
       $docker_version = '1.8.2'
       $ansible_vars_default = {
-        use_networkmanager => false,
+        openshift_use_dnsmasq => false,
       }
     } else {
       $real_deployment_type = 'enterprise'
@@ -97,7 +97,7 @@ class openshift3 (
       $conf_dir = '/etc/openshift'
       $docker_version = '1.6.2'
       $ansible_vars_default = {
-        use_networkmanager => false,
+        openshift_use_dnsmasq => false,
       }
     }
   } else {
@@ -108,13 +108,13 @@ class openshift3 (
       $package_name = 'origin'
       $docker_version = '1.8.2'
       $ansible_vars_default = {
-        use_networkmanager => false,
+        openshift_use_dnsmasq => false,
       }
     } else {
       $package_name = 'openshift'
       $docker_version = '1.6.2'
       $ansible_vars_default = {
-        use_networkmanager => false,
+        openshift_use_dnsmasq => false,
       }
     }
   }
