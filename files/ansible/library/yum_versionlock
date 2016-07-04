@@ -26,7 +26,7 @@ versionlock_list="`yum versionlock list`"
 versionlock "${name}" "${version}"
 
 # Also versionlock all dependencies which have ${name} in their name
-for package in `yum deplist "${name}-${version}" | sed -ne 's/ *provider: \([^ ]\+\)\(\.x86_64\|\.i.86\) \(.*\)/\1/p' | grep "\(^\|-\)${name}\($\|-\)"`; do
+for package in `yum deplist --disableplugin=versionlock "${name}-${version}" | sed -ne 's/ *provider: \([^ ]\+\)\(\.x86_64\|\.i.86\) \(.*\)/\1/p' | grep "\(^\|-\)${name}\($\|-\)"`; do
   versionlock "${package}" "${version}"
 done
 
