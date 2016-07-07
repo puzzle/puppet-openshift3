@@ -79,6 +79,11 @@ class openshift3::ansible {
     command => "/usr/bin/wget --spider --tries 60 --retry-connrefused --no-check-certificate https://${openshift3::master}:8443/",
     unless => "/usr/bin/wget --spider --no-check-certificate https://${openshift3::master}:8443/",
     path => $::path,
-  }
+  } ->
 
+  exec {"Copy kubeconfig from first master":
+    command => "/usr/bin/ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ansible@${openshift3::master} sudo bash -c 'cd /root && tar cf - .kube' | ( cd /root && tar xf - )",
+    creates => '/root/.kube',
+    path => $::path,
+  }
 }
