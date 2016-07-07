@@ -7,8 +7,10 @@ module Puppet::Parser::Functions
         next if key == 'name'
 #        if value =~ /^(y|Y|yes|Yes|YES|n|N|no|No|NO|true|True|TRUE|false|False|FALSE|on|On|ON|off|Off|OFF)$/
 #          result += " openshift_#{key}=#{value}"
-        if value.is_a?(TrueClass) || value.is_a?(FalseClass)
-          result += " openshift_#{key}=#{value}"
+        if value.is_a?(TrueClass)
+          result += " openshift_#{key}=True"
+        elsif value.is_a?(FalseClass)
+          result += " openshift_#{key}=False"
         elsif value.is_a?(String)
           result += " openshift_#{key}='#{value}'"
         else
