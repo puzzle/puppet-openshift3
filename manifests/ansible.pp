@@ -17,7 +17,7 @@ class openshift3::ansible {
     ensure   => latest,
     provider => git,
     source   => "https://github.com/openshift/openshift-ansible.git",
-    revision => 'openshift-ansible-3.0.94-1',
+    revision => $::openshift3::openshift_ansible_version,
   } ->
 
   file { "/etc/ansible":
@@ -53,7 +53,7 @@ class openshift3::ansible {
 
   run_ansible { 'pre-install.yml':
     cwd => '/var/lib/puppet-openshift3/ansible',
-    options => "-e 'openshift_package_name=${openshift3::package_name} openshift_component_prefix=${openshift3::component_prefix} openshift_version=${openshift3::version} openshift_major=${openshift3::major} openshift_minor=${openshift3::minor} docker_version=${openshift3::docker_version} vagrant=\"${::vagrant}\" openshift_master_ip=${openshift3::master_ip} configure_epel=${openshift3::configure_epel} epel_repo_id=${openshift3::epel_repo_id} master_style_repo_url=${openshift3::master_style_repo_url} master_style_repo_ref=${openshift3::master_style_repo_ref} master_style_repo_ssh_key=${openshift3::master_style_repo_ssh_key} ansible_version=${openshift3::ansible_version}'",
+    options => "-e 'openshift_package_name=${openshift3::package_name} openshift_component_prefix=${openshift3::component_prefix} openshift_version=${openshift3::version} openshift_major=${openshift3::major} openshift_minor=${openshift3::minor} docker_version=${openshift3::real_docker_version} vagrant=\"${::vagrant}\" openshift_master_ip=${openshift3::master_ip} configure_epel=${openshift3::configure_epel} epel_repo_id=${openshift3::epel_repo_id} master_style_repo_url=${openshift3::master_style_repo_url} master_style_repo_ref=${openshift3::master_style_repo_ref} master_style_repo_ssh_key=${openshift3::master_style_repo_ssh_key} ansible_version=${openshift3::ansible_version}'",
   } ->
 
   run_upgrade_playbooks { "Run ansible upgrade playbooks":
@@ -72,7 +72,7 @@ class openshift3::ansible {
 
   run_ansible { 'post-install.yml':
     cwd     => "/var/lib/puppet-openshift3/ansible",
-    options => "-e 'openshift_package_name=${openshift3::package_name} openshift_component_prefix=${openshift3::component_prefix} openshift_version=${openshift3::version} openshift_major=${openshift3::major} openshift_minor=${openshift3::minor} docker_version=${openshift3::docker_version} vagrant=\"${::vagrant}\" openshift_master_ip=${openshift3::master_ip} http_proxy=${openshift3::http_proxy} https_proxy=${openshift3::https_proxy} no_proxy=${openshift3::no_proxy}'",
+    options => "-e 'openshift_package_name=${openshift3::package_name} openshift_component_prefix=${openshift3::component_prefix} openshift_version=${openshift3::version} openshift_major=${openshift3::major} openshift_minor=${openshift3::minor} docker_version=${openshift3::real_docker_version} vagrant=\"${::vagrant}\" openshift_master_ip=${openshift3::master_ip} http_proxy=${openshift3::http_proxy} https_proxy=${openshift3::https_proxy} no_proxy=${openshift3::no_proxy}'",
   } ->
 
   exec {"Wait for master":
