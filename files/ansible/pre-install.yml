@@ -1,5 +1,7 @@
 - name: Prepare hosts for OpenShift installation
   hosts: all
+  vars:
+    use_dnsmasq: "{{openshift_use_dnsmasq is undefined or (openshift_use_dnsmasq | bool)}}"
 
   roles:
     - { role: vagrant, when: "vagrant is defined and vagrant != ''" }
@@ -86,15 +88,15 @@
 
     - name: Disable NetworkManager service
       service: name=NetworkManager state=stopped enabled=false
-      when: not (openshift_use_dnsmasq | bool)
+      when: not use_dnsmasq
 
     - name: Enable NetworkManager service
       service: name=NetworkManager state=started enabled=true
-      when: openshift_use_dnsmasq | bool
+      when: use_dnsmasq
 
     - name: Enable network service
       service: name=network state=started enabled=true
-      when: not (openshift_use_dnsmasq | bool)
+      when: not use_dnsmasq
 
     - name: Disable old centralized logging service
       service: name=td-agent state=stopped enabled=false

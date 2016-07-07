@@ -81,7 +81,7 @@ class openshift3 (
       $conf_dir = '/etc/origin'
       $docker_version = '1.9.1'
       $ansible_vars_default = {
-        openshift_use_dnsmasq => true,
+        # openshift_use_dnsmasq => true,  Don't set this, which is the default value, because of a bug in the OpenShift playbook
       }
     } elsif versioncmp($version, '3.1.0') >= 0 {
       $real_deployment_type = 'openshift-enterprise'
