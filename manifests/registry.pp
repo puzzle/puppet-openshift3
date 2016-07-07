@@ -1,5 +1,11 @@
 class openshift3::registry {
 
+  if $::openshift3::registry_image {
+    $real_registry_image = $::openshift3::registry_image
+  } else {
+    $real_registry_image = "${::openshift3::component_prefix}-docker-registry:v${::openshift3::version}"
+  }
+
   if $::openshift3::registry_mount_host {
     $mount_host = "--mount-host=/mnt/registry --service-account=registry"
 
@@ -39,7 +45,7 @@ class openshift3::registry {
     cwd     => "/root",
     command => "mkdir -p /mnt/registry && oadm registry -n default --config=${::openshift3::conf_dir}/master/admin.kubeconfig \
       --credentials=${::openshift3::conf_dir}/master/openshift-registry.kubeconfig \
-      --images='${::openshift3::component_images}' \
+      --images='${real_registry_image}' \
       ${mount_host}",
     unless => "oadm registry -n default",
     timeout => 600,
@@ -47,7 +53,7 @@ class openshift3::registry {
   } ->
 
   oc_replace { [
-    ".spec.template.spec.containers[0].image = \"${::openshift3::component_prefix}-docker-registry:v${::openshift3::version}\"", ]:
+    ".spec.template.spec.containers[0].image = \"${real_registry_image}\"", ]:
     resource => 'dc/docker-registry',
   }
 

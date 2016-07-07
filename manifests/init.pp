@@ -17,6 +17,7 @@ class openshift3 (
   $no_proxy = $::openshift3::params::no_proxy,
   $install_router = $::openshift3::params::install_router,
   $router_image = undef,
+  $registry_image = undef,
   $failover_router_replicas = undef,
   $failover_router_ips = undef,
   $failover_router_label = undef,
