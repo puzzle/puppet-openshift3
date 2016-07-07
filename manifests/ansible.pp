@@ -76,8 +76,9 @@ class openshift3::ansible {
   } ->
 
   exec {"Wait for master":
-    command => "/usr/bin/wget --spider --tries 60 --retry-connrefused --no-check-certificate https://localhost:8443/",
-    unless => "/usr/bin/wget --spider --no-check-certificate https://localhost:8443/",
+    command => "/usr/bin/wget --spider --tries 60 --retry-connrefused --no-check-certificate https://${openshift3::master}:8443/",
+    unless => "/usr/bin/wget --spider --no-check-certificate https://${openshift3::master}:8443/",
     path => $::path,
   }
+
 }
