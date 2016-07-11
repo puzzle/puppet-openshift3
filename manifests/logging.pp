@@ -1,5 +1,5 @@
 class openshift3::logging {
-  if versioncmp($::openshift3::version, "3.1") > 0 {
+  if $::openshift3::install_logging and versioncmp($::openshift3::version, "3.1") > 0 {
     if $::openshift3::deployment_type == "enterprise" {
       $image_prefix = 'registry.access.redhat.com/openshift3/'
     } else {

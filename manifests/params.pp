@@ -17,10 +17,12 @@ class openshift3::params {
   $no_proxy = "localhost,127.0.0.1"
   $install_router = true
   $install_registry = true
+  $install_logging = true
   $es_instance_ram = 2G
   $es_ops_instance_ram = 2G
   $enable_ops_logging = false
   $logging_image_version = undef
+  $install_metrics = true
   $metrics_image_version = undef
   $metrics_use_persistent_storage = false
   $metrics_pv_size = 20Gi
