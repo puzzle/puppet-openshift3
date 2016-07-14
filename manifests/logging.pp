@@ -57,7 +57,7 @@ class openshift3::logging {
     instantiate_template { "logging-support-template":
       template_namespace => "logging",
       resource_namespace => "logging",
-      creates => "route/kibana",
+      creates => "svc/logging-es",
     }
 
     if $::openshift3::logging_volume_size {
