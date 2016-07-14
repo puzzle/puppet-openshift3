@@ -102,6 +102,12 @@
       service: name=td-agent state=stopped enabled=false
       ignore_errors: yes
 
+    - name: Workaround for rhbz#133563
+      lineinfile: dest=/etc/group line="dockerlog:x:4294967295:"
+
+    - name: Workaround for rhbz#133563
+      lineinfile: dest=/etc/passwd line="dockerlog:x:4294967295:4294967295::/home/dockerlog:/bin/nologin"
+
 - name: Prepare masters for OpenShift installation
   hosts: masters
 
