@@ -1,7 +1,11 @@
 define openshift3::run_ansible($cwd, $options = '') {
-  notify { "Run ansible playbook $title if needed": } ->
+  exec { "Running Ansible playbook $title":
+    command => "echo Running Ansible playbook $title",
+    unless  => "/var/lib/puppet-openshift3/ansible/run-ansible -c $title $options",
+    path => $::path,
+  } ->
 
-  exec { "Run ansible playbook $title":
+  exec { "ansible-playbook $title":
     cwd     => $cwd,
     command => "/var/lib/puppet-openshift3/ansible/run-ansible $title $options",
     unless  => "/var/lib/puppet-openshift3/ansible/run-ansible -c $title $options",
