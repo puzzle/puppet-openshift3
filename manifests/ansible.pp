@@ -1,5 +1,11 @@
 class openshift3::ansible {
 
+  if $::openshift3::ansible_sudo {
+    $sudo = 'sudo'
+  } else {
+    $sudo = ''
+  }
+  
   ensure_resource('file', ['/var/lib/puppet-openshift3/log',"${::openshift3::conf_dir}", "${::openshift3::conf_dir}/master"], { ensure => directory })
 
   if $::openshift3::ldap_ca_crt {
@@ -61,7 +67,8 @@ class openshift3::ansible {
       'playbooks/byo/openshift-cluster/upgrades/v3_0_minor/upgrade.yml' => { 'if_deployment_type' => 'enterprise', if_cur_ver => '3.0', if_new_ver => '3.0' },
       'playbooks/byo/openshift-cluster/upgrades/v3_1_minor/upgrade.yml' => { 'if_deployment_type' => 'enterprise', if_cur_ver => '3.1', if_new_ver => '3.1' },
       'playbooks/byo/openshift-cluster/upgrades/v3_0_to_v3_1/upgrade.yml' => { 'if_deployment_type' => 'enterprise', if_cur_ver => '3.0', if_new_ver => '3.1' },
-      'playbooks/byo/openshift-cluster/upgrades/v3_1_to_v3_2/upgrade.yml' => { 'if_deployment_type' => 'enterprise', if_cur_ver => '3.1', if_new_ver => '3.2' },
+      'playbooks/byo/openshift-cluster/upgrades/v3_1_to_v3_2/upgrade.yml' => { 'if_deployment_type' => 'enterprise', if_cur_ver => '3.1', if_new_ver => '3.2' },     
+      'playbooks/byo/openshift-cluster/upgrades/v3_2/upgrade.yml' => { 'if_deployment_type' => 'enterprise', if_cur_ver => '3.2', if_new_ver => '3.2' },
     }
   } ->
 
@@ -82,7 +89,7 @@ class openshift3::ansible {
   } ->
 
   exec {"Copy kubeconfig from first master":
-    command => "/usr/bin/ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ansible@${openshift3::master} sudo bash -c 'cd /root && tar cf - .kube' | ( cd /root && tar xf - )",
+    command => "/usr/bin/ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${openshift3::ansible_ssh_user}@${openshift3::master} ${sudo} bash -c 'cd /root && tar cf - .kube' | ( cd /root && tar xf - )",
     creates => '/root/.kube',
     path => $::path,
   }
