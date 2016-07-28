@@ -17,9 +17,6 @@
       notify:
         - restart OpenShift node
 
-#    - name: Set docker log level
-#      lineinfile: dest=/etc/sysconfig/docker regexp="^OPTIONS='[^']+'" line="OPTIONS='--insecure-registry=172.30.0.0/16 --selinux-enabled --log-level=warn'"
-
     - include: tasks/proxy.yml file=/etc/sysconfig/docker
       notify:
         - restart Docker
@@ -27,18 +24,6 @@
     - include: tasks/proxy.yml file=/etc/sysconfig/{{ openshift_package_name }}-node
       notify:
         - restart OpenShift node
-
-    - meta: flush_handlers
-
-    - docker: pull=always image="{{openshift_component_prefix}}-{{item}}:v{{openshift_version}}"
-      ignore_errors: yes
-      with_items:
-        - deployer
-        - pod
-        - haproxy-router
-        - docker-registry
-        - docker-builder
-        - sti-builder
 
   handlers:
     - name: restart Docker
