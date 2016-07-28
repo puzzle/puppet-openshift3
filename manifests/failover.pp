@@ -23,6 +23,18 @@ class openshift3::failover {
     resource => 'scc/privileged',
   } ->
 
+  exec { "Create wildcard certificate":
+      provider => 'shell',
+      environment => ["CA=/${::openshift3::conf_dir}/master"],
+      cwd     => "/root",
+      command => "oadm create-server-cert --signer-cert=\$CA/ca.crt \
+        --signer-key=\$CA/ca.key --signer-serial=\$CA/ca.serial.txt \
+        --hostnames='*.${::openshift3::app_domain}' \
+        --cert=cloudapps.crt --key=cloudapps.key && cat cloudapps.crt cloudapps.key \$CA/ca.crt > cloudapps.router.pem",
+      creates => '/root/cloudapps.router.pem',
+      path => $::path,
+  } ->
+
   exec { 'Install HA router':
     provider => 'shell',
     environment => 'HOME=/root',
