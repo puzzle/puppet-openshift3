@@ -30,6 +30,7 @@ class openshift3::package  {
 
   package { ['git', 'ansible', 'atomic-openshift-clients', 'wget', 'jq']:
     ensure => present,
+    install_options => "--enablerepo=${::openshift3::epel_repo_id}",
   }
 
 #  package { ['deltarpm', 'wget', 'vim-enhanced', 'net-tools', 'bind-utils', 'git', 'bridge-utils', 'iptables-services', 'pyOpenSSL', 'bash-completion' ]:
