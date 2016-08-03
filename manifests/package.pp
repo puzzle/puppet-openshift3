@@ -28,7 +28,11 @@ class openshift3::package  {
 #    gpgkey => "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7",
 #  } ->
 
-  package { ['git', 'ansible', 'atomic-openshift-clients', 'wget', 'jq']:
+  yum_versionlock { 'atomic-openshift-clients':
+    ensure => $::openshift3::version,
+  } ->
+
+  package { ['git', 'ansible', 'wget', 'jq', 'atomic-openshift-clients']:
     ensure => present,
     install_options => "--enablerepo=${::openshift3::epel_repo_id}",
   }
