@@ -18,6 +18,7 @@ class openshift3::params {
   $install_router = true
   $install_registry = true
   $install_logging = true
+  $failover_router_interface = '{{ ansible_default_ipv4.address }}'
   $es_instance_ram = 2G
   $es_ops_instance_ram = 2G
   $enable_ops_logging = false
@@ -29,7 +30,7 @@ class openshift3::params {
   $metrics_duration = 3
   $ansible_ssh_user = 'root'
   $ansible_sudo = false
-  $openshift_ansible_version = 'openshift-ansible-3.2.0-1'
+  $openshift_ansible_version = 'openshift-ansible-3.2.13-1'
   $set_node_ip = false
   $set_hostname = true
   $docker_options = '-l warn --log-opt max-size=1M --log-opt max-file=3'

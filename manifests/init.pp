@@ -22,6 +22,7 @@ class openshift3 (
   $failover_router_ips = undef,
   $failover_router_label = undef,
   $failover_router_image = undef,
+  $failover_router_interface = $::openshift3::params::failover_router_interface,
   $failover_keepalived_image = undef,
   $install_registry = $::openshift3::params::install_registry,
   $registry_volume_size = undef,

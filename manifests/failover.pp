@@ -55,6 +55,7 @@ class openshift3::failover {
     cwd     => "/root",
     command => "oadm ipfailover -n default ipf-ha-router --replicas=${::openshift3::failover_router_replicas} --watch-port=80 \
 --selector=\"ha-router=${::openshift3::failover_router_label}\" --virtual-ips=\"${::openshift3::failover_router_ips}\" \
+--interface=${::openshift3::failover_router_interface} \
 --credentials=${::openshift3::conf_dir}/master/openshift-router.kubeconfig \
 --images='${::openshift3::component_images}' \
 --service-account=ipfailover --create",
