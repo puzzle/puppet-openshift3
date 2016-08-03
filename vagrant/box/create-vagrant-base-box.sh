@@ -4,7 +4,7 @@
 #sed -i 's,^root:[^:]\+:,root:\$6\$zYP1kh/4\$Fbip3EsBMlJlxEJNIDe1QPEpeKOuQFI.sqq7ER8otb6lze9dJx4uVuKlLwr0iRSaOjVXqLqAhbqMKc23iVNsT/:,' /etc/shadow
 
 # Enable SELinux to make sure files are labeled correctly
-mkdir /selinux
+mkdir -p /selinux
 mount none /selinux -t selinuxfs
 load_policy
 setenforce 1
