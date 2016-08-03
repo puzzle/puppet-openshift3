@@ -1,5 +1,5 @@
 define openshift3::run_ansible($cwd, $options = '') {
-  exec { "Running Ansible playbook $title":
+  exec { "Running ansible-playbook $title $options":
     command => "echo Running Ansible playbook $title",
     unless  => "/var/lib/puppet-openshift3/ansible/run-ansible -c $title $options",
     path => $::path,
