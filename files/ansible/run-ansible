@@ -14,6 +14,14 @@ if [ "$1" == "-c" ]; then
 else
   check_mode=false
 fi
+
+if [ "$1" == "-u" ]; then
+  check_updates=true
+  shift
+else
+  check_updates=false
+fi
+
 args=("$@")
 playbook=`basename "$1"`
 
@@ -23,6 +31,9 @@ write_state_file() {
   for file in $ansible_files; do
     [ -e ${file} ] && ls -lR ${file} >>$1
   done
+  if [ $check_updates == true ]; then
+    yum --disableplugin=versionlock list updates 2>/dev/null >> $1
+  fi
 }
 
 # Idempotency check, used by puppet
