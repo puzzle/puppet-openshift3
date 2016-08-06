@@ -41,6 +41,7 @@ class openshift3 (
   $enable_ops_logging = $::openshift3::params::enable_ops_logging,
   $logging_image_version = $::openshift3::params::logging_image_version,
   $logging_volume_size = undef,
+  $logging_local_storage = undef,
   $logging_domain = undef,
   $logging_ops_domain = undef,
   $master_cluster_method = undef,

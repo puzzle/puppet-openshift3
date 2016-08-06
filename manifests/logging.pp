@@ -60,8 +60,21 @@ class openshift3::logging {
       creates => "svc/logging-es",
     }
 
-    if $::openshift3::logging_volume_size {
-      set_volume { ['-l component=es', '-l component=es-ops']:
+    if $::openshift3::enable_ops_logging {
+      $volumes = ['-l component=es', '-l component=es-ops']
+    } else {
+      $volumes = ['-l component=es']
+    }
+
+    if $::openshift3::logging_local_storage {
+      set_volume { $volumes:
+        namespace => 'logging',
+        volume_name => 'elasticsearch-storage',
+        host_path => $::openshift3::logging_local_storage,
+        require => Instantiate_Template["logging-support-template"],
+      }
+    } elsif $::openshift3::logging_volume_size {
+      set_volume { $volumes:
         namespace => 'logging',
         volume_name => 'elasticsearch-storage',
         claim_name => 'elasticsearch-storage',
