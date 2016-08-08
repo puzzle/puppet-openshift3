@@ -1,12 +1,18 @@
 ---
 openshift3::deployment_type: enterprise
-openshift3::version: 3.2.0.44
+openshift3::version: 3.2.1.9
+openshift3::docker_version: 1.10.3
+#openshift3::ansible_version: 2.1.0.0
 #openshift3::version: 3.1.1.6
 openshift3::set_node_ip: true
 openshift3::registry_ip: 172.30.1.1
 openshift3::ansible_vars:
   openshift_master_htpasswd_users: {'joe': '$apr1$LB4KhoUd$2QRUqJTtbFnDeal80WI2R/', 'alice': '$apr1$LB4KhoUd$2QRUqJTtbFnDeal80WI2R/'}
   openshift_master_dns_port: 8053
+  openshift_node_kubelet_args:
+    image-gc-high-threshold: ['80']
+    image-gc-low-threshold: ['60']
+#openshift3::logging_local_storage: /data/logging
 
 #openshift3::master_style_repo_url: https://github.com/puzzle/ose-appuio-style
 #openshift3::master_extension_stylesheets:
@@ -22,7 +28,10 @@ openshift3::masters:
     node_labels:
       region: infra
       zone: default
+      logging-infra-fluentd: "true"
+      test: "2"
     schedulable: True
+
 #  - name: ose3-master2.example.com
 #    ip: 172.22.22.123
 #    node_labels:
