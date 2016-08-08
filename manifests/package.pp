@@ -9,6 +9,7 @@ class openshift3::package  {
   if $::openshift3::ansible_version {
     yum_versionlock { ["ansible"]:
       ensure => $::openshift3::ansible_version,
+      yum_options => "--enablerepo=${::openshift3::epel_repo_id}",
     }
   }
 
