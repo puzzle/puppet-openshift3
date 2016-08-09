@@ -59,7 +59,7 @@ class openshift3::ansible {
 
   run_ansible { 'pre-install.yml':
     cwd => '/var/lib/puppet-openshift3/ansible',
-    options => "-e 'openshift_package_name=${openshift3::package_name} openshift_component_prefix=${openshift3::component_prefix} openshift_version=${openshift3::version} openshift_major=${openshift3::major} openshift_minor=${openshift3::minor} docker_version=${openshift3::real_docker_version} vagrant=\"${::vagrant}\" openshift_master_ip=${openshift3::master_ip} configure_epel=${openshift3::configure_epel} epel_repo_id=${openshift3::epel_repo_id} master_style_repo_url=${openshift3::master_style_repo_url} master_style_repo_ref=${openshift3::master_style_repo_ref} master_style_repo_ssh_key=${openshift3::master_style_repo_ssh_key} ansible_version=${openshift3::ansible_version}'",
+    options => "-e 'openshift_package_name=${openshift3::package_name} openshift_component_prefix=${openshift3::component_prefix} openshift_version=${openshift3::version} openshift_major=${openshift3::major} openshift_minor=${openshift3::minor} docker_version=${openshift3::real_docker_version} vagrant=\"${::vagrant}\" openshift_master_ip=${openshift3::master_ip} configure_epel=${openshift3::configure_epel} epel_repo_id=${openshift3::epel_repo_id} master_style_repo_url=${openshift3::master_style_repo_url} master_style_repo_ref=${openshift3::master_style_repo_ref} master_style_repo_ssh_key=${openshift3::master_style_repo_ssh_key} ansible_pkg_version=${openshift3::ansible_version}'",
     check_options => '-u',
   } ->
 
@@ -89,8 +89,14 @@ class openshift3::ansible {
     path => $::path,
   } ->
 
+  exec {"Copy OpenShift config and certificates from first master":
+    command => "/usr/bin/ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${openshift3::ansible_ssh_user}@${openshift3::master} ${sudo} bash -c \\''cd /etc && tar cf - origin'\\' | ( cd /etc && tar xf - )",
+    creates => '/etc/origin/master/ca.crt',
+    path => $::path,
+  } ->
+
   exec {"Copy kubeconfig from first master":
-    command => "/usr/bin/ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${openshift3::ansible_ssh_user}@${openshift3::master} ${sudo} bash -c 'cd /root && tar cf - .kube' | ( cd /root && tar xf - )",
+    command => "/usr/bin/ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${openshift3::ansible_ssh_user}@${openshift3::master} ${sudo} bash -c \\''cd /root && tar cf - .kube'\\' | ( cd /root && tar xf - )",
     creates => '/root/.kube',
     path => $::path,
   }

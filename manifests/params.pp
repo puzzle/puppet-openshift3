@@ -31,7 +31,7 @@ class openshift3::params {
   $metrics_duration = 3
   $ansible_ssh_user = 'root'
   $ansible_sudo = false
-  $openshift_ansible_version = 'openshift-ansible-3.2.13-1'
+  $openshift_ansible_version = 'openshift-ansible-3.2.17-1'
   $set_node_ip = false
   $set_hostname = true
   $docker_options = '-l warn --log-opt max-size=1M --log-opt max-file=3'
