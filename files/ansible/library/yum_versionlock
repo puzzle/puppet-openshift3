@@ -8,11 +8,13 @@ changed='false'
 
 versionlock()
 {
-  if ! echo "${versionlock_list}" | grep -q ":${1}-${2}" >/dev/null 2>&1; then
-    yum versionlock delete "${1}" >/dev/null 2>&1
-    OUTPUT=`yum versionlock "${1}-${2}" 2>&1`
+  nvr=`repoquery --queryformat '%{nvr}' ${1}-${2}`
 
-    if yum versionlock list | grep -q ":${1}-${2}" >/dev/null 2>&1; then
+  if ! echo "${versionlock_list}" | grep -q ":${nvr}" >/dev/null 2>&1; then
+    yum versionlock delete "${1}" >/dev/null 2>&1
+    OUTPUT=`yum versionlock "${nvr}" 2>&1`
+
+    if yum versionlock list -q | grep -q ":${nvr}" >/dev/null 2>&1; then
       changed='true'
     else
       echo "{\"failed\": true, \"msg\": \"Could not versionlock '${1}-${2}'\", \"stdout\": \"${OUTPUT}\"}"
@@ -21,7 +23,7 @@ versionlock()
   fi
 }
 
-versionlock_list="`yum versionlock list`"
+versionlock_list="`yum versionlock list -q`"
 
 versionlock "${name}" "${version}"
 
