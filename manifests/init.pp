@@ -44,6 +44,7 @@ class openshift3 (
   $logging_local_storage = undef,
   $logging_domain = undef,
   $logging_ops_domain = undef,
+  $setup_monitoring_account = $::openshift3::params::setup_monitoring_account,
   $master_cluster_method = undef,
   $master_cluster_hostname = undef,
   $master_cluster_public_hostname = undef,

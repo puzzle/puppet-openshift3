@@ -24,6 +24,7 @@ class openshift3::params {
   $enable_ops_logging = false
   $logging_image_version = undef
   $install_metrics = true
+  $setup_monitoring_account = false
   $metrics_image_version = undef
   $metrics_use_persistent_storage = false
   $metrics_pv_size = 20Gi
