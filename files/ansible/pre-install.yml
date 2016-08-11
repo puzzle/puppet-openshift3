@@ -82,7 +82,7 @@
         - "docker"
 
     - name: Versionlock Ansible Package
-      yum_versionlock: name={{item}} version={{ansible_version}}*
+      yum_versionlock: name={{item}} version={{ansible_pkg_version}}
       with_items:
         - "ansible"
 
