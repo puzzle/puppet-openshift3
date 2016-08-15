@@ -1,11 +1,13 @@
 ---
 openshift3::deployment_type: enterprise
-openshift3::version: 3.2.1.9
+openshift3::version: 3.2.1.13
 openshift3::docker_version: 1.10.3
 #openshift3::ansible_version: 2.1.0.0
 #openshift3::version: 3.1.1.6
 openshift3::set_node_ip: true
 openshift3::registry_ip: 172.30.1.1
+openshift3::install_metrics: false
+openshift3::install_logging: false
 openshift3::ansible_vars:
   openshift_master_htpasswd_users: {'joe': '$apr1$LB4KhoUd$2QRUqJTtbFnDeal80WI2R/', 'alice': '$apr1$LB4KhoUd$2QRUqJTtbFnDeal80WI2R/'}
   openshift_master_dns_port: 8053
