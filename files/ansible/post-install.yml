@@ -17,6 +17,14 @@
       notify:
         - restart OpenShift node
 
+    - name: Workaround for k8s#13511
+      ini_file: dest=/usr/lib/systemd/system/atomic-openshift-node.service
+                section=Service
+                option=KillMode
+                value=process
+      notify:
+        - reload systemd
+
     - include: tasks/proxy.yml file=/etc/sysconfig/docker
       notify:
         - restart Docker
@@ -31,3 +39,6 @@
 
     - name: restart OpenShift node
       service: name={{ openshift_package_name }}-node state=restarted
+
+    - name: reload systemd
+      command: systemctl daemon-reload
