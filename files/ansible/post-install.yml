@@ -6,17 +6,6 @@
     https_proxy: "{{ https_proxy if https_proxy else http_proxy }}"
 
   tasks:
-    - yum: name={{item}} state=latest
-      with_items:
-        - docker
-        - docker-selinux
-      notify:
-        - restart Docker
-
-    - yum: name="{{openshift_package_name}}-node" state=latest
-      notify:
-        - restart OpenShift node
-
     - name: Workaround for k8s#13511
       ini_file: dest=/usr/lib/systemd/system/atomic-openshift-node.service
                 section=Service
