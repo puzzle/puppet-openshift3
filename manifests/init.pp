@@ -73,6 +73,11 @@ class openshift3 (
   $docker_options = $::openshift3::params::docker_options,
   $project_request_template = $::openshift3::params::project_request_template,
   $quota_sync_period = $::openshift3::params::quota_sync_period,
+  $enable_etcd_backup = $::openshift3::params::enable_etcd_backup,
+  $etcd_data_dir = $::openshift3::params::etcd_data_dir,
+  $etcd_backup_dir = $::openshift3::params::etcd_backup_dir,
+  $etcd_backup_hour = $::openshift3::params::etcd_backup_hour,
+  $etcd_backup_minute = $::openshift3::params::etcd_backup_minute,
 ) inherits ::openshift3::params {
  
   $master = $masters[0]['name']

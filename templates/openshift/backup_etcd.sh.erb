@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Pre-backup script for etcd directory
+
+# Delete the old backup directory first, or else etcdctl complains
+/bin/rm -rf ${::openshift3::etcd_backup_dir}
+
+# Execute the backup command
+/bin/etcdctl backup --data-dir ${::openshift3::etcd_data_dir} --backup-dir ${::openshift3::etcd_backup_dir}
+

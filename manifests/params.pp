@@ -40,4 +40,9 @@ class openshift3::params {
   $master_style_repo_ref = 'master'
   $project_request_template = undef
   $quota_sync_period = 15s
+  $enable_etcd_backup = false
+  $etcd_data_dir = "/var/lib/origin/openshift.local.etcd"
+  $etcd_backup_dir = "/var/lib/origin/openshift.local.etcd.bak"
+  $etcd_backup_hour = 21
+  $etcd_backup_minute = 0
 }
