@@ -3,15 +3,23 @@
 #### Table of Contents
 
 1. [Description](#description)
-    * [Features](#features)
-2. [Setup - The basics of getting started with [modulename]](#setup)
-    * [What [modulename] affects](#what-[modulename]-affects)
-    * [Setup requirements](#setup-requirements)
-    * [Beginning with [modulename]](#beginning-with-[modulename])
-3. [Usage - Configuration options and additional functionality](#usage)
-4. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
-5. [Limitations - OS compatibility, etc.](#limitations)
-6. [Development - Guide for contributing to the module](#development)
+  * [Features](#features)
+2. [Setup OpenShift V3](#setup-openshift-v3)
+  * [What openshift3 affects](#what-openshift3-affects)
+  * [Setup Requirements](#setup-requirements)
+    * [SSH Keys](#ssh-keys)
+    * [OpenShift Enterprise](#openshift-enterprise)
+    * [OpenShift Origin](#openshift-origin)
+  * [Beginning with openshift3](#beginning-with-openshift3)
+3. [Usage](#usage)
+4. [Reference](#reference)
+5. [Limitations](#limitations)
+6. [Development](#development)
+7. [Release Notes/Contributors/Etc. **Optional**](#release-notescontributorsetc-optional)
+8. [Vagrant](#vagrant)
+  * [OpenShift Origin](#openshift-origin-1)
+  * [OpenShift Enterprise](#openshift-enterprise-1)
+9. [License](#license)
 
 ## Description
 
@@ -34,7 +42,7 @@ Work in progress!
   * Upgrade OpenShift Enterprise
   * Upgrade OpenShift Origin
 
-## Setup
+## Setup OpenShift V3
 
 ### What openshift3 affects
 
