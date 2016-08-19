@@ -105,7 +105,10 @@ If you aren't using changelog, put your release notes here (though you should co
 
 ## Vagrant
 If you have [Vagrant](https://www.vagrantup.com/) and [VirtualBox](https://www.virtualbox.org/) installed you can get a
-virtual machine with a fully operational OpenShift Origin M5 master and node by running:
+virtual machine with a fully operational OpenShift instance.
+
+### OpenShift Origin
+Create OpenShift Origin M5 master and node by running:
 
     vagrant up origin-master
 
@@ -117,10 +120,23 @@ provided the applications use one of the preconfigured domains (*.cloudapps.exam
 Please refer to this documentation for instructions on how to change the resolver on various operation systems,
 but remember to use the IP address of the created virtual machine (172.22.22.22):
 https://developers.google.com/speed/public-dns/docs/using.
-The OpenShift Web Console is now available under https://origin-master.example.com:8443/.
+
+The OpenShift Web Console is now available under https://origin-master.example.com:8443/
+
+### OpenShift Enterprise
+You need to have a RHEL 7.2 Vagrant box available.
+Copy the vagrantuser.example file to .vagrantuser and fill in your RedHat data.
+
+Create OpenShift Enterprise master by running:
+
+    vagrant up ose3-master
+
+The IP address differs to the Origin installation. Use 172.22.22.122 instead of 172.22.22.22.
+
+The OpenShift Web Console is now available under https://ose3-master.example.com:8443/
 
 ## License
-Copyright © 2015 Puzzle ITC GmbH
+Copyright © 2016 Puzzle ITC GmbH
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
