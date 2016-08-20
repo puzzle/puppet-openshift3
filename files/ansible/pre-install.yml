@@ -118,3 +118,10 @@
     - name: Checkout web console style repo
       git: accept_hostkey=true dest=/var/lib/puppet-openshift3/style repo={{master_style_repo_url}} version={{master_style_repo_ref|default(omit)}} key_file={{master_style_repo_ssh_key|default(omit)}}
       when: master_style_repo_url|default("") != ""
+
+    - name: Configure master image format
+      lineinfile:
+        dest: /root/openshift-ansible/roles/openshift_master/templates/master.yaml.v1.j2
+        regexp: '^  format:'
+        line: "  format: {{ master_image_format }}"
+      when: master_image_format|default("") != ""
