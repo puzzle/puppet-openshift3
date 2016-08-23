@@ -43,12 +43,12 @@ openshift3::masters:
 #
 #openshift3::etcd:
 #  - name: ose3-master.example.com
-#  - name: ose3-master2.example.com 
+#  - name: ose3-master2.example.com
 
 #openshift3::nodes:
 #  - name: ose3-node1.example.com
 #    public_ip: 172.22.22.131
-#    ip: 172.23.22.131
+#    ip: 172.22.22.131
 #    node_labels:
 #      region: primary
 #      zone: east
