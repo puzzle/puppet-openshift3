@@ -67,6 +67,10 @@ class openshift3::logging {
     }
 
     if $::openshift3::logging_local_storage {
+      add_user_to_scc { 'system:serviceaccount:logging:aggregated-logging-elasticsearch':
+        scc => 'hostaccess',
+      } ->
+
       set_volume { $volumes:
         namespace => 'logging',
         volume_name => 'elasticsearch-storage',

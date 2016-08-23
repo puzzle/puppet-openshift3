@@ -22,10 +22,6 @@ define openshift3::set_volume ($namespace = 'default', $volume_name = undef, $cl
       path => $::path,
     }
   } else {
-    add_user_to_scc { 'system:serviceaccount:logging:aggregated-logging-elasticsearch':
-      scc => 'hostaccess',
-    } ->
-
     exec { "Set volume ${volume_name} of ${title}":
       provider    => 'shell',
       environment => 'HOME=/root',
