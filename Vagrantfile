@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 #
 # Puppet Module to install and manage OpenShift Enterprise 3 and OpenShift Origin M5.
-# Copyright 2015 (C) Puzzle ITC GmbH
+# Copyright 2016 (C) Puzzle ITC GmbH
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

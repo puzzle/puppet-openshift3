@@ -15,10 +15,11 @@
 4. [Reference](#reference)
 5. [Limitations](#limitations)
 6. [Development](#development)
-7. [Release Notes/Contributors/Etc. **Optional**](#release-notescontributorsetc-optional)
+7. [Release Notes/Contributors/Etc. Optional](#release-notescontributorsetc-optional)
 8. [Vagrant](#vagrant)
   * [OpenShift Origin](#openshift-origin-1)
   * [OpenShift Enterprise](#openshift-enterprise-1)
+    * [Adding Nodes](#adding-nodes)
 9. [License](#license)
 
 ## Description
@@ -142,6 +143,15 @@ Create OpenShift Enterprise master by running:
 The IP address differs to the Origin installation. Use 172.22.22.122 instead of 172.22.22.22.
 
 The OpenShift Web Console is now available under https://ose3-master.example.com:8443/
+
+#### Adding Nodes
+Enable hiera node configuration. To start, un-comment the example configuration in *vagrant/hiera/group/enterprise.yaml*
+
+The line with *openshift3::nodes:* and any wanted node configurations are needed.
+
+After the configuration of the node is done, start the node an run the provisioning of the master:
+
+    vagrant provision ose3-master
 
 ## License
 Copyright © 2016 Puzzle ITC GmbH
