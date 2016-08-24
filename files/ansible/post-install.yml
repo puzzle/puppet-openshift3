@@ -22,6 +22,8 @@
       notify:
         - restart OpenShift node
 
+    - local_action: yum name={{ openshift_package_name }} state=latest
+
   handlers:
     - name: restart Docker
       service: name=docker state=restarted

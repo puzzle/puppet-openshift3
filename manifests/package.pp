@@ -6,12 +6,10 @@ class openshift3::package  {
 #    }
 #  }
 
-  if $::openshift3::ansible_version {
-    yum_versionlock { ["ansible"]:
-      ensure => $::openshift3::ansible_version,
-      yum_options => "--enablerepo=${::openshift3::epel_repo_id}",
-    }
-  }
+  yum_versionlock { ["ansible"]:
+    ensure => $::openshift3::ansible_version,
+    yum_options => "--enablerepo=${::openshift3::epel_repo_id}",
+  } ->
 
 #  if $::openshift3::docker_version {
 #    yum_versionlock { ["docker", "docker-selinux"]:
@@ -29,13 +27,18 @@ class openshift3::package  {
 #    gpgkey => "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7",
 #  } ->
 
-  yum_versionlock { 'atomic-openshift-clients':
+  yum_versionlock { 'atomic-openshift':
     ensure => $::openshift3::version,
   } ->
 
-  package { ['git', 'ansible', 'wget', 'jq', 'atomic-openshift-clients']:
+  package { ['git', 'wget', 'jq', 'atomic-openshift']:
     ensure => present,
     install_options => "--enablerepo=${::openshift3::epel_repo_id}",
+  } ->
+
+  package { "ansible-${::openshift3::ansible_version}":
+    ensure => present,
+    install_options => ["--enablerepo=${::openshift3::epel_repo_id}", "--show-duplicates"],
   }
 
 #  package { ['deltarpm', 'wget', 'vim-enhanced', 'net-tools', 'bind-utils', 'git', 'bridge-utils', 'iptables-services', 'pyOpenSSL', 'bash-completion' ]:
