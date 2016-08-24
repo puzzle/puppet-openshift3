@@ -23,6 +23,7 @@
         - restart OpenShift node
 
     - local_action: yum name={{ openshift_package_name }} state=latest
+      run_once: true
 
   handlers:
     - name: restart Docker

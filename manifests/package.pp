@@ -27,7 +27,7 @@ class openshift3::package  {
 #    gpgkey => "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7",
 #  } ->
 
-  yum_versionlock { 'atomic-openshift':
+  yum_versionlock { [ 'atomic-openshift', 'atomic-openshift-clients' ]:
     ensure => $::openshift3::version,
   } ->
 
