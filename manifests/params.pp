@@ -23,6 +23,8 @@ class openshift3::params {
   $es_ops_instance_ram = 2G
   $enable_ops_logging = false
   $logging_image_version = undef
+  $logging_cluster_size = 1
+  $logging_ops_cluster_size = 1
   $install_metrics = true
   $setup_monitoring_account = false
   $metrics_image_version = undef

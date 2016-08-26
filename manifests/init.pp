@@ -40,6 +40,8 @@ class openshift3 (
   $es_ops_instance_ram = $::openshift3::params::es_ops_instance_ram,
   $enable_ops_logging = $::openshift3::params::enable_ops_logging,
   $logging_image_version = $::openshift3::params::logging_image_version,
+  $logging_cluster_size = $::openshift3::params::logging_cluster_size,
+  $logging_ops_cluster_size = $::openshift3::params::logging_ops_cluster_size,
   $logging_volume_size = undef,
   $logging_local_storage = undef,
   $logging_domain = undef,
