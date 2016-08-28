@@ -57,7 +57,7 @@ class openshift3::logging {
     instantiate_template { "logging-support-template":
       template_namespace => "logging",
       resource_namespace => "logging",
-      creates => "svc/logging-es",
+      creates => "route -l component=support",
     }
 
     if $::openshift3::enable_ops_logging {
@@ -81,8 +81,9 @@ class openshift3::logging {
       set_volume { $volumes:
         namespace => 'logging',
         volume_name => 'elasticsearch-storage',
-        claim_name => 'elasticsearch-storage',
+        claim_name => 'logging-es',
         claim_size => $::openshift3::logging_volume_size,
+        claim_instances => $::openshift3::logging_cluster_size,
         require => Instantiate_Template["logging-support-template"],
       }
     }
