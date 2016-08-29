@@ -22,6 +22,9 @@
       notify:
         - restart OpenShift node
 
+    - name: Configure OpenShift Gluster plugin logrotate
+      copy: src=files/glusterfs-plugin dest=/etc/logrotate.d owner=root group=root mode=0644 setype=etc_t
+
     - local_action: yum name={{ openshift_package_name }} state=latest
       run_once: true
 
