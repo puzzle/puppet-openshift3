@@ -10,6 +10,9 @@ class openshift3::monitoring {
       namespace => $_ns,
       role_type => "cluster",
       role => "view",
+    } ->
+    new_service_account { "endtoend":
+      namespace => $_ns,
     }
   }
 }
