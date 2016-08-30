@@ -83,9 +83,5 @@ class openshift3::registry {
       timeout => 600,
       path => $::path,
     } 
-
-    if ! $::openshift3::master_cluster_method {
-      Exec['Create registry service with new IP'] ~> Service["${::openshift3::package_name}-master"]
-    }
   }
 }
