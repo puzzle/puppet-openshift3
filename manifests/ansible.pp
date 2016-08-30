@@ -19,12 +19,25 @@ class openshift3::ansible {
     }
   }
 
-  vcsrepo { "/root/openshift-ansible":
-    ensure   => latest,
-    provider => git,
-    source   => "https://github.com/openshift/openshift-ansible.git",
-    revision => $::openshift3::openshift_ansible_version,
-  } ->
+  if $::openshift3::ansible_playbook_source == 'package' {
+    package { "openshift-ansible-playbooks":
+      ensure => present,
+    } ->
+
+    file { "/root/openshift-ansible":
+      ensure => link,
+      target => "/usr/share/ansible/openshift-ansible/",
+      before   => File["/etc/ansible"],
+    }
+  } else {
+    vcsrepo { "/root/openshift-ansible":
+      ensure   => latest,
+      provider => git,
+      source   => "https://github.com/openshift/openshift-ansible.git",
+      revision => $::openshift3::openshift_ansible_version,
+      before   => File["/etc/ansible"],
+    }
+  }
 
   file { "/etc/ansible":
     ensure => "directory",

@@ -63,6 +63,7 @@ class openshift3 (
   $ansible_ssh_user = $::openshift3::params::ansible_ssh_user,
   $ansible_sudo = $::openshift3::params::ansible_sudo,
   $ansible_vars = [],
+  $ansible_playbook_source = undef,
   $openshift_ansible_version = $::openshift3::params::openshift_ansible_version,
   $set_node_ip = $::openshift3::params::set_node_ip,
   $set_hostname = $::openshift3::params::set_hostname,
