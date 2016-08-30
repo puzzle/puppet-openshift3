@@ -14,6 +14,12 @@ class openshift3::failover {
       $real_keepalived_image = "${::openshift3::component_prefix}-keepalived-ipfailover:v${::openshift3::version}"
     }
 
+    if $::openshift3::failover_router_interface {
+      $failover_router_interface_opt = "--interface=${::openshift3::failover_router_interface}"
+    } else {
+      $failover_router_interface_opt = ""
+    }
+
   oc_create { '{"kind":"ServiceAccount","apiVersion":"v1","metadata":{"name":"ipfailover"}}':
     resource => 'sa/ipfailover',
   } ->
@@ -55,7 +61,7 @@ class openshift3::failover {
     cwd     => "/root",
     command => "oadm ipfailover -n default ipf-ha-router --replicas=${::openshift3::failover_router_replicas} --watch-port=80 \
 --selector=\"ha-router=${::openshift3::failover_router_label}\" --virtual-ips=\"${::openshift3::failover_router_ips}\" \
---interface=${::openshift3::failover_router_interface} \
+${failover_router_interface_opt} \
 --credentials=${::openshift3::conf_dir}/master/openshift-router.kubeconfig \
 --images='${::openshift3::component_images}' \
 --service-account=ipfailover --create",

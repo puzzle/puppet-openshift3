@@ -18,7 +18,7 @@ class openshift3::params {
   $install_router = true
   $install_registry = true
   $install_logging = true
-  $failover_router_interface = '{{ ansible_default_ipv4.address }}'
+  $failover_router_interface = undef
   $es_instance_ram = 2G
   $es_ops_instance_ram = 2G
   $enable_ops_logging = false
