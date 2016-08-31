@@ -73,6 +73,8 @@ class openshift3 (
   $docker_options = $::openshift3::params::docker_options,
   $project_request_template = $::openshift3::params::project_request_template,
   $quota_sync_period = $::openshift3::params::quota_sync_period,
+  $prune_user = $::openshift3::params::prune_user,
+  $prune_password = $::openshift3::params::prune_password,
 ) inherits ::openshift3::params {
  
   $master = $masters[0]['name']
@@ -82,6 +84,9 @@ class openshift3 (
   $major = $version_array[0]
   $minor = $version_array[1]
   $patch = $version_array[2]
+
+#  $ansible_vars_htpasswd_users_default = { openshift_master_htpasswd_users => { $prune_user => $prune_password, } }
+  $ansible_vars_htpasswd_users_default = { openshift_master_htpasswd_users => { pruner => $prune_password, } }
 
   if $deployment_type == "enterprise" {
     $component_prefix = 'registry.access.redhat.com/openshift3/ose'
@@ -158,7 +163,7 @@ class openshift3 (
     $real_docker_version = $default_docker_version
   }
 
-  $real_ansible_vars = merge($ansible_vars_default, $ansible_vars)
+  $real_ansible_vars = deep_merge($ansible_vars_default, $ansible_vars_htpasswd_users_default, $ansible_vars)
 
   ensure_resource('file', '/var/lib/puppet-openshift3', { ensure => directory })
   ensure_resource('file', '/var/lib/puppet-openshift3/certs', { ensure => directory })

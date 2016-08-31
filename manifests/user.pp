@@ -10,4 +10,13 @@ class openshift3::user {
       target      => '/etc/openshift/openshift-passwd',
     }
   }
+
+  user { 'OpenShift prune user':
+    name       => 'pruner',
+    ensure     => present,
+    comment    => 'OpenShift prune user',
+    shell      => '/bin/bash',
+    home       => '/home/pruner',
+    managehome => true
+  }
 }

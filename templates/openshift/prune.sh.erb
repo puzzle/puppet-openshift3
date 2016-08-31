@@ -1,0 +1,16 @@
+oc login --insecure-skip-tls-verify=true "<%= scope['openshift3::master_public_api_url'] %>" --username="<%= scope['openshift3::prune_user'] %>" --password="<%= scope['openshift3::prune_password'] %>" >/dev/null
+
+echo "Pruning old builds"
+oadm prune builds --orphans --confirm
+echo
+
+echo "Pruning old deployments"
+{ oadm prune deployments --orphans --confirm 2>&1 1>&3 | grep -v "Unable to prune layer" 1>&2; } 3>&1
+echo
+
+echo "Pruning old images from registry"
+# Filter known error messages "Unable to find image"
+{ oadm prune images --keep-younger-than=24h0m0s --confirm 2>&1 1>&3 | grep -v "Unable to find image" 1>&2; } 3>&1
+echo
+
+oc logout

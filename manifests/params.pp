@@ -40,4 +40,7 @@ class openshift3::params {
   $master_style_repo_ref = 'master'
   $project_request_template = undef
   $quota_sync_period = 15s
+  $prune_user = "pruner"
+  #$prune_password = trocla('user_prune','plain','charset: shellsafe','length: 32')
+  $prune_password = "5cH?B,7Z2Wml"
 }
