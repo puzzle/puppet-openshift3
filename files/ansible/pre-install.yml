@@ -40,6 +40,14 @@
         - rhel-7-server-optional-rpms
       when: ansible_distribution == "RedHat"
 
+    - name: Set RHEL repos priority
+      rhsm_repo_prio: name={{item}} priority=1
+      with_items:
+        - rhel-7-server-rpms
+        - rhel-7-server-extras-rpms
+        - rhel-7-server-optional-rpms
+      when: ansible_distribution == "RedHat"
+
     - name: Enable OpenShift Enterprise repos
       rhsm_repo: name={{item}} enable=1
       with_items:

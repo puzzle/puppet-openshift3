@@ -1,0 +1,23 @@
+#!/bin/bash
+# WANT_JSON
+
+NL="
+"
+NAME=$(jq -r .name < $1)
+PRIORITY=$(jq -r .priority < $1)
+
+REPO_PRIORITY=$(cat /var/lib/rhsm/cache/content_overrides.json | jq -r ".[] | select (.contentLabel == \"${NAME}\" and .name == \"priority\").value")
+
+if [ 0$REPO_PRIORITY -ne 0$PRIORITY ]; then
+
+  OUTPUT=$(subscription-manager repo-override --repo="${NAME}" --add=priority:$PRIORITY 2>&1)
+
+  if [ $? -eq 0 ]; then
+    echo '{"changed": true}'
+  else
+    echo "{\"failed\": true, \"msg\": \"Could not set priority to ${PRIORITY} for repo '${NAME}'${NL}${OUTPUT}\"}"
+  fi
+else
+  echo '{"changed": false}'
+fi
+
