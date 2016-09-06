@@ -39,5 +39,6 @@ class openshift3::params {
   $docker_options = '-l warn --log-opt max-size=1M --log-opt max-file=3'
   $master_style_repo_ref = 'master'
   $project_request_template = undef
+  $project_request_message = undef
   $quota_sync_period = 15s
 }
