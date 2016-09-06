@@ -97,7 +97,9 @@ This section is where you describe how to customize, configure, and do the fancy
 
 ## Reference
 
-Here, include a complete list of your module's classes, types, providers, facts, along with the parameters for each. Users refer to this section (thus the name "Reference") to find specific details; most users don't read it per se.
+Puppet and ansible parameter descriptions can be found in the enterprise [hiera file](vagrant/hiera/group/enterprise.yaml).
+
+An example ansible inventory can be found [here](https://github.com/openshift/openshift-ansible/blob/master/inventory/byo/hosts.ose.example). Adapt the branch on GitHub to the version set by parameter *ansible_version*. 
 
 ## Limitations
 
