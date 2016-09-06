@@ -60,7 +60,6 @@ class openshift3::metrics {
       ],
       resource_namespace => "openshift-infra",
       creates => "svc/hawkular-metrics",
-#      creates => "svc/dummy",
     }
 
 #    oc_replace { [
