@@ -21,6 +21,8 @@ openshift_pkg_version=-<%= scope['::openshift3::version'] %>
 # enable htpasswd authentication
 openshift_master_identity_providers=<%= scope['::openshift3::identity_providers'].to_json %>
 
+openshift_rhsm_repos=<%= scope['::openshift3::rhsm_repos'].to_json %>
+
 osm_default_subdomain=<%= scope['::openshift3::app_domain'] %>
 osm_cluster_network_cidr='<%= scope['::openshift3::cluster_network_cidr'] %>'
 <%= "openshift_master_cluster_method=#{scope['::openshift3::master_cluster_method']}" if scope['::openshift3::master_cluster_method']!=:undef  %>

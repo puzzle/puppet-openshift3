@@ -1,13 +1,13 @@
 class openshift3::repo  {
 
   if $::operatingsystem == 'RedHat' {
-    rhsm_repo { ['rhel-7-server-rpms', 'rhel-7-server-extras-rpms', 'rhel-7-server-optional-rpms']: 
+    rhsm_repo { $::openshift3::rhsm_repos:
       ensure  => present,
     }
   }
 
   if $::openshift3::deployment_type == 'enterprise' {
-    rhsm_repo { 'rhel-server-7-ose-beta-rpms': 
+    rhsm_repo { 'rhel-server-7-ose-beta-rpms':
       ensure  => absent,
     }
 
@@ -31,7 +31,7 @@ class openshift3::repo  {
     }
   }
 
-  if $::openshift3::configure_epel {  
+  if $::openshift3::configure_epel {
     yumrepo { "epel":
       descr => 'Extra Packages for Enterprise Linux 7',
       baseurl => "http://download.fedoraproject.org/pub/epel/7/x86_64",

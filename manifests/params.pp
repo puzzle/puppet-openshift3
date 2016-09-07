@@ -40,4 +40,5 @@ class openshift3::params {
   $master_style_repo_ref = 'master'
   $project_request_template = undef
   $quota_sync_period = 15s
+  $rhsm_repos= ['rhel-7-server-rpms', 'rhel-7-server-extras-rpms', 'rhel-7-server-optional-rpms']
 }

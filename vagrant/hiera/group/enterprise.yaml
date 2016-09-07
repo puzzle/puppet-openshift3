@@ -4,6 +4,11 @@ openshift3::version: 3.2.1.13
 openshift3::docker_version: 1.10.3
 #openshift3::ansible_version: 2.1.0.0
 #openshift3::version: 3.1.1.6
+# set the Red Hat repositories that shall be added, enabled and prioritized 
+#openshift3::rhsm_repos:
+#  - rhel-7-server-extras-rpms
+#  - rhel-7-server-optional-rpms
+#  - rhel-7-server-rpms
 openshift3::set_node_ip: true
 openshift3::registry_ip: 172.30.1.1
 openshift3::install_metrics: false
