@@ -99,7 +99,7 @@ This section is where you describe how to customize, configure, and do the fancy
 
 Puppet and ansible parameter descriptions can be found in the enterprise [hiera file](vagrant/hiera/group/enterprise.yaml).
 
-An example ansible inventory can be found [here](https://github.com/openshift/openshift-ansible/blob/master/inventory/byo/hosts.ose.example). Adapt the branch on GitHub to the version set by parameter *ansible_version*. 
+An example ansible inventory can be found [here](https://github.com/openshift/openshift-ansible/blob/master/inventory/byo/hosts.ose.example). Adapt the branch on GitHub to the version set by parameter *ansible_version*.
 
 ## Limitations
 
@@ -111,23 +111,24 @@ Since your module is awesome, other users will want to play with it. Let them kn
 
 ## Release Notes/Contributors/Etc. **Optional**
 
-If you aren't using changelog, put your release notes here (though you should consider using changelog). You can also add any additional sections you feel are necessary or important to include here. Please use the `## ` header. 
+If you aren't using changelog, put your release notes here (though you should consider using changelog). You can also add any additional sections you feel are necessary or important to include here. Please use the `## ` header.
 
 
 ## Vagrant
-If you have [Vagrant](https://www.vagrantup.com/) and [VirtualBox](https://www.virtualbox.org/) installed you can get a
-virtual machine with a fully operational OpenShift instance.
+If you have [Vagrant](https://www.vagrantup.com/) and [libvirt](http://libvirt.org/) installed you can get a
+virtual machine with a fully operational OpenShift instance. [VirtualBox](https://www.virtualbox.org/) may work as well (untested).
 
 ### OpenShift Origin
 Create OpenShift Origin M5 master and node by running:
 
     vagrant up origin-master
 
-Installing OpenShift inside the VM will take several minutes, depending on the speed of your machine and your
-internet connection.
-If you then point the resolver of your host machine to the IP address of the newly created virtual machine 
+Installing OpenShift inside the VM will take several minutes, depending on the speed of your machine and your internet connection.
+
+#### Connect to the OpenShift Master
+If you then point the resolver of your host machine to the IP address of the newly created virtual machine
 (172.22.22.22) you will be able to resolve the OpenShift Master and any deployed application by name,
-provided the applications use one of the preconfigured domains (*.cloudapps.example.com, *.openshiftapps.com).
+provided the applications use one of the preconfigured domains (\*.cloudapps.example.com, \*.openshiftapps.com).
 Please refer to this documentation for instructions on how to change the resolver on various operation systems,
 but remember to use the IP address of the created virtual machine (172.22.22.22):
 https://developers.google.com/speed/public-dns/docs/using.
@@ -142,6 +143,7 @@ Create OpenShift Enterprise master by running:
 
     vagrant up ose3-master
 
+#### Connect to the OpenShift Master
 The IP address differs to the Origin installation. Use 172.22.22.122 instead of 172.22.22.22.
 
 The OpenShift Web Console is now available under https://ose3-master.example.com:8443/
@@ -154,6 +156,34 @@ The line with *openshift3::nodes:* and any wanted node configurations are needed
 After the configuration of the node is done, start the node an run the provisioning of the master:
 
     vagrant provision ose3-master
+
+### Possible Problems
+Read carefully the log output and check for errors.
+
+#### Shared/Synced Folder by rsync
+To make OpenShift work, the Vagrant *rsync* must not be used. Check the logs after the line **Configuring and enabling network interfaces...**
+
+When you see **Mounting NFS shared folders...** or similar for your type of shared folders. The installation should work.
+
+But if you find **Rsyncing folder: ... /puppet-openshift3/ => /vagrant**. OpenShift will not work. Your system has no tool for shared folders or it can not be detected.
+
+##### Solution for NFS on Ubuntu 14.04/16.04
+Install and run a nfs server:
+```
+sudo apt-get install nfs-kernel-server
+sudo service nfs-kernel-server start
+```
+Define the type in the *.vagrantuser* file, see the example in *vagrantuser.example*
+```
+config:
+  synced_folder_type: nfs
+```
+
+Reload the virtual machine to apply the changes:
+
+    vagrant reload MACHINE-NAME
+
+Replace MACHINE-NAME by either *origin-master* or *ose3-master*
 
 ## License
 Copyright © 2016 Puzzle ITC GmbH

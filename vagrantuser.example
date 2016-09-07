@@ -5,3 +5,7 @@ registration:
   subscriber_username: myrhlogin
   subscriber_password: myrhpassword
   subscription_pool: a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0
+
+# force usage of synced_folder type to nfs
+#config:
+#  synced_folder_type: nfs
