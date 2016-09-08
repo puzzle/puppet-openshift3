@@ -12,9 +12,6 @@ class openshift3 (
   $cluster_network_cidr = $::openshift3::params::cluster_network_cidr,
   $configure_epel = $::openshift3::params::configure_epel,
   $epel_repo_id = $::openshift3::params::epel_repo_id,
-  $http_proxy = undef,
-  $https_proxy = undef,
-  $no_proxy = $::openshift3::params::no_proxy,
   $install_router = $::openshift3::params::install_router,
   $router_image = undef,
   $registry_image = undef,
@@ -75,7 +72,7 @@ class openshift3 (
   $quota_sync_period = $::openshift3::params::quota_sync_period,
   $rhsm_repos = $::openshift3::params::rhsm_repos
 ) inherits ::openshift3::params {
- 
+
   $master = $masters[0]['name']
   $master_ip = $masters[0]['ip']
 

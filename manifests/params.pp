@@ -14,7 +14,6 @@ class openshift3::params {
   $configure_epel = true
   $epel_repo_id = 'epel'
   $ansible_version = "1.9.4"
-  $no_proxy = "localhost,127.0.0.1"
   $install_router = true
   $install_registry = true
   $install_logging = true
