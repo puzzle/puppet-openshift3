@@ -5,7 +5,7 @@ class openshift3::ansible {
   } else {
     $sudo = ''
   }
-  
+
   ensure_resource('file', ['/var/lib/puppet-openshift3/log',"${::openshift3::conf_dir}", "${::openshift3::conf_dir}/master"], { ensure => directory })
 
   if $::openshift3::ldap_ca_crt {
@@ -59,7 +59,7 @@ class openshift3::ansible {
     incl    => "/etc/ansible/ansible.cfg",
     changes => ["set /files/etc/ansible/ansible.cfg/defaults/host_key_checking False",
                 "set /files/etc/ansible/ansible.cfg/ssh_connection/pipelining True",
-                "set /files/etc/ansible/ansible.cfg/ssh_connection/control_path /tmp/ansible-ssh-%%h-%%p-%%r"], 
+                "set /files/etc/ansible/ansible.cfg/ssh_connection/control_path /tmp/ansible-ssh-%%h-%%p-%%r"],
   } ->
 
   file { "/var/lib/puppet-openshift3/ansible":
@@ -81,7 +81,7 @@ class openshift3::ansible {
       'playbooks/byo/openshift-cluster/upgrades/v3_0_minor/upgrade.yml' => { 'if_deployment_type' => 'enterprise', if_cur_ver => '3.0', if_new_ver => '3.0' },
       'playbooks/byo/openshift-cluster/upgrades/v3_1_minor/upgrade.yml' => { 'if_deployment_type' => 'enterprise', if_cur_ver => '3.1', if_new_ver => '3.1' },
       'playbooks/byo/openshift-cluster/upgrades/v3_0_to_v3_1/upgrade.yml' => { 'if_deployment_type' => 'enterprise', if_cur_ver => '3.0', if_new_ver => '3.1' },
-      'playbooks/byo/openshift-cluster/upgrades/v3_1_to_v3_2/upgrade.yml' => { 'if_deployment_type' => 'enterprise', if_cur_ver => '3.1', if_new_ver => '3.2' },     
+      'playbooks/byo/openshift-cluster/upgrades/v3_1_to_v3_2/upgrade.yml' => { 'if_deployment_type' => 'enterprise', if_cur_ver => '3.1', if_new_ver => '3.2' },
       'playbooks/byo/openshift-cluster/upgrades/v3_2/upgrade.yml' => { 'if_deployment_type' => 'enterprise', if_cur_ver => '3.2', if_new_ver => '3.2' },
     }
   } ->
@@ -93,7 +93,7 @@ class openshift3::ansible {
 
   run_ansible { 'post-install.yml':
     cwd     => "/var/lib/puppet-openshift3/ansible",
-    options => "-e 'openshift_package_name=${openshift3::package_name} openshift_component_prefix=${openshift3::component_prefix} openshift_version=${openshift3::version} openshift_major=${openshift3::major} openshift_minor=${openshift3::minor} docker_version=${openshift3::real_docker_version} vagrant=\"${::vagrant}\" openshift_master_ip=${openshift3::master_ip} http_proxy=${openshift3::http_proxy} https_proxy=${openshift3::https_proxy} no_proxy=${openshift3::no_proxy}'",
+    options => "-e 'openshift_package_name=${openshift3::package_name} openshift_component_prefix=${openshift3::component_prefix} openshift_version=${openshift3::version} openshift_major=${openshift3::major} openshift_minor=${openshift3::minor} docker_version=${openshift3::real_docker_version} vagrant=\"${::vagrant}\" openshift_master_ip=${openshift3::master_ip}'",
   } ->
 
   exec {"Wait for master":

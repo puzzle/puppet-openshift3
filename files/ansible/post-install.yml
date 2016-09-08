@@ -2,9 +2,6 @@
   sudo: False
   hosts: nodes
 
-  vars:
-    https_proxy: "{{ https_proxy if https_proxy else http_proxy }}"
-
   tasks:
     - name: Workaround for k8s#13511
       ini_file: dest=/usr/lib/systemd/system/atomic-openshift-node.service
@@ -13,14 +10,6 @@
                 value=process
       notify:
         - reload systemd
-
-    - include: tasks/proxy.yml file=/etc/sysconfig/docker
-      notify:
-        - restart Docker
-
-    - include: tasks/proxy.yml file=/etc/sysconfig/{{ openshift_package_name }}-node
-      notify:
-        - restart OpenShift node
 
     - name: Configure OpenShift Gluster plugin logrotate
       copy: src=files/glusterfs-plugin dest=/etc/logrotate.d owner=root group=root mode=0644 setype=etc_t
