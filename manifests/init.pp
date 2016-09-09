@@ -69,6 +69,7 @@ class openshift3 (
   $docker_version = undef,
   $docker_options = $::openshift3::params::docker_options,
   $project_request_template = $::openshift3::params::project_request_template,
+  $project_request_message = $::openshift3::params::project_request_message,
   $quota_sync_period = $::openshift3::params::quota_sync_period,
   $rhsm_repos = $::openshift3::params::rhsm_repos
 ) inherits ::openshift3::params {

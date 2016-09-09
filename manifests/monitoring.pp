@@ -13,6 +13,11 @@ class openshift3::monitoring {
     } ->
     new_service_account { "endtoend":
       namespace => $_ns,
+    } ->
+    add_role_to_user { "system:serviceaccount:${_ns}:endtoend":
+      namespace => $_ns,
+      role_type => 'cluster',
+      role => 'self-provisioner',
     }
   }
 }
