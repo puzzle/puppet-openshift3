@@ -1,3 +1,15 @@
+- name: Compute additional host groups
+  hosts: localhost
+  connection: local
+  become: no
+  gather_facts: no
+
+  tasks:
+    - name: Determine first master
+      add_host:
+        name: "{{ groups.masters.0 }}"
+        groups: first_master
+
 - name: Prepare hosts for OpenShift installation
   hosts: all
   vars:
@@ -128,3 +140,13 @@
         regexp: '^  format:'
         line: "  format: {{ master_image_format }}"
       when: master_image_format|default("") != ""
+
+- name: Prepare primary master for OpenShift installation
+  hosts: first_master
+
+  tasks:
+    - name: Create signer cert
+      command: oadm ca create-signer-cert --cert=service-signer.crt --key=service-signer.key --serial=service-signer-serial.txt
+      args:
+        chdir: /etc/origin/master
+        creates: /etc/origin/master/service-signer.crt
