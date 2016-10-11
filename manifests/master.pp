@@ -5,7 +5,7 @@ class openshift3::master {
   class { 'openshift3::vagrant-master': } ->
   class { 'openshift3::ansible': } ->
   class { 'openshift3::router': } ->
-  class { 'openshift3::failover': } ->
+  class { 'openshift3::failover_routers': } ->
   class { 'openshift3::registry': } ->
   class { 'openshift3::metrics': } ->
   class { 'openshift3::logging': } ->
