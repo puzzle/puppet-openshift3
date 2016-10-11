@@ -25,6 +25,7 @@ openshift_master_identity_providers=<%= scope['::openshift3::identity_providers'
 openshift_rhsm_repos=<%= scope['::openshift3::rhsm_repos'].to_json %>
 
 osm_default_subdomain=<%= scope['::openshift3::app_domain'] %>
+openshift_master_default_subdomain=<%= scope['::openshift3::app_domain'] %>
 osm_cluster_network_cidr='<%= scope['::openshift3::cluster_network_cidr'] %>'
 <%= "openshift_master_cluster_method=#{scope['::openshift3::master_cluster_method']}" if scope['::openshift3::master_cluster_method']!=:undef  %>
 <%= "openshift_master_cluster_hostname=#{scope['::openshift3::master_cluster_hostname']}" if scope['::openshift3::master_cluster_hostname']!=:undef  %>
@@ -32,11 +33,19 @@ osm_cluster_network_cidr='<%= scope['::openshift3::cluster_network_cidr'] %>'
 <%= "openshift_master_public_api_url=#{scope['::openshift3::master_public_api_url']}" if scope['::openshift3::master_public_api_url']!=:undef  %>
 <%= "openshift_master_public_console_url=#{scope['::openshift3::master_public_console_url']}" if scope['::openshift3::master_public_console_url']!=:undef  %>
 <%= "openshift_master_metrics_public_url=https://#{scope['::openshift3::metrics_domain']}/hawkular/metrics" if scope['::openshift3::metrics_domain']!=:undef  %>
+<%= "openshift_hosted_metrics_public_url=https://#{scope['::openshift3::metrics_domain']}/hawkular/metrics" if scope['::openshift3::metrics_domain']!=:undef  %>
 <%= "openshift_master_logging_public_url=https://#{scope['::openshift3::logging_domain']}" if scope['::openshift3::logging_domain']!=:undef  %>
 <%= "openshift_master_extension_scripts=#{scope['::openshift3::real_master_extension_scripts'].to_json}" if scope['::openshift3::master_extension_scripts'] != :undef %>
 <%= "openshift_master_extension_stylesheets=#{scope['::openshift3::real_master_extension_stylesheets'].to_json}" if scope['::openshift3::master_extension_stylesheets'] != :undef %>
 <%= "openshift_master_extensions=#{scope['::openshift3::master_extensions'].to_json}" if scope['::openshift3::master_extensions'] != :undef %>
 <%= "openshift_master_oauth_template=#{scope['::openshift3::real_master_oauth_template']}" if scope['::openshift3::master_oauth_template'] != :undef %>
+
+<%= "openshift_hosted_metrics_deploy=#{scope['::openshift3::install_metrics']}" if Gem::Version.new(scope['::openshift3::version']) >= Gem::Version.new('3.3') %>
+# <%= "openshift_hosted_metrics_upgrade=True" if scope['::openshift_version'] != '' and scope['::openshift_version'] != scope['::openshift3::version'] %>
+<%= "openshift_hosted_metrics_storage_kind=yes" if scope['::openshift3::metrics_use_persistent_storage'] %>
+<%= "openshift_hosted_metrics_deployer_version=#{scope['::openshift3::params::metrics_image_version']}" if scope['::openshift3::params::metrics_image_version'] != :undef %>
+<%= "openshift_hosted_metrics_storage_volume_size=#{scope['::openshift3::metrics_pv_size']}" %>
+<%= "openshift_hosted_metrics_duration=#{scope['::openshift3::metrics_duration']}" %>
 
 <%= scope.function_hiera_vars_to_inventory([scope['::openshift3::real_ansible_vars']]) %>
 

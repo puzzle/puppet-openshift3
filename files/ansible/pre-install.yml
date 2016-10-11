@@ -145,8 +145,14 @@
   hosts: first_master
 
   tasks:
+    - name: Create OpenShift master directory
+      file:
+        path: /etc/origin/master
+        state: directory
+        mode: 0700
     - name: Create signer cert
-      command: oadm ca create-signer-cert --cert=service-signer.crt --key=service-signer.key --serial=service-signer-serial.txt
+      command: oc adm ca create-signer-cert --cert=service-signer.crt --key=service-signer.key --serial=service-signer-serial.txt
       args:
         chdir: /etc/origin/master
         creates: /etc/origin/master/service-signer.crt
+        removes: /usr/bin/oc  # Only run when OpenShift client is installed

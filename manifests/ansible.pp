@@ -78,11 +78,13 @@ class openshift3::ansible {
 
   run_upgrade_playbooks { "Run ansible upgrade playbooks":
     playbooks => {
-      'playbooks/byo/openshift-cluster/upgrades/v3_0_minor/upgrade.yml' => { 'if_deployment_type' => 'enterprise', if_cur_ver => '3.0', if_new_ver => '3.0' },
-      'playbooks/byo/openshift-cluster/upgrades/v3_1_minor/upgrade.yml' => { 'if_deployment_type' => 'enterprise', if_cur_ver => '3.1', if_new_ver => '3.1' },
-      'playbooks/byo/openshift-cluster/upgrades/v3_0_to_v3_1/upgrade.yml' => { 'if_deployment_type' => 'enterprise', if_cur_ver => '3.0', if_new_ver => '3.1' },
-      'playbooks/byo/openshift-cluster/upgrades/v3_1_to_v3_2/upgrade.yml' => { 'if_deployment_type' => 'enterprise', if_cur_ver => '3.1', if_new_ver => '3.2' },
-      'playbooks/byo/openshift-cluster/upgrades/v3_2/upgrade.yml' => { 'if_deployment_type' => 'enterprise', if_cur_ver => '3.2', if_new_ver => '3.2' },
+      '3.0.x to 3.0.y' => { 'playbook' => 'playbooks/byo/openshift-cluster/upgrades/v3_0_minor/upgrade.yml', 'if_deployment_type' => 'enterprise', if_cur_ver => '3.0', if_new_ver => '3.0' },
+      '3.1.x to 3.1.y' => { 'playbook' => 'playbooks/byo/openshift-cluster/upgrades/v3_1_minor/upgrade.yml', 'if_deployment_type' => 'enterprise', if_cur_ver => '3.1', if_new_ver => '3.1' },
+      '3.0 to 3.1'     => { 'playbook' => 'playbooks/byo/openshift-cluster/upgrades/v3_0_to_v3_1/upgrade.yml', 'if_deployment_type' => 'enterprise', if_cur_ver => '3.0', if_new_ver => '3.1' },
+      '3.1 to 3.2'     => { 'playbook' => 'playbooks/byo/openshift-cluster/upgrades/v3_1_to_v3_2/upgrade.yml', 'if_deployment_type' => 'enterprise', if_cur_ver => '3.1', if_new_ver => '3.2' },
+      '3.2.x to 3.2.y' => { 'playbook' => 'playbooks/byo/openshift-cluster/upgrades/v3_2/upgrade.yml', 'if_deployment_type' => 'enterprise', if_cur_ver => '3.2', if_new_ver => '3.2' },
+      '3.2 to 3.3'     => { 'playbook' => 'playbooks/byo/openshift-cluster/upgrades/v3_3/upgrade.yml', 'if_deployment_type' => 'enterprise', if_cur_ver => '3.2', if_new_ver => '3.3' },
+      '3.3.x to 3.3.y' => { 'playbook' => 'playbooks/byo/openshift-cluster/upgrades/v3_3/upgrade.yml', 'if_deployment_type' => 'enterprise', if_cur_ver => '3.3', if_new_ver => '3.3' },
     }
   } ->
 
