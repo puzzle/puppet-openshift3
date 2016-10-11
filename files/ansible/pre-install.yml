@@ -58,7 +58,17 @@
       rhsm_repo: name={{item}} enable=1
       with_items:
         - rhel-7-server-ose-{{openshift_major}}.{{openshift_minor}}-rpms
-      when: deployment_type == "enterprise" or deployment_type == "openshift-enterprise"
+      when:
+        (deployment_type == "enterprise" or deployment_type == "openshift-enterprise")
+        and (openshift_rhsm_repos is defined and openshift_rhsm_repos)
+
+    - name: Set OpenShift Enterprise repo priority
+      rhsm_repo_prio: name={{item}} priority=1
+      with_items:
+        - rhel-7-server-ose-{{openshift_major}}.{{openshift_minor}}-rpms
+      when:
+        (deployment_type == "enterprise" or deployment_type == "openshift-enterprise")
+        and (openshift_rhsm_repos is defined and openshift_rhsm_repos)
 
     - name: Enable OpenShift Origin repos
       copy: src=maxamillion-origin-next-epel-7
