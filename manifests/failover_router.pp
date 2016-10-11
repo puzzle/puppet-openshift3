@@ -1,4 +1,4 @@
-define openshift3::failover_router ($label = $title, $replicas, $interface, $ips) {
+define openshift3::failover_router ($label = $title, $replicas, $interface = undef, $ips) {
 
   if $interface {
     $interface_opt = "--interface=${interface}"
@@ -11,7 +11,7 @@ define openshift3::failover_router ($label = $title, $replicas, $interface, $ips
   } else {
     $dc = "ha-router-${label}"
   }
-  
+
   exec { "Install HA router ${dc}":
     provider => 'shell',
     environment => 'HOME=/root',
