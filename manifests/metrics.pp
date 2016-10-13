@@ -1,6 +1,6 @@
 class openshift3::metrics {
 
-  if $::openshift3::install_metrics and versioncmp($::openshift3::version, "3.1") > 0 and $::openshift3::install_metrics and versioncmp($::openshift3::version, "3.3") < 0 {
+  if $::openshift3::install_metrics and versioncmp($::openshift3::version, "3.1") > 0 {
     ensure_resource('file', '/var/lib/puppet-openshift3/certs/metrics', { ensure => directory, mode => 0700 })
 
     if $::openshift3::deployment_type == "enterprise" {

@@ -151,6 +151,14 @@
         line: "  format: {{ master_image_format }}"
       when: master_image_format|default("") != ""
 
+    - name: Configure metrics public URL
+      local_action:
+        module: lineinfile
+        dest: /root/openshift-ansible/roles/openshift_master/templates/master.yaml.v1.j2
+        line: "  metricsPublicURL: {{ openshift_master_metrics_public_url }}"
+        insertafter: "^assetConfig:"
+      when: openshift_master_metrics_public_url|default("") != ""
+
 - name: Prepare primary master for OpenShift installation
   hosts: first_master
 
