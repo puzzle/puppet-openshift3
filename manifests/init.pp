@@ -86,7 +86,15 @@ class openshift3 (
   if $deployment_type == "enterprise" {
     $component_prefix = 'registry.access.redhat.com/openshift3/ose'
 
-    if versioncmp($version, '3.2.0') >= 0 {
+    if versioncmp($version, '3.3.0') >= 0 {
+      $real_deployment_type = 'openshift-enterprise'
+      $package_name = 'atomic-openshift'
+      $conf_dir = '/etc/origin'
+      $default_docker_version = '1.10.3'
+      $ansible_vars_default = {
+        # openshift_use_dnsmasq => true,  Don't set this, which is the default value, because of a bug in the OpenShift playbook
+      }
+    } elsif versioncmp($version, '3.2.0') >= 0 {
       $real_deployment_type = 'openshift-enterprise'
       $package_name = 'atomic-openshift'
       $conf_dir = '/etc/origin'
