@@ -17,9 +17,12 @@ class openshift3::failover_routers {
       $real_keepalived_image = "${::openshift3::component_prefix}-keepalived-ipfailover:v${::openshift3::version}"
     }
 
-    oc_create { '{"kind":"ServiceAccount","apiVersion":"v1","metadata":{"name":"ipfailover"}}':
-      resource => 'sa/ipfailover',
-    } ->
+    if versioncmp($::openshift3::version, '3.3.0') < 0 {
+      oc_create { '{"kind":"ServiceAccount","apiVersion":"v1","metadata":{"name":"ipfailover"}}':
+        resource => 'sa/ipfailover',
+        before => Oc_Replace['.users += ["system:serviceaccount:default:ipfailover"]'],
+      }
+    }
 
     oc_replace { [
       '.users += ["system:serviceaccount:default:ipfailover"]' ]:
