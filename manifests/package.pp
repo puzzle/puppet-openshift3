@@ -37,7 +37,7 @@ class openshift3::package  {
   } ->
 
   package { "ansible-${::openshift3::ansible_version}":
-    ensure => present,
+    ensure => latest,
     install_options => ["--enablerepo=${::openshift3::epel_repo_id}", "--show-duplicates"],
   }
 
