@@ -13,7 +13,7 @@ class openshift3::params {
   $cluster_network_cidr = '10.1.0.0/16'
   $configure_epel = true
   $epel_repo_id = 'epel'
-  $ansible_version = "2.2.0"
+  $ansible_version = "2.2.0.0"
   $install_router = true
   $install_registry = true
   $install_logging = true
@@ -32,7 +32,8 @@ class openshift3::params {
   $metrics_duration = 3
   $ansible_ssh_user = 'root'
   $ansible_sudo = false
-  $openshift_ansible_version = 'openshift-ansible-3.3.28-1'
+  $ansible_playbook_source = 'https://github.com/openshift/openshift-ansible.git'
+  $openshift_ansible_version = 'openshift-ansible-3.3.41-1'
   $set_node_ip = false
   $set_hostname = true
   $docker_options = '-l warn --log-opt max-size=1M --log-opt max-file=3'
