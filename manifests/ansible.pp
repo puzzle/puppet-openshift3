@@ -33,7 +33,7 @@ class openshift3::ansible {
     vcsrepo { "/root/openshift-ansible":
       ensure   => latest,
       provider => git,
-      source   => "https://github.com/openshift/openshift-ansible.git",
+      source   => $::openshift3::ansible_playbook_source,
       revision => $::openshift3::openshift_ansible_version,
       before   => File["/etc/ansible"],
     }
