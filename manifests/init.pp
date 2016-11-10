@@ -23,6 +23,7 @@ class openshift3 (
   $failover_router_interface = $::openshift3::params::failover_router_interface,
   $failover_keepalived_image = undef,
   $install_registry = $::openshift3::params::install_registry,
+  $registry_replicas = $::openshift3::params::registry_replicas,
   $registry_volume_size = undef,
   $install_metrics = $::openshift3::params::install_metrics,
   $metrics_use_persistent_storage = $::openshift3::params::metrics_use_persistent_storage,

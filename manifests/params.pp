@@ -16,6 +16,7 @@ class openshift3::params {
   $ansible_version = "2.2.0.0"
   $install_router = true
   $install_registry = true
+  $registry_replicas = 1
   $install_logging = true
   $failover_router_interface = undef
   $es_instance_ram = 2G
