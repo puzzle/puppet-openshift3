@@ -6,9 +6,15 @@ class openshift3::package  {
 #    }
 #  }
 
-  yum_versionlock { ["ansible"]:
-    ensure => $::openshift3::ansible_version,
-    yum_options => "--enablerepo=${::openshift3::epel_repo_id}",
+  if $::openshift3::ansible_from_epel {
+    $switch_epel = "--enablerepo=${::openshift3::epel_repo_id}"
+  } else {
+    $switch_epel = "--disablerepo=${::openshift3::epel_repo_id}"
+  }
+
+  yum_versionlock { ['ansible']:
+    ensure      => $::openshift3::real_ansible_version,
+    yum_options => $switch_epel,
   } ->
 
 #  if $::openshift3::docker_version {
@@ -32,15 +38,15 @@ class openshift3::package  {
   } ->
 
   package { ['git', 'wget', 'jq', 'atomic-openshift']:
-    ensure => present,
+    ensure          => present,
     install_options => "--enablerepo=${::openshift3::epel_repo_id}",
   } ->
 
-  package { "ansible-${::openshift3::ansible_version}":
-    ensure => latest,
-    install_options => ["--enablerepo=${::openshift3::epel_repo_id}", "--show-duplicates"],
+  package { "ansible-${::openshift3::real_ansible_version}":
+    ensure          => latest,
+    install_options => [$switch_epel, '--show-duplicates'],
   }
-
+  
 #  package { ['deltarpm', 'wget', 'vim-enhanced', 'net-tools', 'bind-utils', 'git', 'bridge-utils', 'iptables-services', 'pyOpenSSL', 'bash-completion' ]:
 #    ensure => present,
 #  }

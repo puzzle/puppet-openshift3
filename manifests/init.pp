@@ -58,7 +58,8 @@ class openshift3 (
   $master_extension_stylesheets = undef,
   $master_extensions = undef,
   $master_oauth_template = undef,
-  $ansible_version = $::openshift3::params::ansible_version,
+  $ansible_version = undef,
+  $ansible_from_epel = $::openshift3::params::ansible_from_epel,
   $ansible_ssh_user = $::openshift3::params::ansible_ssh_user,
   $ansible_sudo = $::openshift3::params::ansible_sudo,
   $ansible_vars = [],
@@ -92,6 +93,7 @@ class openshift3 (
       $package_name = 'atomic-openshift'
       $conf_dir = '/etc/origin'
       $default_docker_version = '1.10.3'
+      $default_ansible_version = '2.2.0.0'
       $ansible_vars_default = {
         # openshift_use_dnsmasq => true,  Don't set this, which is the default value, because of a bug in the OpenShift playbook
       }
@@ -100,6 +102,7 @@ class openshift3 (
       $package_name = 'atomic-openshift'
       $conf_dir = '/etc/origin'
       $default_docker_version = '1.9.1'
+      $default_ansible_version = '2.2.0'
       $ansible_vars_default = {
         # openshift_use_dnsmasq => true,  Don't set this, which is the default value, because of a bug in the OpenShift playbook
       }
@@ -108,6 +111,7 @@ class openshift3 (
       $package_name = 'atomic-openshift'
       $conf_dir = '/etc/origin'
       $default_docker_version = '1.8.2'
+      $default_ansible_version = '2.2.0'
       $ansible_vars_default = {
         openshift_use_dnsmasq => false,
       }
@@ -116,6 +120,7 @@ class openshift3 (
       $package_name = 'openshift'
       $conf_dir = '/etc/openshift'
       $default_docker_version = '1.6.2'
+      $default_ansible_version = '2.2.0'
       $ansible_vars_default = {
         openshift_use_dnsmasq => false,
       }
@@ -127,12 +132,14 @@ class openshift3 (
     if versioncmp($version, '1.0.5') > 0 {
       $package_name = 'origin'
       $default_docker_version = '1.8.2'
+      $default_ansible_version = '2.2.0'
       $ansible_vars_default = {
         openshift_use_dnsmasq => false,
       }
     } else {
       $package_name = 'openshift'
       $default_docker_version = '1.6.2'
+      $default_ansible_version = '2.2.0'
       $ansible_vars_default = {
         openshift_use_dnsmasq => false,
       }
@@ -165,6 +172,12 @@ class openshift3 (
     $real_docker_version = $docker_version
   } else {
     $real_docker_version = $default_docker_version
+  }
+
+  if $ansible_version {
+    $real_ansible_version = $ansible_version
+  } else {
+    $real_ansible_version = $default_ansible_version
   }
 
   $real_ansible_vars = merge($ansible_vars_default, $ansible_vars)
