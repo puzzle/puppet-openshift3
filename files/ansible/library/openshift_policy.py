@@ -3,7 +3,7 @@
 import json
 #import jsonpath_rw_ext
 
-def update_policy(module, roleBindings, cluster_role, principal_type, principal, changed, msg):
+def update_policy(module, roleBindings, cluster_role, principal_type, principals, changed, msg):    
   state = module.params['state']
 
   cmd = 'oadm policy '
@@ -12,17 +12,19 @@ def update_policy(module, roleBindings, cluster_role, principal_type, principal,
   else:
     cmd += 'remove-cluster-role-from-' + principal_type
 
-# ids = [t['id'] for t in json['test'] if t['description'] == 'Test 1']
-# [(key, value['_status']['md5']) for key, value in my_json.iteritems()]
-#  jsonpath = jsonpath_rw_ext.parse('$.items[?(@.roleRef.name == "%s")].%sNames[?(@ == "%s")]' % (cluster_role, principal_type, principal))
-  roleBinding = [rb for rb in roleBindings['items'] if rb['roleRef']['name'] == cluster_role and rb[principal_type + 'Names'] and principal in rb[principal_type + 'Names']]
-  if bool(roleBinding) != (state == 'present'):
+  changedPrincipals = []
+  for principal in principals:
+    roleBinding = [rb for rb in roleBindings['items'] if rb['roleRef']['name'] == cluster_role and rb[principal_type + 'Names'] and principal in rb[principal_type + 'Names']]
+    if bool(roleBinding) != (state == 'present'):
+      changedPrincipals.append(principal)
+
+  if changedPrincipals:
     changed = True
-    args = cmd + " " + cluster_role + " " + principal
+    args = cmd + " " + cluster_role + " " + " ".join(changedPrincipals)
     msg += args + "; "
     if not module.check_mode:
       (rc, stdout, stderr) = module.run_command(args, check_rc=True)
-     
+          
   return (changed, msg)
   
 
@@ -30,14 +32,14 @@ def main():
     module = AnsibleModule(
         argument_spec=dict(
             state = dict(default='present', choices=['present', 'absent']),
-            cluster_role  = dict(type='str'),
+            cluster_roles  = dict(type='list'),
             groups = dict(type='list'),
             users = dict(type='list'),
         ),
         supports_check_mode=True
     )
 
-    cluster_role = module.params['cluster_role']
+    cluster_roles = module.params['cluster_roles']
     groups = module.params['groups']
     users = module.params['users']
 
@@ -47,11 +49,15 @@ def main():
     changed = False
     msg = ''
 
-    for group in groups or []:
-      (changed, msg) = update_policy(module, roleBindings, cluster_role, 'group', group, changed, msg)
+    #if not isinstance(cluster_roles, list):
+    #  cluster_roles = [cluster_roles]
 
-    for user in users or []:
-      (changed, msg) = update_policy(module, roleBindings, cluster_role, 'user', user, changed, msg)
+    for cluster_role in cluster_roles or []:      
+      if groups:
+        (changed, msg) = update_policy(module, roleBindings, cluster_role, 'group', groups, changed, msg)
+
+      if users:
+        (changed, msg) = update_policy(module, roleBindings, cluster_role, 'user', users, changed, msg)
 
 #      jsonpath = jsonpath_rw_ext.parse('$.items[?(@.roleRef.name == "%s")].userNames[?(@ == "%s")]' % (cluster_role, user))
 #      if (len(jsonpath.find(roleBindings)) > 0) != (state == 'present'):
