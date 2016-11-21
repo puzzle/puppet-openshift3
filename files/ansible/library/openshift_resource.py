@@ -5,98 +5,183 @@ from StringIO import StringIO
 import tempfile
 import re
 
-def exemption(namespace, kind, name, current, patch, msg, path):
-  if kind == 'DeploymentConfig' and re.match('.spec.template.spec.containers\[[0-9]+\].image', path):
-    image = patch.split(':')[0]
-    return ("/" + image + "@") in current
-    
-  return False
+DOCUMENTATION = '''
+---
+module: openshift_resource
+short_description: Creates and patches OpenShift resources
+options:
+    gather_subset:
+        description:
+            - "if supplied, restrict the additional facts collected to the given subset.
+              Possible values: all, hardware, network, virtual, ohai, and
+              facter Can specify a list of values to specify a larger subset.
+              Values can also be used with an initial C(!) to specify that
+              that specific subset should not be collected.  For instance:
+              !hardware, !network, !virtual, !ohai, !facter.  Note that a few
+              facts are always collected.  Use the filter parameter if you do
+              not want to display those."
+        required: false
+        default: 'all'
+'''
+
+class ResourceModule:
+  def __init__(self, module):
+    self.module = module
+
+    self.changed = False
+    self.msg = []
+    self.arguments = []
+
+    for key in module.params:
+      setattr(self, key, module.params[key])
 
 
-def equalList(namespace, kind, resource, current, patch, msg, path):
-  if len(current) != len(patch):
-    msg.append(namespace + "::" + kind + "/" + resource + "{" + path + "}(length mismatch)")
+  def exemption(self, kind, current, patch, path):
+    if patch is None or isinstance(patch, (dict, list)) and not patch:
+      return True
+    elif kind == 'DeploymentConfig' and re.match('.spec.template.spec.containers\[[0-9]+\].image', path):
+      image = patch.split(':')[0]
+      return ("/" + image + "@") in current
+
     return False
 
-  for i, val in enumerate(patch):
-      if not patch_applied(module, namespace, kind, resource, current[i], val, msg, path + "[" + str(i) + "]"):
+
+  def patch_applied(self, kind, name, current, patch, path = ""):
+    if current is None:
+      if not patch is None:
+        self.msg.append(self.namespace + "::" + kind + "/" + name + "{" + path + "}(" + str(patch) + " != " + str(current) + ")")
         return False
-
-  return True
-
-def sublist(module, namespace, kind, resource, current, patch, msg, path):
-  if not current:
-    msg.append(namespace + "::" + kind + "/" + resource + "{" + path + "}(new)")
-    return False
-  
-  if isinstance(current[0], dict) and 'name' in current[0]:
-    for i, patchVal in enumerate(patch):
-      name = patchVal.get('name')
-      if name is None:  # Patch contains element without name attribute => fall back to plain list comparison.
-        return equalList(namespace, kind, resource, current, patch, msg, path)
-      curVals = [curVal for curVal in current if curVal.get('name') == name]
-      if len(curVals) == 1: 
-        if not patch_applied(module, namespace, kind, resource, curVals[0], patchVal, msg, path + '[' + str(i) + ']'):
+    elif isinstance(patch, dict):
+      for key, val in patch.iteritems():      
+        if not self.patch_applied(kind, name, current.get(key), val, path + "." + key):
           return False
-      elif len(curVals) > 1:
-        module.fail_json(msg="Patch contains multiple attributes with name '" + name + "' under path: " + path)      
-
-  return True
-
-def patch_applied(module, namespace, kind, name, current, patch, msg, path = ""):
-  if isinstance(patch, dict):
-    for key, val in patch.iteritems():      
-      if not patch_applied(module, namespace, kind, name, current.get(key), val, msg, path + "." + key):
+    elif isinstance(patch, list):
+      if not self.sublist(kind, name, current, patch, path):
         return False
-  elif isinstance(patch, list):
-    if not sublist(module, namespace, kind, name, current, patch, msg, path):
+    else:
+      if current != patch and not self.exemption(kind, current, patch, path):
+        self.msg.append(self.namespace + "::" + kind + "/" + name + "{" + path + "}(" + str(patch) + " != " + str(current) + ")")
+        return False
+
+    return True
+
+
+  def equalList(self, kind, resource, current, patch, path):
+    """Compare two lists recursively."""
+    if len(current) != len(patch):
+      self.msg.append(self.namespace + "::" + kind + "/" + resource + "{" + path + "}(length mismatch)")
       return False
-  else:
-    if current != patch and not exemption(namespace, kind, name, current, patch, msg, path):
-      msg.append(namespace + "::" + kind + "/" + name + "{" + path + "}(" + str(patch) + " != " + str(current) + ")")
+
+    for i, val in enumerate(patch):
+        if not self.patch_applied(kind, resource, current[i], val, msg, path + "[" + str(i) + "]"):
+          return False
+
+    return True
+
+
+  def sublist(self, kind, name, current, patch, path):
+    if not current and not patch:
+      return True
+    elif not current:
+      self.msg.append(self.namespace + "::" + kind + "/" + name + "{" + path + "}(new)")
       return False
+    elif isinstance(current[0], dict) and 'name' in current[0]:
+      for i, patchVal in enumerate(patch):
+        elementName = patchVal.get('name')
+        if elementName is None:  # Patch contains element without name attribute => fall back to plain list comparison.
+          return self.equalList(kind, name, current, patch, msg, path)
+        curVals = [curVal for curVal in current if curVal.get('name') == elementName]
+        if len(curVals) == 1: 
+          if not self.patch_applied(kind, name, curVals[0], patchVal, path + '[' + str(i) + ']'):
+            return False
+        elif len(curVals) > 1:
+          module.fail_json(msg="Patch contains multiple attributes with name '" + elementName + "' under path: " + path)      
 
-  return True
+    return True
 
-def update_resource(module, namespace, resource, object, changed, msg):
-  (rc, stdout, stderr) = module.run_command('oc export -n ' + namespace + ' ' + resource + ' -o json')
-  if rc == 0:
-    current = json.load(StringIO(stdout))
-  else:
-    current = {}
 
-  (kind, name) = resource.split('/')
-  if not current:
-    changed = True
-    msg.append(namespace + "::" + resource + "(new)")
-    file = tempfile.NamedTemporaryFile(prefix=kind + '_' + name, delete=True)
-    json.dump(object, file)
-    file.flush()
-    (rc, stdout, stderr) = module.run_command(['oc', 'create', '-n', namespace, '-f', file.name], check_rc=True)
-    file.close()
-  elif not patch_applied(module, namespace, kind, name, current, object, msg):
-    changed = True
-    (rc, stdout, stderr) = module.run_command(['oc', 'patch', '-n', namespace, resource, '-p', json.dumps(object)], check_rc=True)
+#local_action:
+#    module: openshift_resource
+#    namespace: openshift-infra
+#    deployer: metrics-deployer-template
+#    deployer_namespace: openshift
+#    arguments:
+#      HAWKULAR_METRICS_HOSTNAME: "{{openshift3_metrics_domain}}"
+#    deploy_unless:
+#      - kind: rc
+#        label: metrics-infra=hawkular-cassandra
+#        patch:
 
-  return changed
 
-def process_template(module, namespace, template_name, arguments, changed, msg):
+#  def patch_applied(self, namespace, kind, name, current, patch, path = ""):
+
+  def run_deployer(self):
+    #deploy_needed = False
+    #for cond in self.deploy_unless:
+    #  current = self.get_resource(kind, label=self.label)
+    #  if not self.patch_applied(self.kind, self.label, current, self.patch):
+    #    deploy_needed = True
+    #    break
+    
+    #if deploy_needed:
+    self.apply_template(self.deployer, self.arguments)
+
+    #return changed
+
+
+  def export_resource(self, kind, name = None, label = None):
+    if label:
+      name = '-l ' + label
+
+    (rc, stdout, stderr) = self.module.run_command(['oc', 'export', '-n', self.namespace, kind + '/' + name, '-o', 'json'])
+
+    if rc == 0:
+      result = json.load(StringIO(stdout))
+    else:
+      result = {}
+
+    return result
+  
+  def patch_resource(self, kind, name, patch):
+    (rc, stdout, stderr) = self.module.run_command(['oc', 'patch', '-n', self.namespace, kind + '/' + name, '-p', json.dumps(patch)], check_rc=True)
+
+  def update_resource(self, kind, name, object):
+    current = self.export_resource(kind, name)
+
+    if not current:
+      self.changed = True
+      self.msg.append(self.namespace + "::" + kind + "/" + name + "(new)")
+      file = tempfile.NamedTemporaryFile(prefix=kind + '_' + name, delete=True)
+      json.dump(object, file)
+      file.flush()
+      (rc, stdout, stderr) = self.module.run_command(['oc', 'create', '-n', self.namespace, '-f', file.name], check_rc=True)
+      file.close()
+    elif not self.patch_applied(kind, name, current, object):      
+      self.changed = True
+      self.patch_resource(kind, name, object)
+
+    return self.changed
+
+  def process_template(self, template_name, arguments):
     if arguments:
-      args = " ".join("=".join(_) for _ in arguments.items())
+      args = -p + " " + " ".join("=".join(_) for _ in arguments.items())
     else:
       args = ""
 
-    (rc, stdout, stderr) = module.run_command('oc process -f ' + template_name + ' ' + args, check_rc=True)
+    (rc, stdout, stderr) = self.module.run_command('oc new-app -o json ' + template_name + args, check_rc=True)
+
     if stderr:
-      module.fail_json(msg=stderr)
+      self.module.fail_json(msg=stderr)
 
-    template = json.load(StringIO(stdout))
+    return json.load(StringIO(stdout))
 
-    for object in template['items']:
-      resource = object['kind'] + '/' + object['metadata']['name']
-      changed = update_resource(module, namespace, resource, object, changed, msg)
+  def apply_template(self, template_name, arguments):    
+    template = self.process_template(template_name, arguments)
 
-    return changed
+    for object in template['items']:    
+      self.update_resource(object['kind'], object['metadata']['name'], object)
+#     msg += object['kind'] + '/' + object['metadata']['name'] + "; "
+#      msg += json.dumps(object) + "; "
 
 def main():
     module = AnsibleModule(
@@ -105,26 +190,32 @@ def main():
             template = dict(type='str'),
             arguments = dict(type='dict'),
             patch = dict(type='dict'),
-            resource = dict(type='str'),
+            name = dict(type='str'),
+            deployer = dict(type='str'),
+            deployer_namespace = dict(type='str'),
+            deploy_unless = dict(type='list'),
+            type = dict(type='str'),
+            selector = dict(type='str'),
         ),
         supports_check_mode=True
     )
-
-    namespace = module.params['namespace']
-    template_name = module.params['template']
-    arguments = module.params['arguments']
-    patch = module.params['patch']
-    resource = module.params['resource']
     
-    changed = False
-    msg = []
+    resource = ResourceModule(module)
 
-    if template_name:
-      changed = process_template(module, namespace, template_name, arguments, changed, msg)
-    else:
-      changed = update_resource(module, namespace, resource, patch, changed, msg)
+    if hasattr(resource, 'template'):
+      resource.apply_template(resource.template, resource.arguments)
+    elif hasattr(resource, 'deployer'):
+      resource.run_deployer()
+#      try:
+#        parsed_patch = json.load(StringIO(patch))
+#      except Exception as e:
+#        with open('/tmp/patch', 'w') as f:
+#          f.write(patch)
+#        module.fail_json(msg="Failed to parse patch: " + str(e) + "\n" + patch)
+    else:        
+      resource.update_resource(resource.type, resource.name, resource.patch)
 
-    module.exit_json(changed=changed, msg=" ".join(msg))
+    module.exit_json(changed=resource.changed, msg=" ".join(resource.msg))
 
 
 from ansible.module_utils.basic import *
