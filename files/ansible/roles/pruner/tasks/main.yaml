@@ -1,0 +1,20 @@
+---
+- name: Create appuio-infra project
+  local_action:
+    module: openshift_project
+    name: appuio-infra
+
+- name: Instantiate pruner template
+  local_action:
+    module: openshift_resource
+    namespace: appuio-infra
+    template: roles/pruner/files/pruner.json
+    
+- name: Configure permissions for pruner service account
+  local_action:
+    module: openshift_policy
+    cluster_roles:
+      - edit
+      - system:image-pruner      
+    users: system:serviceaccount:appuio-infra:default
+    

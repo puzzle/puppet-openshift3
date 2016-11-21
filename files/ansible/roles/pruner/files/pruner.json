@@ -1,0 +1,167 @@
+{
+  "kind": "Template",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "pruner"
+  },
+  "objects": [
+    {
+      "kind": "ImageStream",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "rhel7"         
+      },
+      "spec": {
+        "tags": [
+          {
+            "name": "latest",
+            "annotations": {
+              "openshift.io/imported-from": "registry.access.redhat.com/rhel7:latest"
+            },
+            "from": {
+              "kind": "DockerImage",
+              "name": "registry.access.redhat.com/rhel7:latest"
+            }        
+          }
+        ],
+        "dockerImageRepository": "registry.access.redhat.com/rhel7:latest"
+      },
+      "status": {
+        "dockerImageRepository": ""
+      }
+    },
+    {
+      "kind": "ImageStream",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "appuio-pruner",
+        "creationTimestamp": null,
+        "labels": {
+          "app": "appuio-pruner"
+        }        
+      },
+      "spec": {
+        "dockerImageRepository": null
+      },
+      "status": {
+        "dockerImageRepository": ""
+      }
+    },
+    {
+      "kind": "BuildConfig",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "appuio-pruner",
+        "creationTimestamp": null,
+        "labels": {
+          "app": "appuio-pruner"
+        }        
+      },
+      "spec": {
+        "triggers": [
+          {
+            "type": "ConfigChange"
+          },
+          {
+            "type": "ImageChange",
+            "imageChange": {
+              "from": {
+                "kind": "ImageStreamTag",
+                "name": "rhel7:latest"                
+              }
+            }
+          }
+        ],
+        "source": {
+          "type": "Git",
+          "git": {
+            "uri": "https://github.com/appuio/appuio-pruner"
+          },
+          "secrets": []
+        },
+        "strategy": {
+          "type": "Docker",
+          "dockerStrategy": {
+            "from": {
+              "kind": "ImageStreamTag",
+              "name": "rhel7:latest"
+            }
+          }
+        },
+        "output": {
+          "to": {
+            "kind": "ImageStreamTag",
+            "name": "appuio-pruner:latest"
+          }
+        },
+        "resources": {},
+        "postCommit": {}
+      },
+      "status": {
+        "lastVersion": 0
+      }
+    },
+    {
+      "kind": "DeploymentConfig",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "appuio-pruner",
+        "creationTimestamp": null,
+        "labels": {
+          "app": "appuio-pruner"
+        }        
+      },
+      "spec": {
+        "strategy": {
+          "resources": {}
+        },
+        "triggers": [
+          {
+            "type": "ConfigChange"
+          },
+          {
+            "type": "ImageChange",
+            "imageChangeParams": {
+              "automatic": true,
+              "containerNames": [
+                "appuio-pruner"
+              ],
+              "from": {
+                "kind": "ImageStreamTag",
+                "name": "appuio-pruner:latest"
+              }
+            }
+          }
+        ],
+        "replicas": 1,
+        "test": false,
+        "selector": {
+          "app": "appuio-pruner",
+          "deploymentconfig": "appuio-pruner"
+        },
+        "template": {
+          "metadata": {
+            "creationTimestamp": null,
+            "labels": {
+              "app": "appuio-pruner",
+              "deploymentconfig": "appuio-pruner"
+            },
+            "annotations": {
+              "openshift.io/container.appuio-pruner.image.entrypoint": "[\"/bin/bash\"]"              
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "name": "appuio-pruner",
+                "image": "appuio-pruner:latest",
+                "resources": {}
+              }
+            ]
+          }
+        }
+      },
+      "status": {}
+    }
+  ]
+}
