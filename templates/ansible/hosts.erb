@@ -52,7 +52,7 @@ openshift_docker_options='<%= scope['::openshift3::docker_options'] %>'
 <%= "osm_project_request_message=#{scope['::openshift3::project_request_message']}" if scope['::openshift3::project_request_message']!=:undef  %>
 
 openshift_hosted_manage_router=false
-openshift_hosted_manage_registry=false
+openshift_hosted_manage_registry=true
 
 # Enable cockpit
 osm_use_cockpit=true
