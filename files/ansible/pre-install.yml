@@ -62,6 +62,13 @@
         (deployment_type == "enterprise" or deployment_type == "openshift-enterprise")
         and (openshift_rhsm_repos is defined and openshift_rhsm_repos)
 
+    - name: Disable old OpenShift Enterprise repos
+      rhsm_repo: name="rhel-7-server-ose-{{openshift_major}}.{{item}}-rpms" enable=0
+      with_sequence: start={{ openshift_minor | int - 1 }} end=0 stride=-1
+      when:
+        (deployment_type == "enterprise" or deployment_type == "openshift-enterprise")
+        and (openshift_rhsm_repos is defined and openshift_rhsm_repos)
+
     - name: Set OpenShift Enterprise repo priority
       rhsm_repo_prio: name={{item}} priority=1
       with_items:
