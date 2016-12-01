@@ -13,6 +13,9 @@ class openshift3::package  {
   }
 
   exec { "yum makecache fast":
+    timeout => 300,
+    logoutput => on_failure,
+    path => $::path,
   } ->
 
   yum_versionlock { ['ansible']:
