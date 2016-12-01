@@ -22,7 +22,7 @@ Puppet::Type.type(:rhsm_repo).provide(:subscription_manager) do
     if File.exists?(repo_file)
       repos = JSON.parse(File.open(repo_file).read)
       repos.each do |repo|
-        if repo.has_key?('value') && repo['value'] == '1'
+        if repo.has_key?('name') && repo['name'] == 'enabled' && repo.has_key?('value') && repo['value'] == '1'
           n = repo['contentLabel']
           repo_instances.push( new( :name => n, :ensure => :present ))
         end
