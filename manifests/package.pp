@@ -12,12 +12,6 @@ class openshift3::package  {
     $switch_epel = "--disablerepo=${::openshift3::epel_repo_id}"
   }
 
-  exec { "yum makecache fast":
-    timeout => 300,
-    logoutput => on_failure,
-    path => $::path,
-  } ->
-
   yum_versionlock { ['ansible']:
     ensure      => $::openshift3::real_ansible_version,
     yum_options => $switch_epel,
