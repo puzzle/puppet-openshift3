@@ -91,7 +91,8 @@ class openshift3::ansible {
   run_ansible { 'playbooks/byo/config.yml':
     cwd     => "/root/openshift-ansible",
     options => "-e \"repoquery_cmd='repoquery --plugins --pkgnarrow=all'\"",
-  } ->
+    assert_cluster_version => true,
+  } ->  
 
   run_ansible { 'post-install.yml':
     cwd     => "/var/lib/puppet-openshift3/ansible",
