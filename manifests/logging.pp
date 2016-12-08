@@ -12,26 +12,46 @@ class openshift3::logging {
       $image_version = ""
     }
 
-    new_project { "logging": } ->
+    new_project { "logging": }
+
+    if $::openshift3::logging_image_version and versioncmp($::openshift3::logging_image_version, "3.3") >= 0 or versioncmp($::openshift3::version, "3.3") >= 0 {
+      instantiate_template { "logging-deployer-account-template":
+        template_namespace => "openshift",
+        resource_namespace => "logging",
+        creates => "sa/aggregated-logging-kibana",
+        require => New_project["logging"],
+        before => New_Secret["logging-deployer"],
+        returns => [0, 1],        
+      } ->
+
+      add_role_to_user { "system:serviceaccount:logging:logging-deployer":
+        role => "oauth-editor",
+        role_type => "cluster",
+        namespace => "logging",
+      } 
+    } else {
+      new_service_account { "logging-deployer":
+        namespace => "logging",
+        require => New_project["logging"],
+        before => New_Secret["logging-deployer"],
+      } ->
+
+      add_role_to_user { "system:serviceaccount:logging:logging-deployer":
+        role => "edit",
+        namespace => "logging",
+      }   
+    }
 
     new_secret { "logging-deployer":
       namespace => "logging",
       source => "/dev/null",
+      require => Add_Role_To_User["system:serviceaccount:logging:logging-deployer"]
     } ->
-  
-    new_service_account { "logging-deployer":
-      namespace => "logging",
-    } ->
-
+    
     add_secret_to_sa { "logging-deployer":
       namespace => "logging",
       service_account => "logging-deployer",
-    } ->
-
-    add_role_to_user { "system:serviceaccount:logging:logging-deployer":
-      role => "edit",
-      namespace => "logging",
-    } ->
+    } ->   
     
     add_user_to_scc { "system:serviceaccount:logging:aggregated-logging-fluentd":
       scc => "privileged",
@@ -48,16 +68,18 @@ class openshift3::logging {
       resource_namespace => "logging",
       creates => "svc/logging-es",
     } ->
-
     scale_pod { "logging-fluentd":
       namespace => "logging",
       replicas => ready_nodes,
-    } ->
+    }
 
-    instantiate_template { "logging-support-template":
-      template_namespace => "logging",
-      resource_namespace => "logging",
-      creates => "route -l component=support",
+    if $::openshift3::logging_image_version and versioncmp($::openshift3::logging_image_version, "3.3") < 0 or versioncmp($::openshift3::version, "3.3") < 0 {  
+      instantiate_template { "logging-support-template":
+        template_namespace => "logging",
+        resource_namespace => "logging",
+        creates => "svc/logging-es",
+        require => Scale_Pod['logging-fluentd'],      
+      }
     }
 
     if $::openshift3::enable_ops_logging {
@@ -75,7 +97,7 @@ class openshift3::logging {
         namespace => 'logging',
         volume_name => 'elasticsearch-storage',
         host_path => $::openshift3::logging_local_storage,
-        require => Instantiate_Template["logging-support-template"],
+        require => Scale_Pod['logging-fluentd'],
       }
     } elsif $::openshift3::logging_volume_size {
       set_volume { $volumes:
@@ -84,7 +106,7 @@ class openshift3::logging {
         claim_name => 'logging-es',
         claim_size => $::openshift3::logging_volume_size,
         claim_instances => $::openshift3::logging_cluster_size,
-        require => Instantiate_Template["logging-support-template"],
+        require => Scale_Pod['logging-fluentd'],
       }
     }
   }

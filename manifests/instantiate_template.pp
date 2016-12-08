@@ -1,4 +1,4 @@
-define openshift3::instantiate_template ($template_namespace = 'openshift', $template_parameters = undef, $resource_namespace = 'default', $creates) {
+define openshift3::instantiate_template ($template_namespace = 'openshift', $template_parameters = undef, $resource_namespace = 'default', $returns = 0, $creates) {
   if $template_parameters {
     $parameters_opt = "-p '${template_parameters}'"
   } else {
@@ -11,6 +11,7 @@ define openshift3::instantiate_template ($template_namespace = 'openshift', $tem
     cwd         => "/root",
     command     => "oc new-app ${title} -n ${resource_namespace} ${parameters_opt}",
     unless      => "oc get -n ${resource_namespace} ${creates} | grep -q .",
+    returns     => $returns,
     timeout     => 300,
     logoutput   => on_failure,
     path => $::path,
