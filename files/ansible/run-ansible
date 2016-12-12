@@ -4,26 +4,7 @@ set -e -o pipefail
 
 log_dir=/var/lib/puppet-openshift3/log
 run_dir=/var/lib/puppet-openshift3/run
-ansible_files="/root/openshift-ansible /var/lib/puppet-openshift3/ansible /var/lib/puppet-openshift3/style /etc/ansible/hosts /etc/ansible/ansible.cfg"
-
-mkdir -p $log_dir $run_dir
-
-if [ "$1" == "-c" ]; then
-  check_mode=true
-  shift
-else
-  check_mode=false
-fi
-
-if [ "$1" == "-u" ]; then
-  check_updates=true
-  shift
-else
-  check_updates=false
-fi
-
-args=("$@")
-playbook=`basename "$1"`
+ansible_files="/var/lib/puppet-openshift3/style /etc/ansible/hosts /etc/ansible/ansible.cfg"
 
 write_state_file() {
   echo "${args[@]}" > $1
@@ -35,6 +16,30 @@ write_state_file() {
     yum --disableplugin=versionlock list updates 2>/dev/null >> $1
   fi
 }
+
+mkdir -p $log_dir $run_dir
+
+check_mode=false
+check_updates=false
+
+while getopts "cuf:" opt; do
+  case $opt in
+    c)
+      check_mode=true
+      ;;
+    u)
+      check_updates=true
+      ;;
+    f)
+      ansible_files="${ansible_files} ${OPTARG}"
+      ;;
+  esac
+done
+
+shift $((OPTIND-1))
+
+args=("$@")
+playbook=`basename "$1"`
 
 # Idempotency check, used by puppet
 if [ $check_mode == true ]; then

@@ -1,0 +1,7 @@
+- name: Configure OpenShift Cluster resources
+  hosts: masters[0]
+  connection: local
+ 
+  roles:
+    - role: pruner
+      when: "{{ appuio_install_pruner | bool }}"

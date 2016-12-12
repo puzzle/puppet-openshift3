@@ -9,6 +9,12 @@ vagrant/.librarian
 .tmp
 .librarian
 *~
+#*
+*.bak
 Puppetfile.lock
 Gemfile.lock
 spec/fixtures/modules/
+*.retry
+*.idempotent
+*.rej
+*.pyc
