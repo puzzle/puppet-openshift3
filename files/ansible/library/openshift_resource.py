@@ -31,10 +31,9 @@ class ResourceModule:
     self.changed = False
     self.msg = []
     self.arguments = []
-
+    
     for key in module.params:
       setattr(self, key, module.params[key])
-
 
   def exemption(self, kind, current, patch, path):
     if patch is None or isinstance(patch, (dict, list)) and not patch:
@@ -156,7 +155,7 @@ class ResourceModule:
       file.flush()
       (rc, stdout, stderr) = self.module.run_command(['oc', 'create', '-n', self.namespace, '-f', file.name], check_rc=True)
       file.close()
-    elif not self.patch_applied(kind, name, current, object):      
+    elif not self.patch_applied(kind, name, current, object):
       self.changed = True
       self.patch_resource(kind, name, object)
 
@@ -164,9 +163,12 @@ class ResourceModule:
 
   def process_template(self, template_name, arguments):
     if arguments:
-      args = -p + " " + " ".join("=".join(_) for _ in arguments.items())
+      args = " -p " + ",".join("=".join(_) for _ in arguments.items())
     else:
       args = ""
+
+    if self.app_name:
+      args += ' --name=' + self.app_name
 
     (rc, stdout, stderr) = self.module.run_command('oc new-app -o json ' + template_name + args, check_rc=True)
 
@@ -188,6 +190,7 @@ def main():
         argument_spec=dict(
             namespace = dict(type='str'),
             template = dict(type='str'),
+            app_name = dict(type='str'),
             arguments = dict(type='dict'),
             patch = dict(type='dict'),
             name = dict(type='str'),
@@ -195,7 +198,7 @@ def main():
             deployer_namespace = dict(type='str'),
             deploy_unless = dict(type='list'),
             type = dict(type='str'),
-            selector = dict(type='str'),
+            selector = dict(type='str'),            
         ),
         supports_check_mode=True
     )
