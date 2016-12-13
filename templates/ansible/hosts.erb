@@ -54,6 +54,8 @@ openshift_docker_options='<%= scope['::openshift3::docker_options'] %>'
 openshift_hosted_manage_router=false
 openshift_hosted_manage_registry=true
 
+openshift_hosted_registry_replicas=<%= scope['::openshift3::registry_replicas'] %>
+
 # Enable cockpit
 osm_use_cockpit=true
 

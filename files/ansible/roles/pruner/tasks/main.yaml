@@ -1,0 +1,20 @@
+---
+- name: Create appuio-infra project
+  openshift_project:
+    name: appuio-infra
+
+- name: Instantiate pruner template
+  openshift_resource:
+    namespace: appuio-infra
+    template: files/appuio-pruner/pruner-template.json
+    app_name: appuio-pruner
+    arguments:
+      PRUNER_VERSION: "{{ appuio_pruner_version }}"
+      TIMEZONE: "{{ appuio_container_timezone }}"
+    
+- name: Configure permissions for pruner service account
+  openshift_policy:
+    cluster_roles:
+      - edit
+      - system:image-pruner      
+    users: system:serviceaccount:appuio-infra:default

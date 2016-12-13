@@ -1,6 +1,6 @@
-define openshift3::instantiate_template ($template_namespace = 'openshift', $template_parameters = undef, $resource_namespace = 'default', $creates) {
+define openshift3::instantiate_template ($template_namespace = 'openshift', $template_parameters = undef, $resource_namespace = 'default', $returns = 0, $creates) {
   if $template_parameters {
-    $parameters_opt = "-v '${template_parameters}'"
+    $parameters_opt = "-p '${template_parameters}'"
   } else {
    $parameters_opt = ""
   }
@@ -9,15 +9,14 @@ define openshift3::instantiate_template ($template_namespace = 'openshift', $tem
     provider    => 'shell',
     environment => 'HOME=/root',
     cwd         => "/root",
-    command     => "oc process ${title} -n ${template_namespace} ${parameters_opt} | oc create -n ${resource_namespace} -f -",
-#    unless      => "oc get ${namespace_opt} ${resource} -o json | jq '.items[] | select(.roleRef.name == \"${title}\").userNames' | grep -q '\"${user}\"'",
-#oc get template logging-support-template -o json  | jq '.objects[] | "\(.kind) \(.metadata.name // .metadata.generateName)"'
+    command     => "oc new-app ${title} -n ${resource_namespace} ${parameters_opt}",
     unless      => "oc get -n ${resource_namespace} ${creates} | grep -q .",
+    returns     => $returns,
     timeout     => 300,
     logoutput   => on_failure,
     path => $::path,
   } ->
-
+  
   exec { "wait for template instantiation ${title}":
     provider    => 'shell',
     environment => 'HOME=/root',

@@ -1,0 +1,16 @@
+---
+- name: Enable/disable custom builds
+  local_action:
+    module: openshift_policy
+    state: "{{ 'present' if custom_builds|bool else 'absent' }}"
+    cluster_role: system:build-strategy-custom
+    groups: system:authenticated
+
+- name: Enable/disable self-provisioning
+  local_action:
+    module: openshift_policy
+    state: "{{ 'present' if self_provisioning|bool else 'absent' }}"
+    cluster_role: self-provisioner
+    groups:
+      - system:authenticated
+      - system:authenticated:oauth

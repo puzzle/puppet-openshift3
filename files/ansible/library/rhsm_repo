@@ -6,7 +6,7 @@ NL="
 NAME=`jq -r .name < $1`
 ENABLE=`jq -r .enable < $1`
 
-REPO_ENABLED=`cat /var/lib/rhsm/cache/content_overrides.json | jq -r ".[] | select (.contentLabel == \"${NAME}\").value"`
+REPO_ENABLED=`cat /var/lib/rhsm/cache/content_overrides.json | jq -r ".[] | select (.contentLabel == \"${NAME}\" and .name == \"enabled\").value"`
 
 if [ 0$REPO_ENABLED -ne 0$ENABLE ]; then
   if [ 0$ENABLE -eq 1 ]; then

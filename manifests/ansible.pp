@@ -33,7 +33,7 @@ class openshift3::ansible {
     vcsrepo { "/root/openshift-ansible":
       ensure   => latest,
       provider => git,
-      source   => "https://github.com/openshift/openshift-ansible.git",
+      source   => $::openshift3::ansible_playbook_source,
       revision => $::openshift3::openshift_ansible_version,
       before   => File["/etc/ansible"],
     }
@@ -73,7 +73,7 @@ class openshift3::ansible {
   run_ansible { 'pre-install.yml':
     cwd => '/var/lib/puppet-openshift3/ansible',
     options => "-e 'openshift_package_name=${openshift3::package_name} openshift_component_prefix=${openshift3::component_prefix} openshift_version=${openshift3::version} openshift_major=${openshift3::major} openshift_minor=${openshift3::minor} docker_version=${openshift3::real_docker_version} vagrant=\"${::vagrant}\" openshift_master_ip=${openshift3::master_ip} configure_epel=${openshift3::configure_epel} epel_repo_id=${openshift3::epel_repo_id} master_style_repo_url=${openshift3::master_style_repo_url} master_style_repo_ref=${openshift3::master_style_repo_ref} master_style_repo_ssh_key=${openshift3::master_style_repo_ssh_key} ansible_pkg_version=${openshift3::ansible_version}'",
-    check_options => '-u',
+    check_options => '-u -f /var/lib/puppet-openshift3/ansible',    
   } ->
 
   run_upgrade_playbooks { "Run ansible upgrade playbooks":
@@ -88,14 +88,32 @@ class openshift3::ansible {
     }
   } ->
 
-  run_ansible { 'playbooks/byo/config.yml':
+  run_ansible { 'playbooks/byo/config.yml':  
     cwd     => "/root/openshift-ansible",
     options => "-e \"repoquery_cmd='repoquery --plugins --pkgnarrow=all'\"",
-  } ->
+    check_options => '-f /root/openshift-ansible',
+    assert_cluster_version => true,
+  } ->  
 
   run_ansible { 'post-install.yml':
     cwd     => "/var/lib/puppet-openshift3/ansible",
-    options => "-e 'openshift_package_name=${openshift3::package_name} openshift_component_prefix=${openshift3::component_prefix} openshift_version=${openshift3::version} openshift_major=${openshift3::major} openshift_minor=${openshift3::minor} docker_version=${openshift3::real_docker_version} vagrant=\"${::vagrant}\" openshift_master_ip=${openshift3::master_ip}'",
+    options => "-e 'openshift_package_name=${openshift3::package_name} openshift_component_prefix=${openshift3::component_prefix} openshift_version=${openshift3::version} openshift_major=${openshift3::major} openshift_minor=${openshift3::minor} docker_version=${openshift3::real_docker_version}                 vagrant=\"${::vagrant}\" openshift_master_ip=${openshift3::master_ip}'",
+    check_options => '-f /var/lib/puppet-openshift3/ansible',    
+  } ->
+
+  run_ansible { 'post-config.yml':
+    cwd     => "/var/lib/puppet-openshift3/ansible",
+    options => "-e '
+      openshift_package_name=${openshift3::package_name}
+      openshift_component_prefix=${openshift3::component_prefix}
+      openshift_version=${openshift3::version}
+      openshift_major=${openshift3::major}
+      openshift_minor=${openshift3::minor}
+      docker_version=${openshift3::real_docker_version}
+      vagrant=\"${::vagrant}\"
+      openshift_master_ip=${openshift3::master_ip}
+      openshift_master_public_api_url=${openshift3::master_public_api_url}'",
+    check_options => '-f /var/lib/puppet-openshift3/ansible',
   } ->
 
   exec {"Wait for master":

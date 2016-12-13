@@ -1,0 +1,18 @@
+--- haproxy-config.template.orig	2016-07-04 19:41:59.378274681 +0200
++++ haproxy-config.template	2016-05-12 14:12:56.874518626 +0200
+@@ -63,9 +63,14 @@
+   tcp-request inspect-delay 5s
+   tcp-request content accept if HTTP
+ 
++  acl path_letsencrypt path_beg /.well-known/acme-challenge/
++  acl path_letsencrypt path_beg /.well-known/letsencrypt
++
+   # check if we need to redirect/force using https.
+   acl secure_redirect base,map_beg(/var/lib/haproxy/conf/os_edge_http_redirect.map) -m found
+-  redirect scheme https if secure_redirect
++  redirect scheme https if secure_redirect !path_letsencrypt
++
++  use_backend be_http_%[env(LETSENCRYPT_HOST),map_beg(/var/lib/haproxy/conf/os_http_be.map)] if path_letsencrypt
+ 
+   # Check if it is an edge route exposed insecurely.
+   acl edge_http_expose base,map_beg(/var/lib/haproxy/conf/os_edge_http_expose.map) -m found

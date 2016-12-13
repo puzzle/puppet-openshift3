@@ -1,0 +1,55 @@
+---
+- name: Create appuio-infra project
+  local_action:
+    module: openshift_project
+    name: appuio-infra
+
+- name: Instantiate letsencrypt template
+  local_action:
+    module: openshift_resource
+    namespace: appuio-infra
+    template: roles/letsencrypt/files/letsencrypt.json
+    arguments:
+      PUBLIC_MASTER_URL: "{{ openshift_master_public_api_url | default(None) }}/"
+      LETSENCRYPT_HOST: "{{ openshift_letsencrypt_host }}"
+
+- name: Configure permissions for letsencrypt service account
+  local_action:
+    module: openshift_policy
+    cluster_role: edit
+    users: system:serviceaccount:appuio-infra:default
+
+- name: "Set timezone for Let's Encrypt containers"
+  local_action:
+    module: openshift_resource
+    namespace: appuio-infra
+    resource: dc/letsencrypt
+    patch:
+      {
+        "spec": {
+          "template": {
+            "spec": {
+              "containers": [
+                {
+                  "name": "letsencrypt",
+                  "env": [
+                    {
+                      "name": "TZ",
+                      "value": "{{ container_timezone }}"
+                    }
+                  ]
+                },
+                {
+                  "name": "letsencrypt-proxy",
+                  "env": [
+                    {
+                      "name": "TZ",
+                      "value": "{{ container_timezone }}"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }

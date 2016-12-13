@@ -4,12 +4,6 @@
   become: no
   gather_facts: no
 
-  tasks:
-    - name: Determine first master
-      add_host:
-        name: "{{ groups.masters.0 }}"
-        groups: first_master
-
 - name: Prepare hosts for OpenShift installation
   hosts: all
   vars:
@@ -58,6 +52,13 @@
       rhsm_repo: name={{item}} enable=1
       with_items:
         - rhel-7-server-ose-{{openshift_major}}.{{openshift_minor}}-rpms
+      when:
+        (deployment_type == "enterprise" or deployment_type == "openshift-enterprise")
+        and (openshift_rhsm_repos is defined and openshift_rhsm_repos)
+
+    - name: Disable old OpenShift Enterprise repos
+      rhsm_repo: name="rhel-7-server-ose-{{openshift_major}}.{{item}}-rpms" enable=0
+      with_sequence: start={{ openshift_minor | int - 1 }} end=0 stride=-1
       when:
         (deployment_type == "enterprise" or deployment_type == "openshift-enterprise")
         and (openshift_rhsm_repos is defined and openshift_rhsm_repos)
@@ -158,19 +159,3 @@
         line: "  metricsPublicURL: {{ openshift_master_metrics_public_url }}"
         insertafter: "^assetConfig:"
       when: openshift_master_metrics_public_url|default("") != ""
-
-- name: Prepare primary master for OpenShift installation
-  hosts: first_master
-
-  tasks:
-    - name: Create OpenShift master directory
-      file:
-        path: /etc/origin/master
-        state: directory
-        mode: 0700
-    - name: Create signer cert
-      command: oc adm ca create-signer-cert --cert=service-signer.crt --key=service-signer.key --serial=service-signer-serial.txt
-      args:
-        chdir: /etc/origin/master
-        creates: /etc/origin/master/service-signer.crt
-        removes: /usr/bin/oc  # Only run when OpenShift client is installed

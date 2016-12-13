@@ -23,6 +23,7 @@ class openshift3 (
   $failover_router_interface = $::openshift3::params::failover_router_interface,
   $failover_keepalived_image = undef,
   $install_registry = $::openshift3::params::install_registry,
+  $registry_replicas = $::openshift3::params::registry_replicas,
   $registry_volume_size = undef,
   $install_metrics = $::openshift3::params::install_metrics,
   $metrics_use_persistent_storage = $::openshift3::params::metrics_use_persistent_storage,
@@ -57,11 +58,12 @@ class openshift3 (
   $master_extension_stylesheets = undef,
   $master_extensions = undef,
   $master_oauth_template = undef,
-  $ansible_version = $::openshift3::params::ansible_version,
+  $ansible_version = undef,
+  $ansible_from_epel = $::openshift3::params::ansible_from_epel,
   $ansible_ssh_user = $::openshift3::params::ansible_ssh_user,
   $ansible_sudo = $::openshift3::params::ansible_sudo,
   $ansible_vars = [],
-  $ansible_playbook_source = undef,
+  $ansible_playbook_source = $::openshift3::params::ansible_playbook_source,
   $openshift_ansible_version = $::openshift3::params::openshift_ansible_version,
   $set_node_ip = $::openshift3::params::set_node_ip,
   $set_hostname = $::openshift3::params::set_hostname,
@@ -91,6 +93,7 @@ class openshift3 (
       $package_name = 'atomic-openshift'
       $conf_dir = '/etc/origin'
       $default_docker_version = '1.10.3'
+      $default_ansible_version = '2.2.0.0'
       $ansible_vars_default = {
         # openshift_use_dnsmasq => true,  Don't set this, which is the default value, because of a bug in the OpenShift playbook
         openshift_master_api_port => 8443,
@@ -101,6 +104,7 @@ class openshift3 (
       $package_name = 'atomic-openshift'
       $conf_dir = '/etc/origin'
       $default_docker_version = '1.9.1'
+      $default_ansible_version = '2.2.0'
       $ansible_vars_default = {
         # openshift_use_dnsmasq => true,  Don't set this, which is the default value, because of a bug in the OpenShift playbook
       }
@@ -109,6 +113,7 @@ class openshift3 (
       $package_name = 'atomic-openshift'
       $conf_dir = '/etc/origin'
       $default_docker_version = '1.8.2'
+      $default_ansible_version = '2.2.0'
       $ansible_vars_default = {
         openshift_use_dnsmasq => false,
       }
@@ -117,6 +122,7 @@ class openshift3 (
       $package_name = 'openshift'
       $conf_dir = '/etc/openshift'
       $default_docker_version = '1.6.2'
+      $default_ansible_version = '2.2.0'
       $ansible_vars_default = {
         openshift_use_dnsmasq => false,
       }
@@ -128,12 +134,14 @@ class openshift3 (
     if versioncmp($version, '1.0.5') > 0 {
       $package_name = 'origin'
       $default_docker_version = '1.8.2'
+      $default_ansible_version = '2.2.0'
       $ansible_vars_default = {
         openshift_use_dnsmasq => false,
       }
     } else {
       $package_name = 'openshift'
       $default_docker_version = '1.6.2'
+      $default_ansible_version = '2.2.0'
       $ansible_vars_default = {
         openshift_use_dnsmasq => false,
       }
@@ -168,7 +176,13 @@ class openshift3 (
     $real_docker_version = $default_docker_version
   }
 
-  $real_ansible_vars = merge($ansible_vars_global_default, $ansible_vars_default, $ansible_vars)
+  if $ansible_version {
+    $real_ansible_version = $ansible_version
+  } else {
+    $real_ansible_version = $default_ansible_version
+  }
+
+  $real_ansible_vars = merge($ansible_vars_default, $ansible_vars)
 
   ensure_resource('file', '/var/lib/puppet-openshift3', { ensure => directory })
   ensure_resource('file', '/var/lib/puppet-openshift3/certs', { ensure => directory })
