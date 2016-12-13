@@ -4,4 +4,4 @@
  
   roles:
     - role: pruner
-      when: "{{ appuio_install_pruner | bool }}"
+      when: "{{ appuio_install_pruner | default(false) | bool }}"
