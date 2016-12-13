@@ -11,14 +11,16 @@ class openshift3::repo  {
       ensure  => absent,
     }
 
-    rhsm_repo { "rhel-7-server-ose-${::openshift3::major}.${::openshift3::minor}-rpms":
-      ensure  => present,
-    }
+    if size($::openshift3::rhsm_repo) > 0 {
+      rhsm_repo { "rhel-7-server-ose-${::openshift3::major}.${::openshift3::minor}-rpms":
+        ensure  => present,
+      }
 
-    $old_ose_repos = split(inline_template('<%= result=""; (scope[\'::openshift3::minor\'].to_i - 1).downto(0) {|minor| result << "rhel-7-server-ose-#{scope[\'::openshift3::major\']}.#{minor}-rpms\n"}; result %>'), '\n')
+      $old_ose_repos = split(inline_template('<%= result=""; (scope[\'::openshift3::minor\'].to_i - 1).downto(0) {|minor| result << "rhel-7-server-ose-#{scope[\'::openshift3::major\']}.#{minor}-rpms\n"}; result %>'), '\n')
 
-    rhsm_repo { $old_ose_repos:
-      ensure  => absent,
+      rhsm_repo { $old_ose_repos:
+        ensure  => absent,
+      }
     }
   } else {
     yumrepo { "origin":

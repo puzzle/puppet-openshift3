@@ -57,11 +57,13 @@ ${interface_opt} \
     path => $::path,
   } ->
 
-  oc_replace { ".spec.template.spec.containers[0].image = \"${real_router_image}\"" :
+  oc_replace { "${dc}: .spec.template.spec.containers[0].image = \"${real_router_image}\"" :
+    expression => ".spec.template.spec.containers[0].image = \"${real_router_image}\"",
     resource => "dc/${dc}"
   } ->
 
-  oc_replace { ".spec.template.spec.containers[0].image = \"${real_keepalived_image}\"":
+  oc_replace { "${dc}: .spec.template.spec.containers[0].image = \"${real_keepalived_image}\"":
+    expression => ".spec.template.spec.containers[0].image = \"${real_keepalived_image}\"",
     resource => "dc/ipf-${dc}",
   }
 }
