@@ -11,6 +11,7 @@ nodes
 ansible_ssh_user=<%= scope['::openshift3::ansible_ssh_user'] %>
 
 # If ansible_ssh_user is not root, ansible_sudo must be set to true
+ansible_sudo=<%= scope['::openshift3::ansible_sudo'] %>
 ansible_become=<%= scope['::openshift3::ansible_sudo'] %>
 
 # To deploy origin, change deployment_type to origin
@@ -53,7 +54,6 @@ openshift_docker_options='<%= scope['::openshift3::docker_options'] %>'
 
 openshift_hosted_manage_router=false
 openshift_hosted_manage_registry=true
-
 openshift_hosted_registry_replicas=<%= scope['::openshift3::registry_replicas'] %>
 
 # Enable cockpit

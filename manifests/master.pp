@@ -1,6 +1,6 @@
 class openshift3::master {
   class { 'openshift3': } ->
-#  class { 'openshift3::repo': } ->
+  class { 'openshift3::repo': } ->
   class { 'openshift3::package': } ->
   class { 'openshift3::vagrant-master': } ->
   class { 'openshift3::ansible': } ->
