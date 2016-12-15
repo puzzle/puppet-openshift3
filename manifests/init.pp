@@ -6,6 +6,8 @@ class openshift3 (
   $nodes = [],
   $etcd = [],
   $lb = [],
+  $groups = [],
+  $group_vars = [],
   $app_domain = $::openshift3::params::app_domain,
   $openshift_dns_bind_addr = undef,
   $version = undef,

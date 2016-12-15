@@ -79,3 +79,7 @@ osm_controller_args={'resource-quota-sync-period': ['<%= scope['::openshift3::qu
 
 [lb]
 <%= scope.function_hiera_to_inventory([scope['::openshift3::lb']]) %>
+
+<%= scope.function_hiera_groups_to_inventory([scope['::openshift3::groups']]) %>
+
+<%= scope.function_hiera_group_vars_to_inventory([scope['::openshift3::group_vars']]) %>
