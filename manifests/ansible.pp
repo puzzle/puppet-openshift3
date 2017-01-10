@@ -70,6 +70,15 @@ class openshift3::ansible {
     ignore    => "\$HOME",
   } ->
 
+  exec { "Update git submodules":
+    provider => shell,
+    cwd => get_module_path('openshift3'),
+    command => 'git submodule status',
+    unless  => 'OUT=$(git submodule update --init --recursive) && [ -z "${OUT}" ]',
+    logoutput => true,
+    path => $::path,
+  } ->
+
   run_ansible { 'pre-install.yml':
     cwd => '/var/lib/puppet-openshift3/ansible',
     options => "-e 'openshift_package_name=${openshift3::package_name} openshift_component_prefix=${openshift3::component_prefix} openshift_version=${openshift3::version} openshift_major=${openshift3::major} openshift_minor=${openshift3::minor} docker_version=${openshift3::real_docker_version} vagrant=\"${::vagrant}\" openshift_master_ip=${openshift3::master_ip} configure_epel=${openshift3::configure_epel} epel_repo_id=${openshift3::epel_repo_id} master_style_repo_url=${openshift3::master_style_repo_url} master_style_repo_ref=${openshift3::master_style_repo_ref} master_style_repo_ssh_key=${openshift3::master_style_repo_ssh_key} ansible_pkg_version=${openshift3::ansible_version}'",
@@ -98,7 +107,7 @@ class openshift3::ansible {
   run_ansible { 'post-install.yml':
     cwd     => "/var/lib/puppet-openshift3/ansible",
     options => "-e 'openshift_package_name=${openshift3::package_name} openshift_component_prefix=${openshift3::component_prefix} openshift_version=${openshift3::version} openshift_major=${openshift3::major} openshift_minor=${openshift3::minor} docker_version=${openshift3::real_docker_version}                 vagrant=\"${::vagrant}\" openshift_master_ip=${openshift3::master_ip}'",
-    check_options => '-f /var/lib/puppet-openshift3/ansible',
+    check_options => '-f /var/lib/puppet-openshift3/ansible',    
   } ->
 
   exec {"Wait for master":
