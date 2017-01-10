@@ -98,21 +98,6 @@ class openshift3::ansible {
   run_ansible { 'post-install.yml':
     cwd     => "/var/lib/puppet-openshift3/ansible",
     options => "-e 'openshift_package_name=${openshift3::package_name} openshift_component_prefix=${openshift3::component_prefix} openshift_version=${openshift3::version} openshift_major=${openshift3::major} openshift_minor=${openshift3::minor} docker_version=${openshift3::real_docker_version}                 vagrant=\"${::vagrant}\" openshift_master_ip=${openshift3::master_ip}'",
-    check_options => '-f /var/lib/puppet-openshift3/ansible',    
-  } ->
-
-  run_ansible { 'post-config.yml':
-    cwd     => "/var/lib/puppet-openshift3/ansible",
-    options => "-e '
-      openshift_package_name=${openshift3::package_name}
-      openshift_component_prefix=${openshift3::component_prefix}
-      openshift_version=${openshift3::version}
-      openshift_major=${openshift3::major}
-      openshift_minor=${openshift3::minor}
-      docker_version=${openshift3::real_docker_version}
-      vagrant=\"${::vagrant}\"
-      openshift_master_ip=${openshift3::master_ip}
-      openshift_master_public_api_url=${openshift3::master_public_api_url}'",
     check_options => '-f /var/lib/puppet-openshift3/ansible',
   } ->
 
@@ -132,5 +117,20 @@ class openshift3::ansible {
     command => "/usr/bin/ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${openshift3::ansible_ssh_user}@${openshift3::master} ${sudo} bash -c \\''cd /root && tar cf - .kube'\\' | ( cd /root && tar xf - )",
     creates => '/root/.kube',
     path => $::path,
+  } ->
+
+  run_ansible { 'post-config.yml':
+    cwd     => "/var/lib/puppet-openshift3/ansible",
+    options => "-e '
+      openshift_package_name=${openshift3::package_name}
+      openshift_component_prefix=${openshift3::component_prefix}
+      openshift_version=${openshift3::version}
+      openshift_major=${openshift3::major}
+      openshift_minor=${openshift3::minor}
+      docker_version=${openshift3::real_docker_version}
+      vagrant=\"${::vagrant}\"
+      openshift_master_ip=${openshift3::master_ip}
+      openshift_master_public_api_url=${openshift3::master_public_api_url}'",
+    check_options => '-f /var/lib/puppet-openshift3/ansible',
   }
 }
