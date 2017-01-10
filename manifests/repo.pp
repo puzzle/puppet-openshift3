@@ -11,7 +11,7 @@ class openshift3::repo  {
       ensure  => absent,
     }
 
-    if size($::openshift3::rhsm_repo) > 0 {
+    if size($::openshift3::rhsm_repos) > 0 {
       rhsm_repo { "rhel-7-server-ose-${::openshift3::major}.${::openshift3::minor}-rpms":
         ensure  => present,
       }
