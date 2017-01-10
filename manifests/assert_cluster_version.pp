@@ -7,7 +7,7 @@ define openshift3::assert_cluster_version($unless) {
     provider  => "shell",
     environment => 'HOME=/root',    
     command   => "cluster_version=${get_cluster_version}; \
-                [ \"\${cluster_version}\" = \"${configured_version}\" ] || \
+                [ -z \"\${cluster_version}\" ] || [ \"\${cluster_version}\" = \"${configured_version}\" ] || \
                 { echo \"Cluster version \${cluster_version} doesn't match configured version ${configured_version}, upgrade playbook not registered in ansible.pp?\" >&2; exit 1; }",
     unless    => $unless, 
     logoutput => on_failure,
