@@ -4,6 +4,7 @@ import json
 from StringIO import StringIO
 import tempfile
 import re
+import logging
 
 DOCUMENTATION = '''
 ---
@@ -46,6 +47,7 @@ class ResourceModule:
 
 
   def patch_applied(self, kind, name, current, patch, path = ""):
+    logging.debug(path)
     if current is None:
       if not patch is None:
         self.msg.append(self.namespace + "::" + kind + "/" + name + "{" + path + "}(" + str(patch) + " != " + str(current) + ")")
@@ -88,7 +90,7 @@ class ResourceModule:
       for i, patchVal in enumerate(patch):
         elementName = patchVal.get('name')
         if elementName is None:  # Patch contains element without name attribute => fall back to plain list comparison.
-          return self.equalList(kind, name, current, patch, msg, path)
+          logging.debug("Patch contains element without name attribute => fall back to plain list comparison.")
         curVals = [curVal for curVal in current if curVal.get('name') == elementName]
         if len(curVals) == 1: 
           if not self.patch_applied(kind, name, curVals[0], patchVal, path + '[' + str(i) + ']'):
@@ -115,6 +117,7 @@ class ResourceModule:
 #  def patch_applied(self, namespace, kind, name, current, patch, path = ""):
 
   def run_deployer(self):
+    logging.debug("run_deployer " + str(self.deployer) + " " + str(self.arguments))
     #deploy_needed = False
     #for cond in self.deploy_unless:
     #  current = self.get_resource(kind, label=self.label)
@@ -145,6 +148,7 @@ class ResourceModule:
     (rc, stdout, stderr) = self.module.run_command(['oc', 'patch', '-n', self.namespace, kind + '/' + name, '-p', json.dumps(patch)], check_rc=True)
 
   def update_resource(self, kind, name, object):
+    logging.debug("update_resource " + str(kind) + " " + str(name))
     current = self.export_resource(kind, name)
 
     if not current:
@@ -186,6 +190,8 @@ class ResourceModule:
 #      msg += json.dumps(object) + "; "
 
 def main():
+    logging.basicConfig(filename='/var/lib/puppet-openshift3/log/openshift_resource.log', level=logging.INFO)
+
     module = AnsibleModule(
         argument_spec=dict(
             namespace = dict(type='str'),
