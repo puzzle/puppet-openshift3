@@ -74,7 +74,7 @@ class ResourceModule:
       return False
 
     for i, val in enumerate(patch):
-        if not self.patch_applied(kind, resource, current[i], val, msg, path + "[" + str(i) + "]"):
+        if not self.patch_applied(kind, resource, current[i], val, path + "[" + str(i) + "]"):
           return False
 
     return True
@@ -91,11 +91,15 @@ class ResourceModule:
         elementName = patchVal.get('name')
         if elementName is None:  # Patch contains element without name attribute => fall back to plain list comparison.
           logging.debug("Patch contains element without name attribute => fall back to plain list comparison.")
+          return self.equalList(kind, name, current, patch, path)
         curVals = [curVal for curVal in current if curVal.get('name') == elementName]
-        if len(curVals) == 1: 
+        if len(curVals) == 0:
+           self.msg.append(self.namespace + "::" + kind + "/" + name + "{" + path + '[' + str(len(current)) + ']' + "}(new)")
+           return False
+        elif len(curVals) == 1: 
           if not self.patch_applied(kind, name, curVals[0], patchVal, path + '[' + str(i) + ']'):
             return False
-        elif len(curVals) > 1:
+        else:
           module.fail_json(msg="Patch contains multiple attributes with name '" + elementName + "' under path: " + path)      
 
     return True
@@ -211,9 +215,9 @@ def main():
     
     resource = ResourceModule(module)
 
-    if hasattr(resource, 'template'):
+    if resource.template:
       resource.apply_template(resource.template, resource.arguments)
-    elif hasattr(resource, 'deployer'):
+    elif resource.deployer:
       resource.run_deployer()
 #      try:
 #        parsed_patch = json.load(StringIO(patch))
