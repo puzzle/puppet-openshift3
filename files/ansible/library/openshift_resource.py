@@ -147,8 +147,17 @@ class ResourceModule:
       result = {}
 
     return result
+
+  def create_resource(self, kind, name, object):
+    if not self.module.check_mode:
+      file = tempfile.NamedTemporaryFile(prefix=kind + '_' + name, delete=True)
+      json.dump(object, file)
+      file.flush()
+      (rc, stdout, stderr) = self.module.run_command(['oc', 'create', '-n', self.namespace, '-f', file.name], check_rc=True)
+      file.close()
   
   def patch_resource(self, kind, name, patch):
+    if not self.module.check_mode:
     (rc, stdout, stderr) = self.module.run_command(['oc', 'patch', '-n', self.namespace, kind + '/' + name, '-p', json.dumps(patch)], check_rc=True)
 
   def update_resource(self, kind, name, object):
@@ -158,11 +167,7 @@ class ResourceModule:
     if not current:
       self.changed = True
       self.msg.append(self.namespace + "::" + kind + "/" + name + "(new)")
-      file = tempfile.NamedTemporaryFile(prefix=kind + '_' + name, delete=True)
-      json.dump(object, file)
-      file.flush()
-      (rc, stdout, stderr) = self.module.run_command(['oc', 'create', '-n', self.namespace, '-f', file.name], check_rc=True)
-      file.close()
+      self.create_resource(kind, name, object)      
     elif not self.patch_applied(kind, name, current, object):
       self.changed = True
       self.patch_resource(kind, name, object)
