@@ -176,7 +176,8 @@ class ResourceModule:
 
   def process_template(self, template_name, arguments):
     if arguments:
-      args = " -p " + ",".join("=".join(_) for _ in arguments.items())
+      args = " -p " + " -p ".join("=".join(_) for _ in arguments.items())
+      logging.info(args)
     else:
       args = ""
 
