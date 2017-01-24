@@ -1,0 +1,199 @@
+{
+   "kind": "Template",
+   "apiVersion": "v1",
+   "metadata": {
+      "name": "cockpit-openshift-template"
+   },
+   "labels": {
+      "createdBy": "cockpit-openshift-template"
+   },
+   "parameters": [
+      {
+         "description": "The public url for the Openshift OAuth Provider",
+         "name": "OPENSHIFT_OAUTH_PROVIDER_URL",
+         "required": true
+      },
+      {
+         "description": "The public url for the Openshift OAuth Provider",
+         "name": "COCKPIT_KUBE_URL",
+         "required": true
+      },
+      {
+         "description": "The public url for the Openshift OAuth Provider",
+         "name": "COCKPIT_KUBE_INSECURE",
+         "required": false
+      },
+      {
+         "description": "Oauth client secret",
+         "name": "OPENSHIFT_OAUTH_CLIENT_SECRET",
+         "from": "user[a-zA-Z0-9]{64}",
+         "generate": "expression"
+      },
+      {
+         "description": "Oauth client id",
+         "name": "OPENSHIFT_OAUTH_CLIENT_ID",
+         "value": "cockpit-oauth-client"
+      },
+      {
+         "description": "Skip kubernetes CA verification",
+         "name": "KUBERNETES_INSECURE",
+         "value": ""
+      },
+      {
+         "description": "PEM Encoded certificate to use for CA verification",
+         "name": "KUBERNETES_CA_DATA",
+         "value": ""
+      },
+      {
+         "description": "Host name that the registry is accessible at",
+         "name": "REGISTRY_HOST",
+         "value": ""
+      },
+      {
+         "description": "Show only the registry interface",
+         "name": "REGISTRY_ONLY",
+         "value": "false"
+      }
+   ],
+   "objects": [
+      {
+         "kind":"DeploymentConfig",
+         "apiVersion":"v1",
+         "metadata":{
+            "name":"openshift-cockpit",
+            "labels":{
+               "name":"openshift-cockpit"
+            }
+         },
+         "spec":{
+            "replicas":1,
+            "selector":{
+               "name":"openshift-cockpit"
+            },
+            "template":{
+               "metadata":{
+                  "labels":{
+                     "name":"openshift-cockpit"
+                  }
+               },
+               "spec":{
+                  "volumes": [
+                    {
+                      "name": "volume-ts1wo",
+                      "secret": {
+                        "secretName": "cockpit-crt"
+                      }
+                    }
+                  ],
+                  "containers":[{
+                    "name": "openshift-cockpit",
+                    "image": "cockpit/kubernetes",
+                    "ports":[{
+                        "containerPort":9090,
+                        "protocol":"TCP"
+                     }],
+                    "env":[
+                      {
+                        "name": "OPENSHIFT_OAUTH_PROVIDER_URL",
+                        "value": "${OPENSHIFT_OAUTH_PROVIDER_URL}"
+                      },
+                      {
+                        "name": "OPENSHIFT_OAUTH_CLIENT_ID",
+                        "value": "${OPENSHIFT_OAUTH_CLIENT_ID}"
+                      },
+                      {
+                        "name": "KUBERNETES_INSECURE",
+                        "value": "${KUBERNETES_INSECURE}"
+                      },
+                      {
+                        "name": "KUBERNETES_CA_DATA",
+                        "value": "${KUBERNETES_CA_DATA}"
+                      },
+                      {
+                        "name": "COCKPIT_KUBE_INSECURE",
+                        "value": "${COCKPIT_KUBE_INSECURE}"
+                      },
+                      {
+                        "name": "COCKPIT_KUBE_URL",
+                        "value": "${COCKPIT_KUBE_URL}"
+                      },
+                      {
+                        "name": "REGISTRY_HOST",
+                        "value": "${REGISTRY_HOST}"
+                      },
+                      {
+                        "name": "REGISTRY_ONLY",
+                        "value": "${REGISTRY_ONLY}"
+                      }],
+                      "volumeMounts": [
+                        {
+                          "name": "volume-ts1wo",
+                          "mountPath": "/etc/cockpit/ws-certs.d"
+                        }
+                      ]
+                  }]
+               }
+            }
+         }
+      },
+      {
+         "kind":"Service",
+         "apiVersion":"v1",
+         "metadata":{
+            "name":"openshift-cockpit",
+            "labels":{
+               "name":"openshift-cockpit"
+            }
+         },
+         "spec":{
+             "type": "ClusterIP",
+             "ports": [{
+                 "name": "legacy",
+                 "protocol": "TCP",
+                 "port": 9000,
+                 "targetPort": 9090
+             },
+             {
+                 "name": "http",
+                 "protocol": "TCP",
+                 "port": 80,
+                 "targetPort": 9090
+             },
+             {
+                 "name": "https",
+                 "protocol": "TCP",
+                 "port": 443,
+                 "targetPort": 9090
+             }],
+            "selector":{
+               "name":"openshift-cockpit"
+            }
+         }
+      },
+      {
+        "kind": "OAuthClient",
+        "apiVersion": "v1",
+        "metadata": {
+          "name": "${OPENSHIFT_OAUTH_CLIENT_ID}"
+        },
+        "respondWithChallenges": false,
+        "secret": "${OPENSHIFT_OAUTH_CLIENT_SECRET}",
+        "allowAnyScope": true,
+        "redirectURIs": [
+            "${COCKPIT_KUBE_URL}"
+        ]
+      },
+      {
+          "kind": "Secret",
+          "apiVersion": "v1",
+          "metadata": {
+              "name": "cockpit-crt",
+              "creationTimestamp": null
+          },
+          "data": {
+              "0-self-signed.cert": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURmVENDQW1XZ0F3SUJBZ0lKQU1oUG5mOUVoTlNyTUEwR0NTcUdTSWIzRFFFQkN3VUFNRlF4S1RBbkJnTlYKQkFvTUlHVmlPVFUwTkRGa016azJOVFJsWkdaaE16SXdNelpsTkdJeU1ETXpaRGhrTVNjd0pRWURWUVFEREI1dgpjR1Z1YzJocFpuUXRZMjlqYTNCcGRDMHpMV296WldzdFpHVmlkV2N3SUJjTk1UY3dNVEkwTVRJMU5EQXhXaGdQCk1qRXhOakV5TXpFeE1qVTBNREZhTUZReEtUQW5CZ05WQkFvTUlHVmlPVFUwTkRGa016azJOVFJsWkdaaE16SXcKTXpabE5HSXlNRE16WkRoa01TY3dKUVlEVlFRRERCNXZjR1Z1YzJocFpuUXRZMjlqYTNCcGRDMHpMV296WldzdApaR1ZpZFdjd2dnRWlNQTBHQ1NxR1NJYjNEUUVCQVFVQUE0SUJEd0F3Z2dFS0FvSUJBUUNydWx2dndEbGF3aHRECjNsRXhWUEIybHN1eGFsanRjUTRpaCtzYVl4b2ZFNE9nemhzN2U3WlYxeFpCR0dLT2ZpWmFLeitaQzR3aTFaUCsKcTFQTnRxc0Q5cFNNSlpkdXgxc3RJUVJ1VG9LUVlTNlVZZkp4ZGlPcllWYzdpYktON2EvVHFXdmJzZzc2Y3p1RApEakt1RWplMTkzSExxbE01QVd6VUdTZXNmNGZ5QWVVMWFzUzRLZFJTOVU5cG5UTVR5WUlCc2UydGVxUUhrZmZTCi9zbmljcHFEOTFIU0JZaTZ1WXFCaGFyN1VVcUw1a3V0NVRTTm9tTEtFTVg0ZUFucEJSWEVJTDVrdlo3RVBrQ3IKejhTMjE2TFdadDNHc0l0WFpZYzVJb0IvNzlFSVFxUlhKd2hKQlRweFcyVTVhRUZwQ3doVXJGR1pDMGUyUUxFYQp0WWFqeHVreEFnTUJBQUdqVURCT01CMEdBMVVkRGdRV0JCUW9ldkh6eVJFNVMvckxkVmJoUkY3bmErSmpCekFmCkJnTlZIU01FR0RBV2dCUW9ldkh6eVJFNVMvckxkVmJoUkY3bmErSmpCekFNQmdOVkhSTUVCVEFEQVFIL01BMEcKQ1NxR1NJYjNEUUVCQ3dVQUE0SUJBUUF2dXpWa0lLcVdzeVEyUXJsVmw5bkF0THFEMzZIYkg0bVRJUnZ0MGY5ZwpMR3VXZnlFT2oyTGN6UHlrRGMzQmRFbDVhbmpRQlJFRFFpV1V3ZnpNcnZUTUpUR1g2TTNHeXM2NldOdThHVVlMCnBlNyswOEdoajg2bFMxNEhSOVAzZVpFS2hYc1R6SVNOVnZLVi82d1FISjBsYS9rVGJ5Q2JzT2pENWliRGhaeVQKTFNBbkhkcWNnMmVFZHJtYU1INGVmMFMwTlBNVHpGb2dSNFJIMEIwVWI0SEM0eUlCaVdzUkpyZWNRRUlBdG1oVQo0R1YrTUJMQXNOR0t5WVBnc3p3cWhFVkUzbHFITnpUY3AvU2J2cHVBQzQxUkFZbXhUSEpOOFFxVlVuQlZwMVdxCjNFYm5ZZ1FkTElaWEdtU2VHckd2ZGMyZ2pvRU8wVDNtRGJmZHZLUkNma1FiCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0KCi0tLS0tQkVHSU4gUFJJVkFURSBLRVktLS0tLQpNSUlFdmdJQkFEQU5CZ2txaGtpRzl3MEJBUUVGQUFTQ0JLZ3dnZ1NrQWdFQUFvSUJBUUNydWx2dndEbGF3aHRECjNsRXhWUEIybHN1eGFsanRjUTRpaCtzYVl4b2ZFNE9nemhzN2U3WlYxeFpCR0dLT2ZpWmFLeitaQzR3aTFaUCsKcTFQTnRxc0Q5cFNNSlpkdXgxc3RJUVJ1VG9LUVlTNlVZZkp4ZGlPcllWYzdpYktON2EvVHFXdmJzZzc2Y3p1RApEakt1RWplMTkzSExxbE01QVd6VUdTZXNmNGZ5QWVVMWFzUzRLZFJTOVU5cG5UTVR5WUlCc2UydGVxUUhrZmZTCi9zbmljcHFEOTFIU0JZaTZ1WXFCaGFyN1VVcUw1a3V0NVRTTm9tTEtFTVg0ZUFucEJSWEVJTDVrdlo3RVBrQ3IKejhTMjE2TFdadDNHc0l0WFpZYzVJb0IvNzlFSVFxUlhKd2hKQlRweFcyVTVhRUZwQ3doVXJGR1pDMGUyUUxFYQp0WWFqeHVreEFnTUJBQUVDZ2dFQkFLZlRpT1hWeGplY1cya0lhL0Q2UWNhanVJMjZrUTM3M3dTQU1KT3BKbTRZCmRCdERVZm5mL1dJR3dnajcrOVdtRTNVcnJ3dXk3VkZkeVRTcDIweS9xSUpIQ1FXdDkwQ2NNODcyNVkybnpKR3QKYUFnN2NPVFJ3Q3BOQnlONGZyZVdBcStvYzNCUm83Ry95L2xZZHM4SG5zcUcrUDlCaGZQQUlNdG5pZzVhMUZEOQpUMXJDV1BkVjVHR2pGS1Jpc2llRFdVK2dPT0luK0JKcEQ3UWQwZ0xjMnFISHZhOGVsT09SM3NDVlhRLzJTR2dYClNtSVd4NUliYzZRZlB5S2ZJQVNsYTBrcGFDTWNaRmNkUFBnNCt0dmFodTMrVk1STml5WlBzZ0YwZTVDRnNCLzQKUGtCZi9PRnUzbGNvQ21CbDYxS09BMjBwbFVqUjVDalZrQXNXY3ZMOVRBRUNnWUVBMUFHdzI5TnByQ28rT1J3eQp1c1dIOTlLOXlEYlFWT0JORFNFM082Nk8xczBBSTVvdm12QTdFejBKVm1QV0lOWWNDNE5vcmZrU1BsZXBpREFMCnJSRHBPMmZ6VGJUdTdHOU1LYVk2Mk5Ebyt5Y2hoM01HSitBTU1BMkdEdU96WUh6WUhwbEFUZjlVVDhOTWsyMVEKYVlRdUV4TXdVYjRoUTJlVUthWVV5bGR5N1prQ2dZRUF6MXozN2FhNHdXd0czOGtSM3NldHpxb0Y5SGQrUlBHTApndWxkSFdONWZIcEQvVFFUMFlQOTZidGJKaFBLWGJXcDBTdno0ck1ldTREWVM2Y3MyUVloN2I1QzIrSmdHQUJsCkR6S2s1YXp0OEw5dC8rckdadGNiRlBtejNMVy9lWW9LSjJETFRhQ3V6cVVVUDlNd3pUNThqdk9xckxVM3V3b1UKR0k5bDEvT2dKMWtDZ1lCQ2FvRXdiS3UzTHNpdGRZTUM5ZXpobTFpdkIxVCtzZ0lSY2UxdXVnR3ZreXRPKy9lYgo3MVJpYzRXZ1ZjaDRJdnRJTkJPd0pNNHRUNk1oc2dPR1pUemJ5blh6U3hKcWFYZVB1SzdJeTdHaE5LSVJYOXgyCjAzNmQ4eTZqTFh3OVp2OEJudnNCTkZNQ1plbHdhaGQ5NXRYVVRmZWVOQlVSbTdwVHpkN0hnTnZWU1FLQmdRQ1QKWG84VTVwZ0hYcTdEL0RJbkVlSUVMZkZ0ZkQ3UTRKazF3SVBjandXWDRZelFObUtmVkI3d0xhYnB1TWJwTW1JdAp0Zjd0N2o2NUl5aVZHNHBUOG5mS2JwMDFoL3lqRWlUQVdFMjRyTjJ0YTE3UnNoaXVuZEV4WndUY3BvNGQ0bXkwCjc2V00xZFZtSnd2dEVEcHVveW9DcmtsdDFKeDI0UUxITWFJL2gzVWFnUUtCZ0FKN3I5TEFXRHh6Vmk3ZmxobUQKMzJKK0hZMVRDZjBSU0lwR280WHJmNndCeXJQQ2hWV0FuVGxWY0FZM3RmZDI2OUVzWTBqWEJvdkJLZ202ZmxsNAovMXZoc3JCb1NhbG94QUJYem9wS0NWeXhiN1dCSFRmVGUzNE1YVzl3ZDUxMlB1MlloVi9kMGhvUGkwQVdwZTZoCjVtejZzUjd4SzRtWk5wN254Z1hjcXBGUAotLS0tLUVORCBQUklWQVRFIEtFWS0tLS0tCg=="
+          },
+          "type": "Opaque"
+      }
+   ]
+}
