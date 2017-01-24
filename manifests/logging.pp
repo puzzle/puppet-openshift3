@@ -42,7 +42,7 @@ class openshift3::logging {
         role => "edit",
         namespace => "logging",
       }   
-    }
+    } ->
 
     new_secret { "logging-deployer":
       namespace => "logging",
