@@ -94,6 +94,8 @@ class openshift3::ansible {
       '3.2.x to 3.2.y' => { 'playbook' => 'playbooks/byo/openshift-cluster/upgrades/v3_2/upgrade.yml', 'if_deployment_type' => 'enterprise', if_cur_ver => '3.2', if_new_ver => '3.2' },
       '3.2 to 3.3'     => { 'playbook' => 'playbooks/byo/openshift-cluster/upgrades/v3_3/upgrade.yml', 'if_deployment_type' => 'enterprise', if_cur_ver => '3.2', if_new_ver => '3.3' },
       '3.3.x to 3.3.y' => { 'playbook' => 'playbooks/byo/openshift-cluster/upgrades/v3_3/upgrade.yml', 'if_deployment_type' => 'enterprise', if_cur_ver => '3.3', if_new_ver => '3.3' },
+      '3.3 to 3.4'     => { 'playbook' => 'playbooks/byo/openshift-cluster/upgrades/v3_4/upgrade.yml', 'if_deployment_type' => 'enterprise', if_cur_ver => '3.3', if_new_ver => '3.4' },
+      '3.4.x to 3.4.y' => { 'playbook' => 'playbooks/byo/openshift-cluster/upgrades/v3_4/upgrade.yml', 'if_deployment_type' => 'enterprise', if_cur_ver => '3.4', if_new_ver => '3.4' },
     }
   } ->
 
