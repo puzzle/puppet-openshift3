@@ -1,4 +1,4 @@
-- name: Compute additional host groups
+- name: Prepare control machine for OpenShift installation
   hosts: localhost
   connection: local
   become: no
@@ -132,6 +132,24 @@
 
     - name: Workaround for rhbz#133563
       lineinfile: dest=/etc/passwd line="dockerlog:x:4294967295:4294967295::/home/dockerlog:/bin/nologin"
+
+    - command: rpm -q docker
+      ignore_errors: yes
+      failed_when: no
+      register: docker_installed
+
+    - docker_image:
+        name: "{{openshift_component_prefix}}-{{item}}:v{{openshift_version}}"
+      #ignore_errors: yes
+      with_items:
+        - deployer
+        - docker-builder
+        - docker-registry
+        - haproxy-router
+        - keepalived-ipfailover
+        - sti-builder
+        - pod
+      when: docker_installed.rc == 0
 
 - name: Prepare masters for OpenShift installation
   hosts: masters
