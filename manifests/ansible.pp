@@ -1,5 +1,12 @@
 class openshift3::ansible {
 
+  $module_path = get_module_path($module_name)
+  $submodule_update_output = generate("${module_path}/files/update-submodules")
+
+  if $submodule_update_output {
+    notice("Updating git submodules: ${submodule_update_output}")
+  }
+
   if $::openshift3::ansible_sudo {
     $sudo = 'sudo'
   } else {
@@ -68,15 +75,6 @@ class openshift3::ansible {
     group     => "root",
     recurse   => true,
     ignore    => "\$HOME",
-  } ->
-
-  exec { "Update git submodules":
-    provider => shell,
-    cwd => get_module_path('openshift3'),
-    command => 'git submodule status',
-    unless  => 'OUT=$(git submodule update --init --recursive) && [ -z "${OUT}" ]',
-    logoutput => true,
-    path => $::path,
   } ->
 
   run_ansible { 'pre-install.yml':
