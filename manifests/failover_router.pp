@@ -58,8 +58,8 @@ ${interface_opt} --vrrp-id-offset=${vrrp_id_offset} \
   } ->
 
   ansible_module { "Configure dc/${dc}":
-    cwd    => get_module_path($module_name),
-    module => 'files/ansible/library/openshift_resource.py',
+    cwd    => '/var/lib/puppet-openshift3/ansible/library',
+    module => 'openshift_resource.py',
     args   => {
       namespace => 'default',
       type      => 'dc',
@@ -75,8 +75,8 @@ ${interface_opt} --vrrp-id-offset=${vrrp_id_offset} \
   } ->
 
   ansible_module { "Configure dc/ipf-${dc}":
-    cwd    => get_module_path($module_name),
-    module => 'files/ansible/library/openshift_resource.py',
+    cwd    => '/var/lib/puppet-openshift3/ansible/library',
+    module => 'openshift_resource.py',
     args   => {
       namespace => 'default',
       type      => 'dc',
