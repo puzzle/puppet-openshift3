@@ -158,7 +158,7 @@ class ResourceModule:
   
   def patch_resource(self, kind, name, patch):
     if not self.module.check_mode:
-    (rc, stdout, stderr) = self.module.run_command(['oc', 'patch', '-n', self.namespace, kind + '/' + name, '-p', json.dumps(patch)], check_rc=True)
+      (rc, stdout, stderr) = self.module.run_command(['oc', 'patch', '-n', self.namespace, kind + '/' + name, '-p', json.dumps(patch)], check_rc=True)
 
   def update_resource(self, kind, name, object):
     logging.debug("update_resource " + str(kind) + " " + str(name))
