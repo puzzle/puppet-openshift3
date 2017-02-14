@@ -1,4 +1,4 @@
-define openshift3::failover_router ($label = $title, $replicas, $interface = undef, $ips) {
+define openshift3::failover_router ($label = $title, $replicas, $interface = undef, $ips, $vrrp_id_offset = 0) {
 
   if $interface {
     $interface_opt = "--interface=${interface}"
@@ -48,7 +48,7 @@ define openshift3::failover_router ($label = $title, $replicas, $interface = und
     cwd     => "/root",
     command => "oadm ipfailover -n default ipf-${dc} --replicas=${replicas} --watch-port=80 \
 --selector=\"ha-router=${label}\" --virtual-ips=\"${ips}\" \
-${interface_opt} \
+${interface_opt} --vrrp-id-offset=${vrrp_id_offset} \
 --credentials=${::openshift3::conf_dir}/master/openshift-router.kubeconfig \
 --images='${::openshift3::component_images}' \
 --service-account=ipfailover --create",
@@ -57,13 +57,40 @@ ${interface_opt} \
     path => $::path,
   } ->
 
-  oc_replace { "${dc}: .spec.template.spec.containers[0].image = \"${real_router_image}\"" :
-    expression => ".spec.template.spec.containers[0].image = \"${real_router_image}\"",
-    resource => "dc/${dc}"
+  ansible_module { "Configure dc/${dc}":
+    cwd    => '/var/lib/puppet-openshift3/ansible/library',
+    module => 'openshift_resource.py',
+    args   => {
+      namespace => 'default',
+      type      => 'dc',
+      name      => "${dc}",
+      patch     => parseyaml("
+        spec:
+          template:
+            spec:
+              containers:
+                - name: router
+                  image: ${real_router_image}"),
+    }
   } ->
 
-  oc_replace { "${dc}: .spec.template.spec.containers[0].image = \"${real_keepalived_image}\"":
-    expression => ".spec.template.spec.containers[0].image = \"${real_keepalived_image}\"",
-    resource => "dc/ipf-${dc}",
-  }
+  ansible_module { "Configure dc/ipf-${dc}":
+    cwd    => '/var/lib/puppet-openshift3/ansible/library',
+    module => 'openshift_resource.py',
+    args   => {
+      namespace => 'default',
+      type      => 'dc',
+      name      => "ipf-${dc}",
+      patch     => parseyaml("
+        spec:
+          template:
+            spec:
+              containers:
+                - name: ipf-${dc}-keepalived
+                  image: ${real_keepalived_image}
+                  env:
+                    - name: OPENSHIFT_HA_VRRP_ID_OFFSET
+                      value: \"${vrrp_id_offset}\""),
+      }
+    }
 }

@@ -19,6 +19,7 @@ openshift3::ansible_vars:
   openshift_node_kubelet_args:
     image-gc-high-threshold: ['80']
     image-gc-low-threshold: ['60']
+  appuio_docker_cleanup_mail: ""  # Where to send mails for docker-cleanup cron job. No mail is sent when empty ("").
 #openshift3::logging_local_storage: /data/logging
 
 #openshift3::master_style_repo_url: https://github.com/puzzle/ose-appuio-style
@@ -65,3 +66,32 @@ openshift3::masters:
 #
 #openshift3::lb:
 #  - name: ose3-master.example.com
+
+openshift3::groups:
+  # Host group defining Gluster cluster hosts
+  gluster:
+    - name: ose3-master.example.com
+
+openshift3::group_vars:
+  # Group variable for Gluster
+  gluster:
+    deployment: community
+    default_replicas: 3
+    default_arbiter: 1
+    gluster_network: 172.17.176.0/24
+
+    # Global options for all Gluster volumes.
+    gluster_pv_default_options:
+      cluster.quorum-type: auto  # Always recommended to ensure correct quorum config
+      
+      # Disable pre-fetching and caching of file stat(2) information when a directory is read.
+      # Required to prevent corruption with PostgreSQL an possibly MySQL.
+      performance.stat-prefetch: "off"
+
+    gluster_pvs:
+      - name: gluster-pv1
+        size: 100G
+        # Per volume Gluster options.
+        options:
+          # Increase write cache size to speed up push operations for registry.
+          performance.write-behind-window-size: 32MB

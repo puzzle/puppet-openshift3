@@ -6,6 +6,8 @@ class openshift3 (
   $nodes = [],
   $etcd = [],
   $lb = [],
+  $groups = [],
+  $group_vars = [],
   $app_domain = $::openshift3::params::app_domain,
   $openshift_dns_bind_addr = undef,
   $version = undef,
@@ -85,6 +87,11 @@ class openshift3 (
   $minor = $version_array[1]
   $patch = $version_array[2]
 
+  $ansible_vars_global_default = {
+    openshift_master_api_port => 8443,
+    openshift_master_console_port => 8443,
+  }
+
   if $deployment_type == "enterprise" {
     $component_prefix = 'registry.access.redhat.com/openshift3/ose'
 
@@ -95,9 +102,7 @@ class openshift3 (
       $default_docker_version = '1.10.3'
       $default_ansible_version = '2.2.0.0'
       $ansible_vars_default = {
-        # openshift_use_dnsmasq => true,  Don't set this, which is the default value, because of a bug in the OpenShift playbook
-        openshift_master_api_port => 8443,
-        openshift_master_console_port => 8443,
+        # openshift_use_dnsmasq => true,  Don't set this, which is the default value, because of a bug in the OpenShift playbook        
       }
     } elsif versioncmp($version, '3.2.0') >= 0 {
       $real_deployment_type = 'openshift-enterprise'
@@ -182,8 +187,8 @@ class openshift3 (
     $real_ansible_version = $default_ansible_version
   }
 
-  $real_ansible_vars = merge($ansible_vars_default, $ansible_vars)
-
+  $real_ansible_vars = merge($ansible_vars_global_default, $ansible_vars_default, $ansible_vars)
+  
   ensure_resource('file', '/var/lib/puppet-openshift3', { ensure => directory })
   ensure_resource('file', '/var/lib/puppet-openshift3/certs', { ensure => directory })
 }

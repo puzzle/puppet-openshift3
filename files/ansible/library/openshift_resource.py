@@ -4,6 +4,7 @@ import json
 from StringIO import StringIO
 import tempfile
 import re
+import logging
 
 DOCUMENTATION = '''
 ---
@@ -46,6 +47,7 @@ class ResourceModule:
 
 
   def patch_applied(self, kind, name, current, patch, path = ""):
+    logging.debug(path)
     if current is None:
       if not patch is None:
         self.msg.append(self.namespace + "::" + kind + "/" + name + "{" + path + "}(" + str(patch) + " != " + str(current) + ")")
@@ -72,7 +74,7 @@ class ResourceModule:
       return False
 
     for i, val in enumerate(patch):
-        if not self.patch_applied(kind, resource, current[i], val, msg, path + "[" + str(i) + "]"):
+        if not self.patch_applied(kind, resource, current[i], val, path + "[" + str(i) + "]"):
           return False
 
     return True
@@ -88,12 +90,16 @@ class ResourceModule:
       for i, patchVal in enumerate(patch):
         elementName = patchVal.get('name')
         if elementName is None:  # Patch contains element without name attribute => fall back to plain list comparison.
-          return self.equalList(kind, name, current, patch, msg, path)
+          logging.debug("Patch contains element without name attribute => fall back to plain list comparison.")
+          return self.equalList(kind, name, current, patch, path)
         curVals = [curVal for curVal in current if curVal.get('name') == elementName]
-        if len(curVals) == 1: 
+        if len(curVals) == 0:
+           self.msg.append(self.namespace + "::" + kind + "/" + name + "{" + path + '[' + str(len(current)) + ']' + "}(new)")
+           return False
+        elif len(curVals) == 1: 
           if not self.patch_applied(kind, name, curVals[0], patchVal, path + '[' + str(i) + ']'):
             return False
-        elif len(curVals) > 1:
+        else:
           module.fail_json(msg="Patch contains multiple attributes with name '" + elementName + "' under path: " + path)      
 
     return True
@@ -115,6 +121,7 @@ class ResourceModule:
 #  def patch_applied(self, namespace, kind, name, current, patch, path = ""):
 
   def run_deployer(self):
+    logging.debug("run_deployer " + str(self.deployer) + " " + str(self.arguments))
     #deploy_needed = False
     #for cond in self.deploy_unless:
     #  current = self.get_resource(kind, label=self.label)
@@ -140,21 +147,27 @@ class ResourceModule:
       result = {}
 
     return result
-  
-  def patch_resource(self, kind, name, patch):
-    (rc, stdout, stderr) = self.module.run_command(['oc', 'patch', '-n', self.namespace, kind + '/' + name, '-p', json.dumps(patch)], check_rc=True)
 
-  def update_resource(self, kind, name, object):
-    current = self.export_resource(kind, name)
-
-    if not current:
-      self.changed = True
-      self.msg.append(self.namespace + "::" + kind + "/" + name + "(new)")
+  def create_resource(self, kind, name, object):
+    if not self.module.check_mode:
       file = tempfile.NamedTemporaryFile(prefix=kind + '_' + name, delete=True)
       json.dump(object, file)
       file.flush()
       (rc, stdout, stderr) = self.module.run_command(['oc', 'create', '-n', self.namespace, '-f', file.name], check_rc=True)
       file.close()
+  
+  def patch_resource(self, kind, name, patch):
+    if not self.module.check_mode:
+      (rc, stdout, stderr) = self.module.run_command(['oc', 'patch', '-n', self.namespace, kind + '/' + name, '-p', json.dumps(patch)], check_rc=True)
+
+  def update_resource(self, kind, name, object):
+    logging.debug("update_resource " + str(kind) + " " + str(name))
+    current = self.export_resource(kind, name)
+
+    if not current:
+      self.changed = True
+      self.msg.append(self.namespace + "::" + kind + "/" + name + "(new)")
+      self.create_resource(kind, name, object)      
     elif not self.patch_applied(kind, name, current, object):
       self.changed = True
       self.patch_resource(kind, name, object)
@@ -163,7 +176,8 @@ class ResourceModule:
 
   def process_template(self, template_name, arguments):
     if arguments:
-      args = " -p " + ",".join("=".join(_) for _ in arguments.items())
+      args = " -p " + " -p ".join("=".join(_) for _ in arguments.items())
+      logging.info(args)
     else:
       args = ""
 
@@ -186,6 +200,8 @@ class ResourceModule:
 #      msg += json.dumps(object) + "; "
 
 def main():
+    logging.basicConfig(filename='/var/lib/puppet-openshift3/log/openshift_resource.log', level=logging.INFO)
+
     module = AnsibleModule(
         argument_spec=dict(
             namespace = dict(type='str'),
@@ -205,9 +221,9 @@ def main():
     
     resource = ResourceModule(module)
 
-    if hasattr(resource, 'template'):
+    if resource.template:
       resource.apply_template(resource.template, resource.arguments)
-    elif hasattr(resource, 'deployer'):
+    elif resource.deployer:
       resource.run_deployer()
 #      try:
 #        parsed_patch = json.load(StringIO(patch))

@@ -1,5 +1,12 @@
 class openshift3::ansible {
 
+  $module_path = get_module_path($module_name)
+  $submodule_update_output = generate("${module_path}/files/update-submodules")
+
+  if $submodule_update_output {
+    notice("Updating git submodules: ${submodule_update_output}")
+  }
+
   if $::openshift3::ansible_sudo {
     $sudo = 'sudo'
   } else {
@@ -85,6 +92,8 @@ class openshift3::ansible {
       '3.2.x to 3.2.y' => { 'playbook' => 'playbooks/byo/openshift-cluster/upgrades/v3_2/upgrade.yml', 'if_deployment_type' => 'enterprise', if_cur_ver => '3.2', if_new_ver => '3.2' },
       '3.2 to 3.3'     => { 'playbook' => 'playbooks/byo/openshift-cluster/upgrades/v3_3/upgrade.yml', 'if_deployment_type' => 'enterprise', if_cur_ver => '3.2', if_new_ver => '3.3' },
       '3.3.x to 3.3.y' => { 'playbook' => 'playbooks/byo/openshift-cluster/upgrades/v3_3/upgrade.yml', 'if_deployment_type' => 'enterprise', if_cur_ver => '3.3', if_new_ver => '3.3' },
+      '3.3 to 3.4'     => { 'playbook' => 'playbooks/byo/openshift-cluster/upgrades/v3_4/upgrade.yml', 'if_deployment_type' => 'enterprise', if_cur_ver => '3.3', if_new_ver => '3.4' },
+      '3.4.x to 3.4.y' => { 'playbook' => 'playbooks/byo/openshift-cluster/upgrades/v3_4/upgrade.yml', 'if_deployment_type' => 'enterprise', if_cur_ver => '3.4', if_new_ver => '3.4' },
     }
   } ->
 
@@ -99,21 +108,6 @@ class openshift3::ansible {
     cwd     => "/var/lib/puppet-openshift3/ansible",
     options => "-e 'openshift_package_name=${openshift3::package_name} openshift_component_prefix=${openshift3::component_prefix} openshift_version=${openshift3::version} openshift_major=${openshift3::major} openshift_minor=${openshift3::minor} docker_version=${openshift3::real_docker_version}                 vagrant=\"${::vagrant}\" openshift_master_ip=${openshift3::master_ip}'",
     check_options => '-f /var/lib/puppet-openshift3/ansible',    
-  } ->
-
-  run_ansible { 'post-config.yml':
-    cwd     => "/var/lib/puppet-openshift3/ansible",
-    options => "-e '
-      openshift_package_name=${openshift3::package_name}
-      openshift_component_prefix=${openshift3::component_prefix}
-      openshift_version=${openshift3::version}
-      openshift_major=${openshift3::major}
-      openshift_minor=${openshift3::minor}
-      docker_version=${openshift3::real_docker_version}
-      vagrant=\"${::vagrant}\"
-      openshift_master_ip=${openshift3::master_ip}
-      openshift_master_public_api_url=${openshift3::master_public_api_url}'",
-    check_options => '-f /var/lib/puppet-openshift3/ansible',
   } ->
 
   exec {"Wait for master":
@@ -132,5 +126,20 @@ class openshift3::ansible {
     command => "/usr/bin/ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ${openshift3::ansible_ssh_user}@${openshift3::master} ${sudo} bash -c \\''cd /root && tar cf - .kube'\\' | ( cd /root && tar xf - )",
     creates => '/root/.kube',
     path => $::path,
+  } ->
+
+  run_ansible { 'post-config.yml':
+    cwd     => "/var/lib/puppet-openshift3/ansible",
+    options => "-e '
+      openshift_package_name=${openshift3::package_name}
+      openshift_component_prefix=${openshift3::component_prefix}
+      openshift_version=${openshift3::version}
+      openshift_major=${openshift3::major}
+      openshift_minor=${openshift3::minor}
+      docker_version=${openshift3::real_docker_version}
+      vagrant=\"${::vagrant}\"
+      openshift_master_ip=${openshift3::master_ip}
+      openshift_master_public_api_url=${openshift3::master_public_api_url}'",
+    check_options => '-f /var/lib/puppet-openshift3/ansible',
   }
 }

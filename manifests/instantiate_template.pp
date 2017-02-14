@@ -1,8 +1,8 @@
 define openshift3::instantiate_template ($template_namespace = 'openshift', $template_parameters = undef, $resource_namespace = 'default', $returns = 0, $creates) {
   if $template_parameters {
-    $parameters_opt = "-p '${template_parameters}'"
+    $parameters_opt = join(prefix($template_parameters, '-p ', ' '))
   } else {
-   $parameters_opt = ""
+    $parameters_opt = ""
   }
 
   exec { "instantiate template ${title}":
