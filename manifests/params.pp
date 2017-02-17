@@ -43,4 +43,5 @@ class openshift3::params {
   $project_request_message = undef
   $quota_sync_period = 15s
   $rhsm_repos= ['rhel-7-server-rpms', 'rhel-7-server-extras-rpms', 'rhel-7-server-optional-rpms']
+  $run_upgrade_playbooks = true
 }
