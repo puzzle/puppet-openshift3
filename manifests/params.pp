@@ -34,7 +34,7 @@ class openshift3::params {
   $ansible_ssh_user = 'root'
   $ansible_sudo = false
   $ansible_playbook_source = 'https://github.com/openshift/openshift-ansible.git'
-  $openshift_ansible_version = 'openshift-ansible-3.3.41-1'
+  $openshift_ansible_version = 'openshift-ansible-3.4.56-1'
   $set_node_ip = false
   $set_hostname = true
   $docker_options = '-l warn --log-opt max-size=1M --log-opt max-file=3'
