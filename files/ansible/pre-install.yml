@@ -134,6 +134,13 @@
     - name: Workaround for rhbz#133563
       lineinfile: dest=/etc/passwd line="dockerlog:x:4294967295:4294967295::/home/dockerlog:/bin/nologin"
 
+    - name: Extra iptables configuration
+      iptables_raw:
+        name: openshift_extra
+        keep_unmanaged: yes
+        rules: "{{ appuio_extra_iptables }}"
+      when: appuio_extra_iptables is defined
+
     - command: rpm -q docker
       ignore_errors: yes
       failed_when: no
