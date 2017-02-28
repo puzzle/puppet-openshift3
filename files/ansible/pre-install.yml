@@ -37,6 +37,7 @@
       with_items:
         - jq
         - yum-plugin-versionlock
+        - yum-utils
 
     - name: Enable RHEL repos
       rhsm_repo: name={{item}} enable=1

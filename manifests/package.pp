@@ -37,7 +37,7 @@ class openshift3::package  {
     ensure => $::openshift3::version,
   } ->
 
-  package { ['git', 'wget', 'jq', 'atomic-openshift']:
+  package { ['git', 'wget', 'jq', 'atomic-openshift', 'yum-utils']:
     ensure          => present,
     install_options => "--enablerepo=${::openshift3::epel_repo_id}",
   } ->
