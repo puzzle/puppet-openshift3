@@ -176,12 +176,16 @@
         dest: /root/openshift-ansible/roles/openshift_master/templates/master.yaml.v1.j2
         regexp: '^  format:'
         line: "  format: {{ master_image_format }}"
+      run_once: true
       when: master_image_format|default("") != ""
 
     - name: Configure metrics public URL
       local_action:
         module: lineinfile
         dest: /root/openshift-ansible/roles/openshift_master/templates/master.yaml.v1.j2
+        regexp: '^  metricsPublicURL:'
         line: "  metricsPublicURL: {{ openshift_master_metrics_public_url }}"
         insertafter: "^assetConfig:"
+      run_once: true
       when: openshift_master_metrics_public_url|default("") != ""
+
