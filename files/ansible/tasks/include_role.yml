@@ -1,0 +1,12 @@
+# These tasks work around https://github.com/ansible/ansible/issues/19305 and
+# https://github.com/ansible/ansible/issues/19084.
+# When these issues are fixed include_role can be used directly in the playbook
+
+- set_fact:
+    role_name: "{{ role_name }}"
+  args: "{{ role_vars }}"
+  run_once: true
+
+- name: "Run post-install role '{{ role_name }}'"
+  include_role:
+    name: "{{ hostvars[hostvars.keys()[0] | string].role_name }}"

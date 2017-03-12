@@ -1,7 +1,15 @@
 - name: Configure OpenShift Cluster resources
   hosts: masters[0]
   connection: local
- 
-  roles:
-    - role: pruner
-      when: "{{ appuio_install_pruner | default(false) | bool }}"
+
+  tasks:
+  - include: tasks/include_role.yml
+    vars:
+      role_name: "{{ role_item.name | mandatory }}"
+      role_src: "{{ role_item.src | mandatory }}"
+      role_scm: "{{ role_item.scm | default('') }}"
+      role_version: "{{ role_item.version | mandatory }}"
+      role_vars: "{{ role_item.vars | default({}) }}"
+    with_items: "{{ appuio_ansible_post_install_roles }}"
+    loop_control:
+      loop_var: role_item

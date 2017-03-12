@@ -1,3 +1,0 @@
-[submodule "files/ansible/files/appuio-pruner"]
-	path = files/ansible/files/appuio-pruner
-	url = ../appuio-pruner.git

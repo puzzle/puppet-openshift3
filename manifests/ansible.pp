@@ -1,12 +1,5 @@
 class openshift3::ansible {
 
-  $module_path = get_module_path($module_name)
-  $submodule_update_output = generate("${module_path}/files/update-submodules")
-
-  if $submodule_update_output {
-    notice("Updating git submodules: ${submodule_update_output}")
-  }
-
   if $::openshift3::ansible_sudo {
     $sudo = 'sudo'
   } else {
