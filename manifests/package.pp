@@ -24,7 +24,7 @@ class openshift3::package  {
 #  }
 
 #  Yum_versionlock <| |> ->
-  
+
 #  yumrepo { "epel":
 #    descr => 'Extra Packages for Enterprise Linux 7',
 #    baseurl => "http://download.fedoraproject.org/pub/epel/7/x86_64",
@@ -37,7 +37,7 @@ class openshift3::package  {
     ensure => $::openshift3::version,
   } ->
 
-  package { ['git', 'wget', 'jq', 'atomic-openshift', 'yum-utils']:
+  package { 'atomic-openshift':
     ensure          => present,
     install_options => "--enablerepo=${::openshift3::epel_repo_id}",
   } ->
@@ -46,7 +46,12 @@ class openshift3::package  {
     ensure          => latest,
     install_options => [$switch_epel, '--show-duplicates'],
   }
-  
+
+  ensure_packages(['git', 'wget', 'jq', 'yum-utils'], {
+    ensure          => present,
+    install_options => "--enablerepo=${::openshift3::epel_repo_id}",
+  })
+
 #  package { ['deltarpm', 'wget', 'vim-enhanced', 'net-tools', 'bind-utils', 'git', 'bridge-utils', 'iptables-services', 'pyOpenSSL', 'bash-completion' ]:
 #    ensure => present,
 #  }
