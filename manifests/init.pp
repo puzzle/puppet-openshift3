@@ -6,6 +6,7 @@ class openshift3 (
   $nodes = [],
   $etcd = [],
   $lb = [],
+  $nfs = [],
   $groups = [],
   $group_vars = [],
   $app_domain = $::openshift3::params::app_domain,
