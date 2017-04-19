@@ -4,7 +4,6 @@ masters
 nodes
 <%= "etcd\n" unless scope['::openshift3::etcd'].empty? -%>
 <%= "lb\n" unless scope['::openshift3::lb'].empty? -%>
-<%= "nfs\n" unless scope['::openshift3::nfs'].empty? -%>
 
 # Set variables common for all OSEv3 hosts
 [OSEv3:vars]
@@ -79,9 +78,6 @@ osm_controller_args={'resource-quota-sync-period': ['<%= scope['::openshift3::qu
 
 [lb]
 <%= scope.function_hiera_to_inventory([scope['::openshift3::lb']]) %>
-
-[nfs]
-<%= scope.function_hiera_to_inventory([scope['::openshift3::nfs']]) %>
 
 <%= scope.function_hiera_groups_to_inventory([scope['::openshift3::groups']]) %>
 

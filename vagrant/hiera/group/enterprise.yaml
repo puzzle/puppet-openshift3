@@ -73,27 +73,6 @@ openshift3::masters:
 #openshift3::lb:
 #  - name: ose3-master.example.com
 
-#openshift3::nfs:
-#  - name: nfs.example.com
-#    hosted_registry_storage_kind=nfs
-#    hosted_registry_storage_access_modes=['ReadWriteMany']
-#    hosted_registry_storage_nfs_directory=/exports
-#    hosted_registry_storage_nfs_options='*(rw,root_squash)'
-#    hosted_registry_storage_volume_name=registry
-#    hosted_registry_storage_volume_size=10Gi
-#    hosted_metrics_storage_kind=nfs
-#    hosted_metrics_storage_access_modes=['ReadWriteOnce']
-#    hosted_metrics_storage_nfs_directory=/exports
-#    hosted_metrics_storage_nfs_options='*(rw,root_squash)'
-#    hosted_metrics_storage_volume_name=metrics
-#    hosted_metrics_storage_volume_size=10Gi
-#    hosted_logging_storage_kind=nfs
-#    hosted_logging_storage_access_modes=['ReadWriteOnce']
-#    hosted_logging_storage_nfs_directory=/exports
-#    hosted_logging_storage_nfs_options='*(rw,root_squash)'
-#    hosted_logging_storage_volume_name=logging
-#    hosted_logging_storage_volume_size=10Gi
-
 openshift3::groups:
   # Host group defining Gluster cluster hosts
   gluster:
