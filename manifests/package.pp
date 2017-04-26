@@ -47,7 +47,11 @@ class openshift3::package  {
     install_options => [$switch_epel, '--show-duplicates'],
   }
 
-  ensure_packages(['git', 'wget', 'jq', 'yum-utils'], {
+  ensure_packages(['git', 'wget', 'yum-utils'], {
+    ensure          => present,
+  })
+
+  ensure_packages(['jq'], {
     ensure          => present,
     install_options => "--enablerepo=${::openshift3::epel_repo_id}",
   })
