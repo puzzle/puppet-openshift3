@@ -29,7 +29,7 @@
     - name: Install Ansible post-install roles
       local_action: "command ansible-galaxy install -p roles --force {% if item.scm is defined and item.scm %}{{item.scm}}+{%endif%}{{ item.src }},{{ item.version }}"
       run_once: true
-      with_items: "{{ appuio_ansible_post_install_roles }}"
+      with_items: "{{ appuio_ansible_post_install_roles | default([]) }}"
 
   handlers:
     - name: restart Docker

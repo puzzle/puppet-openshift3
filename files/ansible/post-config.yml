@@ -10,6 +10,6 @@
       role_scm: "{{ role_item.scm | default('') }}"
       role_version: "{{ role_item.version | mandatory }}"
       role_vars: "{{ role_item.vars | default({}) }}"
-    with_items: "{{ appuio_ansible_post_install_roles }}"
+    with_items: "{{ appuio_ansible_post_install_roles | default([]) }}"
     loop_control:
       loop_var: role_item
