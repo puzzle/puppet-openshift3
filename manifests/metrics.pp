@@ -49,6 +49,11 @@ class openshift3::metrics {
       role_type => "cluster",
     } ->
 
+    add_role_to_user { "system:serviceaccount:openshift-infra:hawkular":
+      role => "view",
+      namespace => "openshift-infra",
+    } ->
+
     instantiate_template { "metrics-deployer-template":
       template_namespace => "openshift",
       template_parameters => [
