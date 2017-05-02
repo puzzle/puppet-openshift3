@@ -51,9 +51,13 @@ class openshift3::package  {
     ensure => $::openshift3::version,
   }
 
-  ensure_packages(['atomic-openshift', 'git', 'wget', 'yum-utils'], {
+  ensure_packages(['atomic-openshift'], {
     ensure          => present,
     require         => [Yum_versionlock['atomic-openshift'], Yum_versionlock['atomic-openshift-clients']],
+  })
+
+  ensure_packages(['git', 'wget', 'yum-utils'], {
+    ensure          => present,
   })
 
   ensure_packages(['jq'], {
