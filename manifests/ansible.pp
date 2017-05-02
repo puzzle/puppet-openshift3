@@ -21,7 +21,7 @@ class openshift3::ansible {
 
   if $::openshift3::ansible_playbook_source == 'package' {
     package { "openshift-ansible-playbooks":
-      ensure => present,
+      ensure => latest,
     } ->
 
     file { "/root/openshift-ansible":
