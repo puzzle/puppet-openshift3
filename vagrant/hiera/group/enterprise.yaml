@@ -1,9 +1,9 @@
 ---
 openshift3::deployment_type: enterprise
-openshift3::version: 3.2.1.13
-openshift3::docker_version: 1.10.3
-#openshift3::ansible_version: 2.1.0.0
-#openshift3::version: 3.1.1.6
+openshift3::version: 3.4.1.18
+#openshift3::docker_version: 1.12.6
+#openshift3::openshift_ansible_version: openshift-ansible-3.4.79-1
+#openshift3::ansible_version: 2.2.1.0
 # set the Red Hat repositories that shall be added, enabled and prioritized
 #openshift3::rhsm_repos:
 #  - rhel-7-server-extras-rpms
