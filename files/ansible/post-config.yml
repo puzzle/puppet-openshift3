@@ -1,6 +1,5 @@
 - name: Configure OpenShift Cluster resources
   hosts: masters[0]
-  connection: local
 
   tasks:
   - include: tasks/include_role.yml

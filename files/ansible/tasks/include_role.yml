@@ -5,8 +5,7 @@
 - set_fact:
     role_name: "{{ role_name }}"
   args: "{{ role_vars }}"
-  run_once: true
 
 - name: "Run post-install role '{{ role_name }}'"
   include_role:
-    name: "{{ hostvars[hostvars.keys()[0] | string].role_name }}"
+    name: "{% for key in hostvars.keys() %}{{ hostvars[key | string].get('role_name') }}{% endfor %}"
