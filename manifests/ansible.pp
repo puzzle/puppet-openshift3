@@ -77,7 +77,7 @@ class openshift3::ansible {
     ensure => absent,
   } ->
 
-  exec { "ansible-playbook $title":
+  exec { "Install Ansible roles used by Puppet manifests":
       command => "/var/lib/puppet-openshift3/ansible/install-roles",
       unless  => "/var/lib/puppet-openshift3/ansible/install-roles -c",
       logoutput => on_failure,
