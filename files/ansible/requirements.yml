@@ -1,0 +1,4 @@
+- src: https://github.com/appuio/ansible-module-openshift
+  scm: git
+  version: v1.1.1
+

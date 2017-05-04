@@ -1,0 +1,26 @@
+#!/bin/bash
+
+set -e
+
+ansible_dir=/var/lib/puppet-openshift3/ansible/
+run_dir=/var/lib/puppet-openshift3/run
+
+check_mode=false
+
+mkdir -p $run_dir
+
+while getopts "c" opt; do
+  case $opt in
+    c)
+      check_mode=true
+      ;;
+  esac
+done
+
+if [ $check_mode == true ]; then
+  diff -q ${run_dir}/ansible-requirements.last ${ansible_dir}/requirements.yml >/dev/null
+  exit
+fi
+
+ansible-galaxy install -r ${ansible_dir}/requirements.yml -p ${ansible_dir}/roles --force && \
+cp ${ansible_dir}/requirements.yml ${run_dir}/ansible-requirements.last
