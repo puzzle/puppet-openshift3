@@ -7,9 +7,15 @@ class openshift3::registry {
   }
 
   if $::openshift3::registry_mount_host {
-    $mount_host = "--mount-host=/mnt/registry --service-account=registry"
+    $mount_host = "--mount-host=/mnt/registry"
 
-     exec { 'Create registry service account':
+    file { 'Create registry local storage directory':
+      path   => '/mnt/registry',
+      ensure => directory,
+      mode   => 0755,
+    }
+
+    exec { 'Create registry service account':
       provider => 'shell',
       environment => 'HOME=/root',
       cwd     => "/root",
@@ -30,6 +36,12 @@ class openshift3::registry {
     $mount_host = ""
   }  
 
+  if $::openshift3::registry_node_selector {
+    $selector = "--selector=${::openshift3::registry_node_selector}"
+  } else {
+    $selector = ""
+  }
+
   if $::openshift3::registry_volume_size {
     set_volume { 'docker-registry':
       volume_name => 'registry-storage',
@@ -43,11 +55,12 @@ class openshift3::registry {
     provider => 'shell',
     environment => 'HOME=/root',
     cwd     => "/root",
-    command => "mkdir -p /mnt/registry && oadm registry -n default --config=${::openshift3::conf_dir}/master/admin.kubeconfig \
+    command => "oc adm registry --namespace=default \
+      --config=${::openshift3::conf_dir}/master/admin.kubeconfig \
       --credentials=${::openshift3::conf_dir}/master/openshift-registry.kubeconfig \
-      --images='${real_registry_image}' \
-      ${mount_host}",
-    unless => "oadm registry -n default",
+      --images=${real_registry_image} \
+      ${mount_host} ${selector}",
+    unless => "oc adm registry --namespace=default --dry-run",
     timeout => 600,
     path => $::path,
   } ->
@@ -82,6 +95,6 @@ class openshift3::registry {
       command => 'oc create -n default -f /tmp/docker-registry.json',
       timeout => 600,
       path => $::path,
-    } 
+    }
   }
 }
