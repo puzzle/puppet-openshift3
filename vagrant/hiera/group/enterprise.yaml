@@ -24,7 +24,7 @@ openshift3::ansible_vars:
   - name: appuio-pruner
     src: https://github.com/appuio/appuio-pruner
     scm: git
-    version: v1.0.5
+    version: v1.0.6
 
 #openshift3::logging_local_storage: /data/logging
 
