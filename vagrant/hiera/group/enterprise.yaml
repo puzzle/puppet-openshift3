@@ -27,6 +27,8 @@ openshift3::ansible_vars:
     version: v1.0.6
 
 #openshift3::logging_local_storage: /data/logging
+#openshift3::logging_es_nodeselector: region=infra
+#openshift3::logging_es_ops_nodeselector: region=infra
 
 #openshift3::master_style_repo_url: https://github.com/puzzle/ose-appuio-style
 #openshift3::master_extension_stylesheets:

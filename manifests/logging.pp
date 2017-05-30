@@ -70,6 +70,8 @@ class openshift3::logging {
         "ES_OPS_INSTANCE_RAM=${::openshift3::es_ops_instance_ram}",
         "ENABLE_OPS_CLUSTER=${::openshift3::enable_ops_logging}",
         "IMAGE_PREFIX=${image_prefix}",
+        "ES_NODESELECTOR=${::openshift3::logging_es_nodeselector}",
+        "ES_OPS_NODESELECTOR=${::openshift3::logging_es_ops_nodeselector}",
       ],
       resource_namespace => "logging",
       creates => "svc/logging-es",
