@@ -11,6 +11,7 @@ openshift3::version: 3.4.1.18
 #  - rhel-7-server-rpms
 openshift3::set_node_ip: true
 openshift3::registry_ip: 172.30.1.1
+#openshift3::registry_node_selector: region=infra
 openshift3::install_metrics: false
 openshift3::install_logging: false
 openshift3::ansible_vars:
@@ -24,9 +25,11 @@ openshift3::ansible_vars:
   - name: appuio-pruner
     src: https://github.com/appuio/appuio-pruner
     scm: git
-    version: v1.0.5
+    version: v1.0.6
 
 #openshift3::logging_local_storage: /data/logging
+#openshift3::logging_es_nodeselector: region=infra
+#openshift3::logging_es_ops_nodeselector: region=infra
 
 #openshift3::master_style_repo_url: https://github.com/puzzle/ose-appuio-style
 #openshift3::master_extension_stylesheets:

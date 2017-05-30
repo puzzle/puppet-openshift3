@@ -6,12 +6,6 @@ class openshift3::logging {
       $image_prefix = 'openshift/origin-'
     }
 
-    if $::openshift3::logging_image_version {
-      $image_opt = ",IMAGE_VERSION=${::openshift3::logging_image_version}"
-    } else {
-      $image_opt = ""
-    }
-
     new_project { "logging":
       options => '--node-selector=""',
     }
@@ -75,7 +69,9 @@ class openshift3::logging {
         "ES_INSTANCE_RAM=${::openshift3::es_instance_ram}",
         "ES_OPS_INSTANCE_RAM=${::openshift3::es_ops_instance_ram}",
         "ENABLE_OPS_CLUSTER=${::openshift3::enable_ops_logging}",
-        "IMAGE_PREFIX=${image_prefix}${image_opt}",
+        "IMAGE_PREFIX=${image_prefix}",
+        "ES_NODESELECTOR=${::openshift3::logging_es_nodeselector}",
+        "ES_OPS_NODESELECTOR=${::openshift3::logging_es_ops_nodeselector}",
       ],
       resource_namespace => "logging",
       creates => "svc/logging-es",
