@@ -69,6 +69,7 @@ class openshift3 (
   $ansible_common_vars = {},
   $ansible_vars = {},
   $ansible_playbook_source = $::openshift3::params::ansible_playbook_source,
+  $ansible_roles_source = $::openshift3::params::ansible_roles_source,
   $openshift_ansible_version = $::openshift3::params::openshift_ansible_version,
   $set_node_ip = $::openshift3::params::set_node_ip,
   $set_hostname = $::openshift3::params::set_hostname,

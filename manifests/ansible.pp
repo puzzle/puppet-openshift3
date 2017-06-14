@@ -70,6 +70,14 @@ class openshift3::ansible {
     ignore    => "\$HOME",
   } ->
 
+  file { "/var/lib/puppet-openshift3/ansible/requirements.yml":
+    content   => template("openshift3/ansible/requirements.yml.erb"),
+    owner     => "root",
+    group     => "root",
+    mode      => 644,
+    show_diff => no,
+  } ->
+
   file { [
     "/var/lib/puppet-openshift3/ansible/library/openshift_project.py",
     "/var/lib/puppet-openshift3/ansible/library/openshift_policy.py",

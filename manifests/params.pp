@@ -34,6 +34,7 @@ class openshift3::params {
   $ansible_ssh_user = 'root'
   $ansible_sudo = false
   $ansible_playbook_source = 'https://github.com/openshift/openshift-ansible.git'
+  $ansible_roles_source = 'https://github.com/appuio/ansible-module-openshift'
   $openshift_ansible_version = 'openshift-ansible-3.4.56-1'
   $set_node_ip = false
   $set_hostname = true
