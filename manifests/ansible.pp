@@ -95,6 +95,7 @@ class openshift3::ansible {
     options => "-e \"repoquery_cmd='repoquery --plugins --pkgnarrow=all'\"",
     check_options => '-f /root/openshift-ansible',
     assert_cluster_version => true,
+    skip => $::skip_ansible_config_playbook,
   } ->  
 
   run_ansible { 'post-install.yml':
