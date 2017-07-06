@@ -66,7 +66,8 @@ class openshift3 (
   $ansible_from_epel = $::openshift3::params::ansible_from_epel,
   $ansible_ssh_user = $::openshift3::params::ansible_ssh_user,
   $ansible_sudo = $::openshift3::params::ansible_sudo,
-  $ansible_vars = [],
+  $ansible_common_vars = {},
+  $ansible_vars = {},
   $ansible_playbook_source = $::openshift3::params::ansible_playbook_source,
   $openshift_ansible_version = $::openshift3::params::openshift_ansible_version,
   $set_node_ip = $::openshift3::params::set_node_ip,
@@ -98,12 +99,21 @@ class openshift3 (
   if $deployment_type == "enterprise" {
     $component_prefix = 'registry.access.redhat.com/openshift3/ose'
 
-    if versioncmp($version, '3.4.0') >= 0 {
+   if versioncmp($version, '3.5.0') >= 0 {
+      $real_deployment_type = 'openshift-enterprise'
+      $package_name = 'atomic-openshift'
+      $conf_dir = '/etc/origin'
+      $default_docker_version = '1.12.6'
+      $default_ansible_version = '2.2.1.0'
+      $ansible_vars_default = {
+        # openshift_use_dnsmasq => true,  Don't set this, which is the default value, because of a bug in the OpenShift playbook
+      }
+    } elsif versioncmp($version, '3.4.0') >= 0 {
       $real_deployment_type = 'openshift-enterprise'
       $package_name = 'atomic-openshift'
       $conf_dir = '/etc/origin'
       $default_docker_version = '1.12.5'
-      $default_ansible_version = '2.2.0.0'
+      $default_ansible_version = '2.2.1.0'
       $ansible_vars_default = {
         # openshift_use_dnsmasq => true,  Don't set this, which is the default value, because of a bug in the OpenShift playbook
       }
@@ -199,8 +209,7 @@ class openshift3 (
     $real_ansible_version = $default_ansible_version
   }
 
-  $real_ansible_vars = merge($ansible_vars_global_default, $ansible_vars_default, $ansible_vars)
-  
+  $real_ansible_vars = deep_merge($ansible_vars_global_default, $ansible_vars_default, $ansible_common_vars, $ansible_vars)
+
   ensure_resource('file', '/var/lib/puppet-openshift3', { ensure => directory })
-  ensure_resource('file', '/var/lib/puppet-openshift3/certs', { ensure => directory })
 }
