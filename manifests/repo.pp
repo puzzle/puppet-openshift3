@@ -36,10 +36,10 @@ class openshift3::repo  {
   if $::openshift3::configure_epel {
     yumrepo { "epel":
       descr => 'Extra Packages for Enterprise Linux 7',
-      baseurl => "http://download.fedoraproject.org/pub/epel/7/x86_64",
+      mirrorlist => 'https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=$basearch',
       enabled => 0,
       gpgcheck => 1,
-      gpgkey => "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7",
+      gpgkey => 'https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7',
     }
   }
 }
