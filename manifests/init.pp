@@ -112,7 +112,7 @@ class openshift3 (
       $real_deployment_type = 'openshift-enterprise'
       $package_name = 'atomic-openshift'
       $conf_dir = '/etc/origin'
-      $default_docker_version = '1.12.5'
+      $default_docker_version = '1.12.6'
       $default_ansible_version = '2.2.1.0'
       $ansible_vars_default = {
         # openshift_use_dnsmasq => true,  Don't set this, which is the default value, because of a bug in the OpenShift playbook
