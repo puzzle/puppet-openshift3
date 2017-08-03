@@ -14,14 +14,6 @@
     - name: Configure OpenShift Gluster plugin logrotate
       copy: src=files/glusterfs-plugin dest=/etc/logrotate.d owner=root group=root mode=0644 setype=etc_t
 
-    - name: Configure MAILTO of docker-cleanup cron job
-      lineinfile:
-        state: "{{ (appuio_docker_cleanup_mail is defined) | ternary('present', 'absent') }}"
-        dest: /etc/cron.hourly/docker-cleanup
-        line: 'MAILTO="{{ appuio_docker_cleanup_mail | default("") }}"'
-        regexp: MAILTO=
-        insertafter: ^#!
-
     - name: Update OpenShift packages on control machine
       local_action: yum name={{ openshift_package_name }} state=latest
       run_once: true
