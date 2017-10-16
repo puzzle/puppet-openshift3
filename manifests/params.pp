@@ -1,11 +1,11 @@
 class openshift3::params {
-  $deployment_type = "origin"
+  $deployment_type = 'origin'
   $identity_providers = [{
-    'name' => 'htpasswd_auth',
-    'login' => 'true',
+    'name'      => 'htpasswd_auth',
+    'login'     => 'true',
     'challenge' => 'true',
-    'kind' => 'HTPasswdPasswordIdentityProvider',
-    'filename' => '/etc/origin/master/htpasswd',
+    'kind'      => 'HTPasswdPasswordIdentityProvider',
+    'filename'  => '/etc/origin/master/htpasswd',
   }]
   $app_domain = 'cloudapps.example.com'
   $openshift_dns_bind_addr = undef
@@ -19,8 +19,8 @@ class openshift3::params {
   $registry_replicas = 1
   $install_logging = true
   $failover_router_interface = undef
-  $es_instance_ram = 2G
-  $es_ops_instance_ram = 2G
+  $es_instance_ram = '2G'
+  $es_ops_instance_ram = '2G'
   $enable_ops_logging = false
   $logging_image_version = undef
   $logging_cluster_size = 1
@@ -29,7 +29,7 @@ class openshift3::params {
   $setup_monitoring_account = false
   $metrics_image_version = undef
   $metrics_use_persistent_storage = false
-  $metrics_pv_size = 20Gi
+  $metrics_pv_size = '20Gi'
   $metrics_duration = 3
   $ansible_ssh_user = 'root'
   $ansible_sudo = false
@@ -41,7 +41,7 @@ class openshift3::params {
   $master_style_repo_ref = 'master'
   $project_request_template = undef
   $project_request_message = undef
-  $quota_sync_period = 15s
+  $quota_sync_period = '15s'
   $rhsm_repos= ['rhel-7-server-rpms', 'rhel-7-server-extras-rpms', 'rhel-7-server-optional-rpms']
   $run_upgrade_playbooks = true
 }
