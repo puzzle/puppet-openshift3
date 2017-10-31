@@ -4,17 +4,18 @@ module Puppet::Parser::Functions
     args[0].each do |config|
       result += config['name']
       config.each do |key, value|
+        prefix = "openshift_" if not /^(openshift_|osm_|glusterfs_)/ =~ key
         next if key == 'name'
 #        if value =~ /^(y|Y|yes|Yes|YES|n|N|no|No|NO|true|True|TRUE|false|False|FALSE|on|On|ON|off|Off|OFF)$/
 #          result += " openshift_#{key}=#{value}"
         if value.is_a?(TrueClass)
-          result += " openshift_#{key}=True"
+          result += " #{prefix}#{key}=True"
         elsif value.is_a?(FalseClass)
-          result += " openshift_#{key}=False"
+          result += " #{prefix}#{key}=False"
         elsif value.is_a?(String)
-          result += " openshift_#{key}='#{value}'"
+          result += " #{prefix}#{key}='#{value}'"
         else
-          result += " openshift_#{key}='#{value.to_json}'"
+          result += " #{prefix}#{key}='#{value.to_json}'"
         end
       end
 
