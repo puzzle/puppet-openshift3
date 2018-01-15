@@ -176,12 +176,6 @@ class openshift3 (
   }
   $component_images = "${component_prefix}-\${component}:\${version}"
 
-  if $internal_hostname {
-    $hostname = $internal_hostname
-  } else {
-    $hostname = $::fqdn
-  }
-
   if $master_style_repo_url {
     if $master_extension_stylesheets {
       $real_master_extension_stylesheets = prefix($master_extension_stylesheets, '/var/lib/puppet-openshift3/style/')
