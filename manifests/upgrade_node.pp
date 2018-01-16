@@ -1,4 +1,4 @@
-class openshift3::upgrade-node {
+class openshift3::upgrade_node {
 
   package { ["docker", "docker-selinux"]:
     ensure => latest,

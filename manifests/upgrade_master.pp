@@ -1,4 +1,4 @@
-class openshift3::upgrade-master {
+class openshift3::upgrade_master {
   if $::openshift3::deployment_type == "enterprise" {
     $distro = "rhel7"
   } else {

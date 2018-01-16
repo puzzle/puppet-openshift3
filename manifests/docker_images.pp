@@ -1,4 +1,4 @@
-class openshift3::docker-images {
+class openshift3::docker_images {
 
 #  if $::vagrant {
 #    exec { 'Import docker images':

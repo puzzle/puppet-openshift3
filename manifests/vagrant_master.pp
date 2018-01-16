@@ -1,4 +1,4 @@
-class openshift3::vagrant-master {
+class openshift3::vagrant_master {
 
   if $::vagrant {
     $openshift_hosts = parsejson($::openshift_hosts)
