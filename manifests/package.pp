@@ -13,13 +13,13 @@ class openshift3::package  {
   }
 
   if $::openshift3::ansible_playbook_source == 'package' {
-    yum_versionlock { ['ansible']:
+    openshift3::yum_versionlock { ['ansible']:
       ensure      => absent,
       yum_options => $switch_epel,
     }
   }
   else {
-    yum_versionlock { ['ansible']:
+    openshift3::yum_versionlock { ['ansible']:
       ensure      => $::openshift3::real_ansible_version,
       yum_options => $switch_epel,
     }
@@ -27,7 +27,7 @@ class openshift3::package  {
     ensure_packages(["ansible-${::openshift3::real_ansible_version}"], {
       ensure          => latest,
       install_options => [$switch_epel, '--show-duplicates'],
-      require         => Yum_versionlock['ansible'],
+      require         => Openshift3::Yum_versionlock['ansible'],
     })
   }
 
@@ -47,7 +47,7 @@ class openshift3::package  {
 #    gpgkey => "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7",
 #  } ->
 
-  yum_versionlock { [ 'atomic-openshift', 'atomic-openshift-clients' ]:
+  openshift3::yum_versionlock { [ 'atomic-openshift', 'atomic-openshift-clients' ]:
     ensure => $::openshift3::version,
   }
 
