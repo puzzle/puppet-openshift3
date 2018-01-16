@@ -53,7 +53,7 @@ class openshift3::package  {
 
   ensure_packages(['atomic-openshift'], {
     ensure          => present,
-    require         => [Yum_versionlock['atomic-openshift'], Yum_versionlock['atomic-openshift-clients']],
+    require         => [Openshift3::Yum_versionlock['atomic-openshift'], Openshift3::Yum_versionlock['atomic-openshift-clients']],
   })
 
   ensure_packages(['git', 'wget', 'yum-utils'], {
