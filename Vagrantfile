@@ -42,7 +42,7 @@ end
 
 vms.each do |vm|
   vmname = vm['name'].split('.', 2)
-  
+
   vm['short_name' ] = vmname[0]
   vm['rhsm_system_name'] = "#{vmname[0]}-#{hostname}.#{vmname[1]}"
 end
@@ -86,6 +86,22 @@ Vagrant.configure(2) do |config|
 			::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
 			`/sbin/ip a show dev eth1 | sed -ne 's/.*inet \\([^ /]\\+\\).*/\\1/p'` `hostname`
 		EOF
+
+    if [ -n "#{vagrant_fact}" ]; then
+      # configure OpenShift dns for vagrant environment
+      if [[ `hostname` == ose3* ]]; then
+        MASTER_IP="#{enterprise_masters.first['ip']}"
+      fi
+      if [[ `hostname` == origin* ]]; then
+        MASTER_IP="#{origin_masters.first['ip']}"
+      fi
+
+      if [[ ! -z $MASTER_IP ]]; then
+        nmcli con modify "System eth0" ipv4.ignore-auto-dns yes
+        nmcli con mod "System eth0" ipv4.dns "$MASTER_IP 8.8.8.8 8.8.4.4"
+        systemctl restart NetworkManager
+      fi
+    fi
 
     if [ -x /usr/bin/subscription-manager ] && [ ! -e /.subscribed ]; then
       subscription-manager remove --all
@@ -184,7 +200,7 @@ Vagrant.configure(2) do |config|
           "openshift_hosts" => origin_vms.to_json
         }
       end
-    end 
+    end
   end
 
   if @synced_folder_type.nil?
